@@ -8,6 +8,8 @@ const Store = require('electron-store')
 const store = new Store()
 const isDev = !app.isPackaged
 
+app.setName('Scythe')
+
 // ─── Expand ~ in paths ───────────────────────────────────────────────────────
 function expandPath(p) {
   if (p.startsWith('~/')) return path.join(os.homedir(), p.slice(2))
