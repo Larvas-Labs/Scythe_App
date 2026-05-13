@@ -366,3 +366,127 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow()
 })
+
+// ─── Scan state ───────────────────────────────────────────────────────────────
+let scanAborted = false
+
+// ─── IPC: estimate:all ────────────────────────────────────────────────────────
+ipcMain.handle('estimate:all', async (event) => {
+  const results = []
+  for (const target of SCAN_TARGETS) {
+    if (scanAborted) break
+    const exists = pathExists(target.path)
+    const size = exists ? getDirSize(target.path) : 0
+    results.push({ id: target.id, estimatedSize: size, exists })
+    event.sender.send('estimate:result', { id: target.id, estimatedSize: size, exists })
+  }
+  return results
+})
+
+// ─── IPC: scan:start ──────────────────────────────────────────────────────────
+ipcMain.handle('scan:start', async (event, targetIds) => {
+  scanAborted = false
+  const targets = SCAN_TARGETS.filter(t => targetIds.includes(t.id))
+  const results = []
+
+  for (const target of targets) {
+    if (scanAborted) break
+
+    event.sender.send('scan:progress', {
+      id: target.id,
+      name: target.name,
+      status: 'scanning',
+      size: 0,
+    })
+
+    const exists = pathExists(target.path)
+    let size = 0
+    let children = []
+
+    if (exists) {
+      size = getDirSize(target.path)
+      if (target.showChildren) {
+        children = getChildren(target.path)
+      }
+    }
+
+    const result = {
+      ...target,
+      size,
+      exists,
+      children,
+      path: expandPath(target.path),
+    }
+    results.push(result)
+
+    event.sender.send('scan:progress', {
+      id: target.id,
+      name: target.name,
+      status: 'done',
+      size,
+    })
+  }
+
+  event.sender.send('scan:complete', results)
+  return results
+})
+
+// ─── IPC: scan:abort ──────────────────────────────────────────────────────────
+ipcMain.on('scan:abort', () => {
+  scanAborted = true
+})
+
+// ─── IPC: delete:items ────────────────────────────────────────────────────────
+ipcMain.handle('delete:items', async (event, items) => {
+  const results = []
+  let totalFreed = 0
+
+  for (const item of items) {
+    try {
+      if (item.requiresAdmin) {
+        const escaped = item.path.replace(/"/g, '\\"')
+        execSync(
+          `osascript -e 'do shell script "rm -rf \\"${escaped}\\"" with administrator privileges'`,
+          { timeout: 60000 }
+        )
+      } else {
+        fs.rmSync(item.path, { recursive: true, force: true })
+      }
+      results.push({ path: item.path, success: true, size: item.size || 0 })
+      totalFreed += item.size || 0
+      event.sender.send('delete:progress', { path: item.path, success: true })
+    } catch (err) {
+      results.push({ path: item.path, success: false, error: err.message })
+      event.sender.send('delete:progress', { path: item.path, success: false, error: err.message })
+    }
+  }
+
+  const summary = { results, totalFreed }
+  event.sender.send('delete:complete', summary)
+  return summary
+})
+
+// ─── IPC: trash:empty ─────────────────────────────────────────────────────────
+ipcMain.handle('trash:empty', async () => {
+  try {
+    const trashPath = path.join(os.homedir(), '.Trash')
+    fs.rmSync(trashPath, { recursive: true, force: true })
+    fs.mkdirSync(trashPath, { recursive: true })
+    return { success: true }
+  } catch (err) {
+    return { success: false, error: err.message }
+  }
+})
+
+// ─── IPC: finder:reveal ───────────────────────────────────────────────────────
+ipcMain.handle('finder:reveal', async (_, targetPath) => {
+  shell.showItemInFolder(expandPath(targetPath))
+  return true
+})
+
+// ─── IPC: store:get / store:set ───────────────────────────────────────────────
+ipcMain.handle('store:get', async (_, key) => store.get(key))
+ipcMain.handle('store:set', async (_, key, value) => {
+  store.set(key, value)
+  return true
+})
