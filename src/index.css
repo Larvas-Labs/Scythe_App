@@ -1,0 +1,178 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Variables ─────────────────────────────────── */
+:root {
+  --bg:           #07080F;
+  --bg-secondary: #0C0E1A;
+  --surface:      #111328;
+  --surface-hover:#161932;
+  --border:       #1C1F3A;
+  --border-strong:#252850;
+
+  --accent-green: #00E57A;
+  --accent-blue:  #0096FF;
+  --accent-glow-green: rgba(0, 229, 122, 0.15);
+  --accent-glow-blue:  rgba(0, 150, 255, 0.15);
+
+  --warning:      #FFB800;
+  --danger:       #FF453A;
+  --danger-glow:  rgba(255, 69, 58, 0.15);
+
+  --text:         #E8EAFF;
+  --text-secondary: #8890C0;
+  --text-muted:   #454870;
+
+  --gradient-scythe: linear-gradient(135deg, #00E57A 0%, #0096FF 100%);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:           #F0F2FF;
+    --bg-secondary: #E8EAF6;
+    --surface:      #FFFFFF;
+    --surface-hover:#F4F5FF;
+    --border:       #D8DAEF;
+    --border-strong:#C0C3E0;
+    --text:         #0A0C1F;
+    --text-secondary: #4A4E80;
+    --text-muted:   #9096C0;
+  }
+}
+
+/* ─── Base ───────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+}
+
+/* ─── Typography helpers ─────────────────────────────── */
+.font-syne   { font-family: 'Syne', sans-serif; }
+.font-dm     { font-family: 'DM Sans', sans-serif; }
+.font-mono   { font-family: 'JetBrains Mono', monospace; }
+
+/* ─── Custom Scrollbar ───────────────────────────────── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ─── Gradient text utility ──────────────────────────── */
+.gradient-text {
+  background: var(--gradient-scythe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Gradient button ────────────────────────────────── */
+.btn-gradient {
+  background: var(--gradient-scythe);
+  color: #07080F;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.btn-gradient:hover { opacity: 0.9; }
+.btn-gradient:active { transform: scale(0.98); }
+
+/* ─── Danger button ──────────────────────────────────── */
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.1s ease;
+}
+.btn-danger:hover { opacity: 0.85; }
+.btn-danger:active { transform: scale(0.98); }
+
+/* ─── Toggle switch ──────────────────────────────────── */
+.toggle-track {
+  width: 36px;
+  height: 20px;
+  border-radius: 10px;
+  background: var(--border-strong);
+  position: relative;
+  transition: background 0.2s ease;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.toggle-track.on {
+  background: var(--accent-green);
+}
+.toggle-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.2s ease;
+}
+.toggle-track.on .toggle-thumb {
+  transform: translateX(16px);
+}
+
+/* ─── Progress bar ───────────────────────────────────── */
+.progress-bar-fill {
+  background: var(--gradient-scythe);
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+/* ─── Ring animation ─────────────────────────────────── */
+.ring-dash {
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Checkbox ───────────────────────────────────────── */
+.custom-checkbox {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border-strong);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.custom-checkbox.checked {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+}
+.custom-checkbox.indeterminate {
+  background: var(--accent-blue);
+  border-color: var(--accent-blue);
+}
