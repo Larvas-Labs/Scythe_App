@@ -8,6 +8,7 @@ import ResultList from './components/ResultList.jsx'
 import BottomBar from './components/BottomBar.jsx'
 import DeleteModal from './components/DeleteModal.jsx'
 import UpdateBanner from './components/UpdateBanner.jsx'
+import NavRail from './components/NavRail.jsx'
 import { selectedSize, formatSize } from './utils.js'
 
 const CATEGORY_LABELS = {
@@ -201,6 +202,20 @@ export default function App() {
       />
 
       <div className="flex flex-1 overflow-hidden">
+        <NavRail
+          appState={appState}
+          enabledCategories={enabledCategories}
+          scanProgress={scanProgress}
+          scanResults={scanResults}
+          onCategoryClick={(key) => {
+            if (appState === 'idle') {
+              toggleCategory(key)
+            } else if (appState === 'results') {
+              document.getElementById('cat-' + key)?.scrollIntoView({ behavior: 'smooth' })
+            }
+          }}
+        />
+        <div className="flex flex-1 overflow-hidden">
         {appState === 'idle' && (
           <div className="flex flex-col flex-1 overflow-y-auto" style={{ padding: '28px 32px' }}>
             <EmptyState onStartScan={startScan} />
@@ -362,6 +377,7 @@ export default function App() {
             </div>
           </div>
         )}
+        </div>
       </div>
 
       {appState === 'results' && (

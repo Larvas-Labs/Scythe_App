@@ -1,9 +1,11 @@
 import React from 'react'
 import { formatSize, cn } from '../utils.js'
+import { ITEM_ICON_MAP, IconFolder } from './Icons.jsx'
 
 export default function ScanItem({ result, selected, onToggle, isLast }) {
   const notFound = !result.exists
   const isUnsafe = !result.safe
+  const ItemIcon = ITEM_ICON_MAP[result.id] || IconFolder
 
   function handleReveal(e) {
     e.stopPropagation()
@@ -43,7 +45,9 @@ export default function ScanItem({ result, selected, onToggle, isLast }) {
         )}
       </div>
 
-      <span style={{ fontSize: '1rem', flexShrink: 0 }}>{result.icon}</span>
+      <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+        <ItemIcon size={18} color="var(--text-muted)" />
+      </span>
 
       {/* Name + description */}
       <div style={{ flex: 1, minWidth: 0 }}>

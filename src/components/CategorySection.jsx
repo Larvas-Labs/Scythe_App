@@ -1,6 +1,7 @@
 import React from 'react'
 import { formatSize, cn } from '../utils.js'
 import ScanItem from './ScanItem.jsx'
+import { CATEGORY_ICON_MAP } from './Icons.jsx'
 
 const CATEGORY_LABELS = {
   user: 'Användarcacher',
@@ -24,9 +25,10 @@ export default function CategorySection({ category, results, selectedIds, onTogg
   const someSelected = existing.some(r => selectedIds.has(r.id))
   const totalSize = results.reduce((sum, r) => sum + (r.size || 0), 0)
   const isAdvanced = category === 'advanced'
+  const CatIcon = CATEGORY_ICON_MAP[category]
 
   return (
-    <div style={{ marginBottom: '12px' }}>
+    <div id={'cat-' + category} style={{ marginBottom: '12px' }}>
       {isAdvanced && (
         <div
           style={{
@@ -77,7 +79,7 @@ export default function CategorySection({ category, results, selectedIds, onTogg
             )}
           </div>
 
-          <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: CATEGORY_COLORS[category], flexShrink: 0 }} />
+          {CatIcon && <CatIcon size={14} color={CATEGORY_COLORS[category]} />}
 
           <span style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text)', flex: 1 }}>
             {CATEGORY_LABELS[category] || category}
