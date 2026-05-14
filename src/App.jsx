@@ -7,6 +7,7 @@ import StorageRing from './components/StorageRing.jsx'
 import ResultList from './components/ResultList.jsx'
 import BottomBar from './components/BottomBar.jsx'
 import DeleteModal from './components/DeleteModal.jsx'
+import UpdateBanner from './components/UpdateBanner.jsx'
 import { selectedSize, formatSize } from './utils.js'
 
 const CATEGORY_LABELS = {
@@ -30,6 +31,7 @@ export default function App() {
   const [deleteResult, setDeleteResult] = useState(null)
   const [trashSize, setTrashSize] = useState(0)
   const [theme, setTheme] = useState('dark')
+  const [updateState, setUpdateState] = useState(null) // 'available' | 'downloaded' | null
 
   useEffect(() => {
     window.scythe.storeGet('enabledCategories').then(saved => {
@@ -39,6 +41,11 @@ export default function App() {
       if (saved) setTheme(saved)
     })
     runEstimates()
+
+    if (window.scythe.onUpdateAvailable) {
+      window.scythe.onUpdateAvailable(() => setUpdateState('available'))
+      window.scythe.onUpdateDownloaded(() => setUpdateState('downloaded'))
+    }
   }, [])
 
   useEffect(() => {
@@ -188,23 +195,45 @@ export default function App() {
         theme={theme}
         onToggleTheme={toggleTheme}
       />
+      <UpdateBanner
+        updateState={updateState}
+        onInstall={() => window.scythe.installUpdate()}
+      />
 
       <div className="flex flex-1 overflow-hidden">
         {appState === 'idle' && (
-          <div className="flex flex-col flex-1 overflow-y-auto px-8 py-6">
+          <div className="flex flex-col flex-1 overflow-y-auto" style={{ padding: '28px 32px' }}>
             <EmptyState onStartScan={startScan} />
-            <div className="mt-6 space-y-1">
-              {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                <CategoryToggle
-                  key={key}
-                  categoryKey={key}
-                  label={label}
-                  enabled={enabledCategories[key]}
-                  onToggle={() => toggleCategory(key)}
-                  estimates={estimates}
-                  isAdvanced={key === 'advanced'}
-                />
-              ))}
+
+            {/* Category selection card — §4.0 boxed section */}
+            <div
+              className="section-card"
+              style={{ marginTop: '24px' }}
+            >
+              <div
+                style={{
+                  padding: '12px 16px 10px',
+                  borderBottom: '1px solid var(--border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <span className="label-xs">Kategorier att skanna</span>
+              </div>
+              <div style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+                  <CategoryToggle
+                    key={key}
+                    categoryKey={key}
+                    label={label}
+                    enabled={enabledCategories[key]}
+                    onToggle={() => toggleCategory(key)}
+                    estimates={estimates}
+                    isAdvanced={key === 'advanced'}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         )}

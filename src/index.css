@@ -2,52 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── Fonts ────────────────────────────────────────────── */
+/* ─── Fonts (self-hosted via public/fonts/) ─────────────── */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/fonts/bricolage-grotesque.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Jost';
+  src: url('/fonts/jost.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-400.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
-  --font-display: 'Bricolage Grotesque Variable', sans-serif;
-  --font-body:    'Jost Variable', sans-serif;
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body:    'Jost', sans-serif;
   --font-mono:    'JetBrains Mono', monospace;
 }
 
 /* ─── Dark theme (default) ─────────────────────────────── */
+/* Colors match spec hex values expressed as OKLCH          */
+/* #07080F #0C0E1A #111328 #161932 #1C1F3A #252850          */
 :root {
-  --bg:           oklch(10% 0.015 280);
-  --bg-secondary: oklch(13% 0.018 280);
-  --surface:      oklch(17% 0.022 280);
-  --surface-hover:oklch(20.5% 0.022 280);
-  --border:       oklch(24% 0.018 280);
-  --border-strong:oklch(31% 0.022 280);
+  --bg:            oklch(4.5% 0.013 279);
+  --bg-secondary:  oklch(7.5% 0.018 279);
+  --surface:       oklch(11%  0.025 279);
+  --surface-hover: oklch(13.5% 0.025 279);
+  --border:        oklch(16.5% 0.026 280);
+  --border-strong: oklch(22%  0.032 280);
 
-  --accent-green: oklch(80% 0.18 155);
-  --accent-blue:  oklch(61% 0.20 260);
-  --accent-glow-green: oklch(80% 0.18 155 / 0.12);
-  --accent-glow-blue:  oklch(61% 0.20 260 / 0.12);
+  /* #00E57A → oklch(83% 0.245 152)  #0096FF → oklch(63% 0.244 257) */
+  --accent-green:      oklch(83% 0.245 152);
+  --accent-blue:       oklch(63% 0.244 257);
+  --accent-glow-green: oklch(83% 0.245 152 / 0.15);
+  --accent-glow-blue:  oklch(63% 0.244 257 / 0.15);
 
-  --warning:      oklch(78% 0.16 80);
-  --danger:       oklch(60% 0.22 25);
-  --danger-glow:  oklch(60% 0.22 25 / 0.12);
+  /* #FFB800  #FF453A */
+  --warning:     oklch(80% 0.175 73);
+  --danger:      oklch(62% 0.247 22);
+  --danger-glow: oklch(62% 0.247 22 / 0.15);
 
-  --text:           oklch(93% 0.006 280);
-  --text-secondary: oklch(62% 0.018 280);
-  --text-muted:     oklch(40% 0.014 280);
+  /* #E8EAFF  #8890C0  #454870 */
+  --text:           oklch(93% 0.022 280);
+  --text-secondary: oklch(61% 0.05  280);
+  --text-muted:     oklch(37% 0.052 280);
 
-  --gradient-scythe: linear-gradient(135deg, oklch(80% 0.18 155) 0%, oklch(61% 0.20 260) 100%);
+  --gradient-scythe: linear-gradient(135deg, oklch(83% 0.245 152) 0%, oklch(63% 0.244 257) 100%);
 
   color-scheme: dark;
 }
 
 /* ─── Light theme ───────────────────────────────────────── */
+/* #F0F2FF #E8EAF6 #FFFFFF #F4F5FF #D8DAEF #C0C3E0          */
+/* #0A0C1F #4A4E80 #9096C0                                   */
 [data-theme="light"] {
-  --bg:           oklch(97% 0.006 280);
-  --bg-secondary: oklch(93.5% 0.008 280);
-  --surface:      oklch(100% 0 0);
-  --surface-hover:oklch(95.5% 0.007 280);
-  --border:       oklch(87% 0.009 280);
-  --border-strong:oklch(79% 0.013 280);
+  --bg:            oklch(96%   0.013 280);
+  --bg-secondary:  oklch(93%   0.011 280);
+  --surface:       oklch(100%  0     0);
+  --surface-hover: oklch(97.5% 0.01  280);
+  --border:        oklch(88%   0.016 280);
+  --border-strong: oklch(81%   0.022 280);
 
-  --text:           oklch(14% 0.015 280);
-  --text-secondary: oklch(42% 0.02 280);
-  --text-muted:     oklch(62% 0.014 280);
+  --text:           oklch(9.5% 0.02  280);
+  --text-secondary: oklch(40%  0.05  280);
+  --text-muted:     oklch(64%  0.045 280);
 
   color-scheme: light;
 }
@@ -80,14 +119,14 @@ body {
 /* ─── Buttons ───────────────────────────────────────────── */
 .btn-primary {
   background: var(--gradient-scythe);
-  color: oklch(10% 0.015 280);
+  color: oklch(5% 0.014 280);
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 13px;
   letter-spacing: 0.01em;
   border: none;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 12px;
   transition: opacity 0.15s ease, transform 0.1s ease;
 }
 .btn-primary:hover  { opacity: 0.88; }
@@ -101,7 +140,7 @@ body {
   font-size: 13px;
   border: 1px solid var(--border-strong);
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 12px;
   transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 .btn-ghost:hover { background: var(--surface); color: var(--text); }
@@ -114,7 +153,7 @@ body {
   font-size: 13px;
   border: none;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 12px;
   transition: opacity 0.15s ease, transform 0.1s ease;
 }
 .btn-danger:hover  { opacity: 0.85; }
@@ -191,6 +230,14 @@ body {
   flex-shrink: 0;
 }
 .theme-toggle:hover { background: var(--surface-hover); color: var(--text); border-color: var(--border-strong); }
+
+/* ─── Section card (§4.0 Claude-app UX) ────────────────── */
+.section-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
 
 /* ─── Utility labels ────────────────────────────────────── */
 .label-xs {

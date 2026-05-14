@@ -28,4 +28,9 @@ contextBridge.exposeInMainWorld('scythe', {
   // Persistent store
   storeGet: (key) => ipcRenderer.invoke('store:get', key),
   storeSet: (key, value) => ipcRenderer.invoke('store:set', key, value),
+
+  // Auto-update
+  onUpdateAvailable: (cb) => ipcRenderer.on('update:available', (_, info) => cb(info)),
+  onUpdateDownloaded: (cb) => ipcRenderer.on('update:downloaded', (_, info) => cb(info)),
+  installUpdate: () => ipcRenderer.send('update:install'),
 })

@@ -31,8 +31,8 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
         >
           <defs>
             <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="oklch(80% 0.18 155)" />
-              <stop offset="100%" stopColor="oklch(61% 0.20 260)" />
+              <stop offset="0%" stopColor="oklch(83% 0.245 152)" />
+              <stop offset="100%" stopColor="oklch(63% 0.244 257)" />
             </linearGradient>
             <filter id="ring-glow" x="-20%" y="-20%" width="140%" height="140%">
               <feGaussianBlur stdDeviation="4" result="blur" />

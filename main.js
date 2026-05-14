@@ -10,6 +10,18 @@ const isDev = !app.isPackaged
 
 app.setName('Scythe')
 
+// ─── Auto-updater ─────────────────────────────────────────────────────────────
+let autoUpdater
+try {
+  const updaterModule = require('electron-updater')
+  autoUpdater = updaterModule.autoUpdater
+  autoUpdater.logger = require('electron-log')
+  autoUpdater.logger.transports.file.level = 'info'
+  autoUpdater.autoDownload = true
+} catch (e) {
+  // electron-updater not available (dev/missing config)
+}
+
 // ─── Expand ~ in paths ───────────────────────────────────────────────────────
 function expandPath(p) {
   if (p.startsWith('~/')) return path.join(os.homedir(), p.slice(2))
@@ -360,7 +372,22 @@ function createWindow() {
   }
 }
 
-app.whenReady().then(createWindow)
+app.whenReady().then(() => {
+  createWindow()
+  if (!isDev && autoUpdater) {
+    autoUpdater.checkForUpdatesAndNotify()
+    autoUpdater.on('update-available', (info) => {
+      mainWindow?.webContents.send('update:available', info)
+    })
+    autoUpdater.on('update-downloaded', (info) => {
+      mainWindow?.webContents.send('update:downloaded', info)
+    })
+  }
+})
+
+ipcMain.on('update:install', () => {
+  autoUpdater?.quitAndInstall()
+})
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()

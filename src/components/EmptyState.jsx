@@ -5,12 +5,12 @@ function ScytheIcon({ size = 120 }) {
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="scythe-grad-es" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="oklch(80% 0.18 155)" />
-          <stop offset="100%" stopColor="oklch(61% 0.20 260)" />
+          <stop offset="0%" stopColor="oklch(83% 0.245 152)" />
+          <stop offset="100%" stopColor="oklch(63% 0.244 257)" />
         </linearGradient>
         <radialGradient id="bg-glow-es" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="oklch(20.5% 0.022 280)" />
-          <stop offset="100%" stopColor="oklch(13% 0.018 280)" />
+            <stop offset="0%" stopColor="oklch(13.5% 0.025 279)" />
+          <stop offset="100%" stopColor="oklch(7.5% 0.018 279)" />
         </radialGradient>
       </defs>
       <circle cx="60" cy="60" r="58" fill="url(#bg-glow-es)" stroke="oklch(24% 0.018 280)" strokeWidth="2" />
@@ -23,12 +23,12 @@ function ScytheIcon({ size = 120 }) {
       />
       <polygon
         points="70,95 64,88 76,89"
-        fill="oklch(80% 0.18 155)"
+        fill="oklch(83% 0.245 152)"
       />
       <line
         x1="78" y1="25"
         x2="44" y2="98"
-        stroke="oklch(61% 0.20 260)"
+        stroke="oklch(63% 0.244 257)"
         strokeWidth="2.5"
         strokeLinecap="round"
         opacity="0.7"

@@ -1,7 +1,7 @@
 import React from 'react'
 import { formatSize, cn } from '../utils.js'
 
-export default function ScanItem({ result, selected, onToggle }) {
+export default function ScanItem({ result, selected, onToggle, isLast }) {
   const notFound = !result.exists
   const isUnsafe = !result.safe
 
@@ -17,14 +17,12 @@ export default function ScanItem({ result, selected, onToggle }) {
         display: 'flex',
         alignItems: 'center',
         gap: '10px',
-        padding: '10px 16px 10px 32px',
-        borderRadius: '8px',
-        marginBottom: '2px',
+        padding: '10px 14px',
+        borderBottom: isLast ? 'none' : '1px solid var(--border)',
         cursor: notFound ? 'default' : 'pointer',
-        background: selected ? 'var(--surface)' : 'transparent',
-        border: `1px solid ${selected ? 'var(--border)' : 'transparent'}`,
+        background: selected ? 'var(--surface-hover)' : 'transparent',
         opacity: notFound ? 0.4 : 1,
-        transition: 'background 0.1s, border-color 0.1s',
+        transition: 'background 0.1s',
       }}
       onMouseEnter={e => {
         if (!notFound && !selected) e.currentTarget.style.background = 'var(--surface-hover)'
@@ -33,6 +31,7 @@ export default function ScanItem({ result, selected, onToggle }) {
         if (!selected) e.currentTarget.style.background = 'transparent'
       }}
     >
+      {/* Checkbox */}
       <div
         className={cn('s-checkbox', selected && 'checked')}
         style={{ pointerEvents: 'none' }}
@@ -46,6 +45,7 @@ export default function ScanItem({ result, selected, onToggle }) {
 
       <span style={{ fontSize: '1rem', flexShrink: 0 }}>{result.icon}</span>
 
+      {/* Name + description */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
@@ -63,7 +63,7 @@ export default function ScanItem({ result, selected, onToggle }) {
           {result.requiresAdmin && (
             <span
               style={{
-                background: 'rgba(255,184,0,0.12)',
+                background: 'oklch(80% 0.175 73 / 0.12)',
                 color: 'var(--warning)',
                 fontSize: '0.65rem',
                 fontWeight: 600,
@@ -84,20 +84,22 @@ export default function ScanItem({ result, selected, onToggle }) {
             overflow: 'hidden',
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap',
+            marginTop: '1px',
           }}
         >
           {notFound ? 'Hittades inte' : result.description}
         </div>
       </div>
 
-      <div style={{ flexShrink: 0, textAlign: 'right' }}>
+      {/* Size — hero element per §10 */}
+      <div style={{ flexShrink: 0, textAlign: 'right', minWidth: '60px' }}>
         {notFound ? (
           <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', color: 'var(--text-muted)' }}>—</span>
         ) : (
           <span
             style={{
-              fontFamily: 'JetBrains Mono, monospace',
-              fontSize: '0.95rem',
+              fontFamily: 'var(--font-mono)',
+              fontSize: '1rem',
               fontWeight: 500,
               color: result.size > 0 ? 'var(--text)' : 'var(--text-muted)',
             }}
@@ -107,6 +109,7 @@ export default function ScanItem({ result, selected, onToggle }) {
         )}
       </div>
 
+      {/* Reveal in Finder */}
       {!notFound && (
         <button
           onClick={handleReveal}
@@ -119,7 +122,8 @@ export default function ScanItem({ result, selected, onToggle }) {
             color: 'var(--text-muted)',
             padding: '2px 4px',
             borderRadius: '4px',
-            fontSize: '0.8rem',
+            fontSize: '0.9rem',
+            lineHeight: 1,
             transition: 'color 0.15s',
           }}
           onMouseEnter={e => e.target.style.color = 'var(--accent-blue)'}

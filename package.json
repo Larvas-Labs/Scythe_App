@@ -8,6 +8,7 @@
     "electron:dev": "node scripts/wait-and-launch.js",
     "postinstall": "node scripts/rename-electron.js",
     "build": "vite build && electron-builder",
+    "publish": "vite build && electron-builder --publish always",
     "preview": "vite preview"
   },
   "build": {
@@ -26,7 +27,9 @@
     "@fontsource-variable/bricolage-grotesque": "^5.2.10",
     "@fontsource-variable/jost": "^5.2.8",
     "@fontsource/jetbrains-mono": "^5.2.8",
-    "electron-store": "^8.1.0"
+    "electron-log": "^5.4.4",
+    "electron-store": "^8.1.0",
+    "electron-updater": "^6.8.3"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",

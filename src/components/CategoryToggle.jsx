@@ -24,42 +24,20 @@ export default function CategoryToggle({ categoryKey, label, enabled, onToggle, 
   return (
     <div>
       {isAdvanced && (
-        <div
-          style={{
-            borderTop: '1px solid var(--border-strong)',
-            marginTop: '12px',
-            marginBottom: '12px',
-            paddingTop: '12px',
-          }}
-        >
+        <div style={{ marginTop: '16px', marginBottom: '8px' }}>
           <div
             style={{
-              background: 'rgba(255, 184, 0, 0.08)',
-              border: '1px solid rgba(255, 184, 0, 0.25)',
-              borderRadius: '8px',
+              background: 'oklch(62% 0.247 22 / 0.07)',
+              border: '1px solid oklch(62% 0.247 22 / 0.22)',
+              borderRadius: '10px',
               padding: '10px 14px',
-              marginBottom: '10px',
+              marginBottom: '8px',
             }}
           >
-            <div
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontWeight: 600,
-                fontSize: '0.8rem',
-                color: 'var(--warning)',
-                marginBottom: '2px',
-              }}
-            >
-              ⚠️ Avancerat
+            <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.78rem', color: 'var(--danger)', marginBottom: '2px' }}>
+              ⚠️ Avancerat — Systemfiler
             </div>
-            <div
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.78rem',
-                color: 'var(--text-secondary)',
-                lineHeight: 1.4,
-              }}
-            >
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
               Dessa åtgärder påverkar systemfiler och kräver administratörslösenord.
             </div>
           </div>
@@ -71,11 +49,12 @@ export default function CategoryToggle({ categoryKey, label, enabled, onToggle, 
           display: 'flex',
           alignItems: 'center',
           gap: '12px',
-          padding: '10px 14px',
+          padding: '11px 14px',
           borderRadius: '10px',
           background: enabled ? 'var(--surface)' : 'transparent',
-          border: `1px solid ${enabled ? 'var(--border)' : 'transparent'}`,
-          transition: 'background 0.15s, border-color 0.15s',
+          border: `1px solid ${enabled ? 'var(--border)' : 'var(--border)'}`,
+          opacity: enabled ? 1 : 0.55,
+          transition: 'background 0.15s, opacity 0.15s',
           cursor: 'pointer',
         }}
         onClick={onToggle}
@@ -87,14 +66,14 @@ export default function CategoryToggle({ categoryKey, label, enabled, onToggle, 
           <div className="toggle-thumb" />
         </div>
 
-        <span style={{ fontSize: '1.1rem' }}>{CATEGORY_ICONS[categoryKey]}</span>
+        <span style={{ fontSize: '1rem' }}>{CATEGORY_ICONS[categoryKey]}</span>
 
         <span
           style={{
             fontFamily: 'var(--font-body)',
             fontWeight: 500,
-            fontSize: '0.9rem',
-            color: enabled ? 'var(--text)' : 'var(--text-muted)',
+            fontSize: '0.875rem',
+            color: enabled ? 'var(--text)' : 'var(--text-secondary)',
             flex: 1,
             transition: 'color 0.15s',
           }}
@@ -105,9 +84,10 @@ export default function CategoryToggle({ categoryKey, label, enabled, onToggle, 
         {totalEstimate > 0 && (
           <span
             style={{
-              fontFamily: 'JetBrains Mono, monospace',
+              fontFamily: 'var(--font-mono)',
               fontSize: '0.8rem',
-              color: 'var(--text-secondary)',
+              fontWeight: 500,
+              color: enabled ? 'var(--text-secondary)' : 'var(--text-muted)',
             }}
           >
             ~{formatSize(totalEstimate)}
