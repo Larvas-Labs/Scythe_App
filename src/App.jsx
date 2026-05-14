@@ -29,12 +29,25 @@ export default function App() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteResult, setDeleteResult] = useState(null)
   const [trashSize, setTrashSize] = useState(0)
+  const [theme, setTheme] = useState('dark')
 
   useEffect(() => {
     window.scythe.storeGet('enabledCategories').then(saved => {
       if (saved) setEnabledCategories(saved)
     })
+    window.scythe.storeGet('theme').then(saved => {
+      if (saved) setTheme(saved)
+    })
     runEstimates()
+  }, [])
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    window.scythe.storeSet('theme', theme)
+  }, [theme])
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
   }, [])
 
   function runEstimates() {
@@ -172,6 +185,8 @@ export default function App() {
         appState={appState}
         onNewScan={appState === 'results' || appState === 'done' ? resetToIdle : undefined}
         onStartScan={appState === 'idle' ? startScan : undefined}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       <div className="flex flex-1 overflow-hidden">

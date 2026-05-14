@@ -1,42 +1,77 @@
 import React from 'react'
 
-export default function TopBar({ appState, onNewScan, onStartScan }) {
+function SunIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <line x1="12" y1="2" x2="12" y2="6"/>
+      <line x1="12" y1="18" x2="12" y2="22"/>
+      <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/>
+      <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+      <line x1="2" y1="12" x2="6" y2="12"/>
+      <line x1="18" y1="12" x2="22" y2="12"/>
+      <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/>
+      <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+    </svg>
+  )
+}
+
+function MoonIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  )
+}
+
+export default function TopBar({ appState, onNewScan, onStartScan, theme, onToggleTheme }) {
   return (
     <div
       style={{
-        height: '56px',
+        height: '52px',
         background: 'var(--bg-secondary)',
         borderBottom: '1px solid var(--border)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingLeft: '72px',
-        paddingRight: '16px',
+        paddingLeft: '80px',
+        paddingRight: '12px',
         flexShrink: 0,
         WebkitAppRegion: 'drag',
         userSelect: 'none',
       }}
     >
+      {/* App name */}
       <span
         style={{
-          fontFamily: 'Syne, sans-serif',
+          fontFamily: 'Bricolage Grotesque, sans-serif',
           fontWeight: 700,
-          fontSize: '1rem',
-          letterSpacing: '0.04em',
-          background: 'var(--gradient-scythe)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
+          fontSize: '13px',
+          letterSpacing: '0.12em',
+          textTransform: 'uppercase',
+          color: 'var(--text-secondary)',
         }}
       >
-        SCYTHE
+        Scythe
       </span>
 
-      <div style={{ WebkitAppRegion: 'no-drag' }}>
+      {/* Right side — no drag */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', WebkitAppRegion: 'no-drag' }}>
+        {/* Theme toggle — always visible */}
+        <button
+          className="theme-toggle"
+          onClick={onToggleTheme}
+          title={theme === 'dark' ? 'Byt till ljust läge' : 'Byt till mörkt läge'}
+          aria-label="Växla tema"
+        >
+          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+        </button>
+
+        {/* Scan button */}
         {onStartScan && (
           <button
-            className="btn-gradient"
-            style={{ padding: '7px 20px', borderRadius: '8px', fontSize: '0.875rem' }}
+            className="btn-primary"
+            style={{ padding: '7px 16px' }}
             onClick={onStartScan}
           >
             Kör scanning
@@ -44,21 +79,9 @@ export default function TopBar({ appState, onNewScan, onStartScan }) {
         )}
         {onNewScan && (
           <button
+            className="btn-ghost"
+            style={{ padding: '7px 16px' }}
             onClick={onNewScan}
-            style={{
-              padding: '7px 20px',
-              borderRadius: '8px',
-              fontSize: '0.875rem',
-              background: 'var(--surface)',
-              border: '1px solid var(--border-strong)',
-              color: 'var(--text)',
-              cursor: 'pointer',
-              fontFamily: 'DM Sans, sans-serif',
-              fontWeight: 500,
-              transition: 'background 0.15s',
-            }}
-            onMouseEnter={e => e.target.style.background = 'var(--surface-hover)'}
-            onMouseLeave={e => e.target.style.background = 'var(--surface)'}
           >
             Ny scanning
           </button>
