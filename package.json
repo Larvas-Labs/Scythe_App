@@ -31,7 +31,12 @@
       "preload.js",
       "node_modules/**/*",
       "!node_modules/.cache/**/*"
-    ]
+    ],
+    "publish": {
+      "provider": "github",
+      "owner": "peterhagman",
+      "repo": "Scythe"
+    }
   },
   "dependencies": {
     "@fontsource-variable/bricolage-grotesque": "^5.2.10",
