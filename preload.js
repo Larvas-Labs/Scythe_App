@@ -32,5 +32,11 @@ contextBridge.exposeInMainWorld('scythe', {
   // Auto-update
   onUpdateAvailable: (cb) => ipcRenderer.on('update:available', (_, info) => cb(info)),
   onUpdateDownloaded: (cb) => ipcRenderer.on('update:downloaded', (_, info) => cb(info)),
+  onUpdateNotAvailable: (cb) => ipcRenderer.on('update:notavailable', (_, info) => cb(info)),
+  onUpdateError: (cb) => ipcRenderer.on('update:error', (_, msg) => cb(msg)),
+  checkForUpdates: () => ipcRenderer.invoke('update:check'),
   installUpdate: () => ipcRenderer.send('update:install'),
+
+  // App info
+  getVersion: () => ipcRenderer.invoke('app:version'),
 })

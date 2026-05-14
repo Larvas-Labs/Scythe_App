@@ -356,7 +356,7 @@ function createWindow() {
     minHeight: 580,
     titleBarStyle: 'hiddenInset',
     trafficLightPosition: { x: 16, y: 20 },
-    backgroundColor: '#07080F',
+    backgroundColor: '#0D0D0D',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -374,20 +374,47 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow()
-  if (!isDev && autoUpdater) {
+  if (autoUpdater) {
     autoUpdater.on('update-available', (info) => {
       mainWindow?.webContents.send('update:available', info)
     })
     autoUpdater.on('update-downloaded', (info) => {
       mainWindow?.webContents.send('update:downloaded', info)
     })
-    autoUpdater.checkForUpdatesAndNotify()
+    autoUpdater.on('update-not-available', (info) => {
+      mainWindow?.webContents.send('update:notavailable', info)
+    })
+    autoUpdater.on('error', (err) => {
+      mainWindow?.webContents.send('update:error', err?.message || String(err))
+    })
+    if (!isDev) {
+      autoUpdater.checkForUpdatesAndNotify()
+    }
   }
 })
 
 ipcMain.on('update:install', () => {
   autoUpdater?.quitAndInstall()
 })
+
+ipcMain.handle('update:check', async () => {
+  // Dev mode: autoUpdater silently skips when app is not packaged — simulate response
+  if (isDev || !autoUpdater) {
+    setTimeout(() => {
+      mainWindow?.webContents.send('update:notavailable', {})
+    }, 1200)
+    return { ok: true }
+  }
+  try {
+    await autoUpdater.checkForUpdates()
+    return { ok: true }
+  } catch (err) {
+    mainWindow?.webContents.send('update:error', err?.message || String(err))
+    return { error: err?.message }
+  }
+})
+
+ipcMain.handle('app:version', () => app.getVersion())
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()
