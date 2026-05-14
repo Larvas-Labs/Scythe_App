@@ -36,8 +36,14 @@ export default function App() {
     if (window.scythe.onUpdateAvailable) {
       window.scythe.onUpdateAvailable(() => setUpdateState('available'))
       window.scythe.onUpdateDownloaded(() => setUpdateState('downloaded'))
-      window.scythe.onUpdateNotAvailable?.(() => setUpdateState('uptodate'))
-      window.scythe.onUpdateError?.(() => setUpdateState('error'))
+      window.scythe.onUpdateNotAvailable?.(() => {
+        setUpdateState('uptodate')
+        setTimeout(() => setUpdateState(null), 3000)
+      })
+      window.scythe.onUpdateError?.(() => {
+        setUpdateState('error')
+        setTimeout(() => setUpdateState(null), 4000)
+      })
     }
     window.scythe.getVersion?.().then(v => { if (v) setAppVersion(v) })
   }, [])

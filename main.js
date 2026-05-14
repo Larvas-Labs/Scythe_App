@@ -398,8 +398,8 @@ ipcMain.on('update:install', () => {
 })
 
 ipcMain.handle('update:check', async () => {
-  if (!autoUpdater) {
-    // In dev mode: simulate a not-available response after a short delay
+  // Dev mode: autoUpdater silently skips when app is not packaged — simulate response
+  if (isDev || !autoUpdater) {
     setTimeout(() => {
       mainWindow?.webContents.send('update:notavailable', {})
     }, 1200)
