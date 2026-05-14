@@ -45,10 +45,6 @@ export default function IdleView({ onStartScan }) {
         maxWidth: '380px',
         width: '100%',
       }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-          <ScytheIcon size={80} />
-        </div>
-
         <h1 style={{
           fontFamily: 'var(--font-display)',
           fontWeight: 700,
