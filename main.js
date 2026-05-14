@@ -17,7 +17,7 @@ try {
   autoUpdater = updaterModule.autoUpdater
   autoUpdater.logger = require('electron-log')
   autoUpdater.logger.transports.file.level = 'info'
-  autoUpdater.autoDownload = true
+  autoUpdater.autoDownload = false
 } catch (e) {
   // electron-updater not available (dev/missing config)
 }
@@ -378,8 +378,8 @@ app.whenReady().then(() => {
     autoUpdater.on('update-available', (info) => {
       mainWindow?.webContents.send('update:available', info)
     })
-    autoUpdater.on('update-downloaded', (info) => {
-      mainWindow?.webContents.send('update:downloaded', info)
+    autoUpdater.on('update-downloaded', () => {
+      autoUpdater.quitAndInstall()
     })
     autoUpdater.on('update-not-available', (info) => {
       mainWindow?.webContents.send('update:notavailable', info)
@@ -395,6 +395,21 @@ app.whenReady().then(() => {
 
 ipcMain.on('update:install', () => {
   autoUpdater?.quitAndInstall()
+})
+
+ipcMain.handle('update:download', async () => {
+  if (isDev || !autoUpdater) {
+    // Simulate download in dev mode
+    setTimeout(() => autoUpdater?.quitAndInstall?.(), 1500)
+    return { ok: true }
+  }
+  try {
+    await autoUpdater.downloadUpdate()
+    return { ok: true }
+  } catch (err) {
+    mainWindow?.webContents.send('update:error', err?.message || String(err))
+    return { error: err?.message }
+  }
 })
 
 ipcMain.handle('update:check', async () => {

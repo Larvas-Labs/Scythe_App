@@ -75,7 +75,7 @@ export default function SettingsPopup({
   updateState,
   appVersion,
   onCheckForUpdates,
-  onInstallUpdate,
+  onDownloadAndInstall,
 }) {
   const ref = useRef(null)
 
@@ -96,27 +96,26 @@ export default function SettingsPopup({
 
   const isDark = theme === 'dark'
   const isChecking = updateState === 'checking'
+  const isDownloading = updateState === 'downloading'
+  const isBusy = isChecking || isDownloading
 
-  // Derive what the update button icon and tooltip should be
   function getUpdateButtonProps() {
     switch (updateState) {
-      case 'checking':   return { icon: <RefreshIcon spinning />, color: 'var(--text-secondary)', title: 'Söker...' }
-      case 'uptodate':   return { icon: <CheckIcon />,            color: 'var(--accent)',          title: 'Senaste versionen' }
-      case 'available':  return { icon: <DownloadIcon />,         color: 'var(--accent)',          title: 'Ny version tillgänglig' }
-      case 'downloaded': return { icon: <DownloadIcon />,         color: 'var(--accent)',          title: 'Redo att installera' }
-      case 'error':      return { icon: <AlertIcon />,            color: 'var(--danger)',          title: 'Kontrollera anslutning' }
-      default:           return { icon: <RefreshIcon />,          color: 'var(--text-secondary)', title: 'Sök efter uppdatering' }
+      case 'checking':    return { icon: <RefreshIcon spinning />, color: 'var(--text-secondary)', title: 'Söker...' }
+      case 'downloading': return { icon: <RefreshIcon spinning />, color: 'var(--accent)',          title: 'Laddar ned...' }
+      case 'uptodate':    return { icon: <CheckIcon />,            color: 'var(--accent)',          title: 'Senaste versionen' }
+      case 'available':   return { icon: <DownloadIcon />,         color: 'var(--accent)',          title: 'Ny version tillgänglig' }
+      case 'error':       return { icon: <AlertIcon />,            color: 'var(--danger)',          title: 'Kontrollera anslutning' }
+      default:            return { icon: <RefreshIcon />,          color: 'var(--text-secondary)', title: 'Sök efter uppdatering' }
     }
   }
 
   function getStatusText() {
     switch (updateState) {
-      case 'checking':   return null
-      case 'uptodate':   return { text: 'Senaste versionen', color: 'var(--accent)' }
-      case 'available':  return { text: 'Ny version laddas ned...', color: 'var(--text-secondary)' }
-      case 'downloaded': return { text: 'Klar att installeras', color: 'var(--accent)' }
-      case 'error':      return { text: 'Kontrollera anslutning', color: 'var(--danger)' }
-      default:           return null
+      case 'uptodate':    return { text: 'Senaste versionen', color: 'var(--accent)' }
+      case 'downloading': return { text: 'Laddar ned uppdatering...', color: 'var(--text-secondary)' }
+      case 'error':       return { text: 'Kontrollera anslutning', color: 'var(--danger)' }
+      default:            return null
     }
   }
 
@@ -176,7 +175,7 @@ export default function SettingsPopup({
         </div>
 
         <button
-          onClick={!isChecking && updateState !== 'downloaded' ? onCheckForUpdates : undefined}
+          onClick={!isBusy && updateState !== 'available' ? onCheckForUpdates : undefined}
           title={title}
           style={{
             width: '32px',
@@ -188,12 +187,12 @@ export default function SettingsPopup({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            cursor: isChecking ? 'default' : 'pointer',
+            cursor: isBusy ? 'default' : 'pointer',
             transition: 'background 0.15s, border-color 0.15s, color 0.15s',
             flexShrink: 0,
           }}
           onMouseEnter={e => {
-            if (!isChecking) {
+            if (!isBusy) {
               e.currentTarget.style.background = 'var(--surface-hover)'
               e.currentTarget.style.borderColor = 'var(--border-strong)'
               e.currentTarget.style.color = updateState === 'error' ? 'var(--danger)' : (updateState ? 'var(--accent)' : 'var(--text)')
@@ -209,11 +208,11 @@ export default function SettingsPopup({
         </button>
       </div>
 
-      {/* Install button when update downloaded */}
-      {updateState === 'downloaded' && (
+      {/* Download + install button when update is available */}
+      {updateState === 'available' && (
         <div style={{ padding: '2px 4px 4px' }}>
           <button
-            onClick={onInstallUpdate}
+            onClick={onDownloadAndInstall}
             style={{
               width: '100%',
               padding: '7px 10px',
@@ -230,7 +229,7 @@ export default function SettingsPopup({
             onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
             onMouseLeave={e => e.currentTarget.style.opacity = '1'}
           >
-            Installera och starta om
+            Hämta ny version och starta om
           </button>
         </div>
       )}

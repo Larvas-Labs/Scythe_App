@@ -35,7 +35,7 @@ export default function App() {
 
     if (window.scythe.onUpdateAvailable) {
       window.scythe.onUpdateAvailable(() => setUpdateState('available'))
-      window.scythe.onUpdateDownloaded(() => setUpdateState('downloaded'))
+      window.scythe.onUpdateDownloaded(() => setUpdateState('downloaded')) // fallback, normally quitAndInstall fires first
       window.scythe.onUpdateNotAvailable?.(() => {
         setUpdateState('uptodate')
         setTimeout(() => setUpdateState(null), 3000)
@@ -173,6 +173,11 @@ export default function App() {
     await window.scythe.checkForUpdates?.()
   }, [])
 
+  const downloadAndInstall = useCallback(async () => {
+    setUpdateState('downloading')
+    await window.scythe.downloadUpdate?.()
+  }, [])
+
   const resetToIdle = useCallback(() => {
     setAppState('idle')
     setScanResults([])
@@ -202,7 +207,7 @@ export default function App() {
           updateState={updateState}
           appVersion={appVersion}
           onCheckForUpdates={checkForUpdates}
-          onInstallUpdate={() => window.scythe.installUpdate()}
+          onDownloadAndInstall={downloadAndInstall}
         />
       }
       updateBanner={
