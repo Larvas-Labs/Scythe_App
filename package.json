@@ -1,6 +1,6 @@
 {
   "name": "scythe",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Harvest your disk space",
   "main": "main.js",
   "scripts": {
@@ -35,7 +35,8 @@
     "publish": {
       "provider": "github",
       "owner": "peterhagman",
-      "repo": "Scythe"
+      "repo": "Scythe",
+      "releaseType": "release"
     }
   },
   "dependencies": {
