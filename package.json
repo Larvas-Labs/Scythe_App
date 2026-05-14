@@ -14,13 +14,23 @@
   "build": {
     "appId": "com.scythe.app",
     "productName": "Scythe",
+    "directories": {
+      "output": "release"
+    },
     "mac": {
-      "category": "public.app-category.utilities"
+      "category": "public.app-category.utilities",
+      "target": [{ "target": "dmg", "arch": ["arm64", "x64"] }]
+    },
+    "dmg": {
+      "title": "Scythe",
+      "window": { "width": 540, "height": 380 }
     },
     "files": [
       "dist/**/*",
       "main.js",
-      "preload.js"
+      "preload.js",
+      "node_modules/**/*",
+      "!node_modules/.cache/**/*"
     ]
   },
   "dependencies": {
