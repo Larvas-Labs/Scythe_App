@@ -35,7 +35,7 @@ export default function App() {
 
     if (window.scythe.onUpdateAvailable) {
       window.scythe.onUpdateAvailable(() => setUpdateState('available'))
-      window.scythe.onUpdateDownloaded(() => setUpdateState('downloaded')) // fallback, normally quitAndInstall fires first
+      window.scythe.onUpdateDownloaded(() => setUpdateState('downloaded'))
       window.scythe.onUpdateNotAvailable?.(() => {
         setUpdateState('uptodate')
         setTimeout(() => setUpdateState(null), 3000)
@@ -208,6 +208,7 @@ export default function App() {
           appVersion={appVersion}
           onCheckForUpdates={checkForUpdates}
           onDownloadAndInstall={downloadAndInstall}
+          onRestart={() => window.scythe.installUpdate()}
         />
       }
       updateBanner={

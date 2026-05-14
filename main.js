@@ -378,8 +378,8 @@ app.whenReady().then(() => {
     autoUpdater.on('update-available', (info) => {
       mainWindow?.webContents.send('update:available', info)
     })
-    autoUpdater.on('update-downloaded', () => {
-      autoUpdater.quitAndInstall()
+    autoUpdater.on('update-downloaded', (info) => {
+      mainWindow?.webContents.send('update:downloaded', info)
     })
     autoUpdater.on('update-not-available', (info) => {
       mainWindow?.webContents.send('update:notavailable', info)
@@ -400,7 +400,9 @@ ipcMain.on('update:install', () => {
 ipcMain.handle('update:download', async () => {
   if (isDev || !autoUpdater) {
     // Simulate download in dev mode
-    setTimeout(() => autoUpdater?.quitAndInstall?.(), 1500)
+    setTimeout(() => {
+      mainWindow?.webContents.send('update:downloaded', {})
+    }, 2000)
     return { ok: true }
   }
   try {

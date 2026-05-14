@@ -20,17 +20,12 @@ function MoonIcon() {
   )
 }
 
+// Idle / checking
 function RefreshIcon({ spinning = false }) {
   return (
     <svg
-      width="13"
-      height="13"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      width="13" height="13" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"
       style={spinning ? { animation: 'spin 0.9s linear infinite' } : undefined}
     >
       <polyline points="23 4 23 10 17 10"/>
@@ -40,6 +35,7 @@ function RefreshIcon({ spinning = false }) {
   )
 }
 
+// Up to date
 function CheckIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -48,6 +44,7 @@ function CheckIcon() {
   )
 }
 
+// Available — download
 function DownloadIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -58,6 +55,17 @@ function DownloadIcon() {
   )
 }
 
+// Downloaded — restart
+function RestartIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+      <polyline points="3 3 3 8 8 8"/>
+    </svg>
+  )
+}
+
+// Error
 function AlertIcon() {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -76,6 +84,7 @@ export default function SettingsPopup({
   appVersion,
   onCheckForUpdates,
   onDownloadAndInstall,
+  onRestart,
 }) {
   const ref = useRef(null)
 
@@ -95,32 +104,62 @@ export default function SettingsPopup({
   }, [onClose])
 
   const isDark = theme === 'dark'
-  const isChecking = updateState === 'checking'
-  const isDownloading = updateState === 'downloading'
-  const isBusy = isChecking || isDownloading
 
-  function getUpdateButtonProps() {
-    switch (updateState) {
-      case 'checking':    return { icon: <RefreshIcon spinning />, color: 'var(--text-secondary)', title: 'Söker...' }
-      case 'downloading': return { icon: <RefreshIcon spinning />, color: 'var(--accent)',          title: 'Laddar ned...' }
-      case 'uptodate':    return { icon: <CheckIcon />,            color: 'var(--accent)',          title: 'Senaste versionen' }
-      case 'available':   return { icon: <DownloadIcon />,         color: 'var(--accent)',          title: 'Ny version tillgänglig' }
-      case 'error':       return { icon: <AlertIcon />,            color: 'var(--danger)',          title: 'Kontrollera anslutning' }
-      default:            return { icon: <RefreshIcon />,          color: 'var(--text-secondary)', title: 'Sök efter uppdatering' }
-    }
+  // Per-state: icon, color, tooltip, onClick, statusText
+  const STATE_CONFIG = {
+    null: {
+      icon: <RefreshIcon />,
+      color: 'var(--text-secondary)',
+      title: 'Sök efter uppdatering',
+      onClick: onCheckForUpdates,
+      status: null,
+    },
+    checking: {
+      icon: <RefreshIcon spinning />,
+      color: 'var(--text-secondary)',
+      title: 'Söker...',
+      onClick: null,
+      status: null,
+    },
+    uptodate: {
+      icon: <CheckIcon />,
+      color: 'var(--accent)',
+      title: 'Senaste versionen installerad',
+      onClick: null,
+      status: { text: 'Senaste versionen', color: 'var(--accent)' },
+    },
+    available: {
+      icon: <DownloadIcon />,
+      color: 'var(--accent)',
+      title: 'Hämta och installera uppdatering',
+      onClick: onDownloadAndInstall,
+      status: { text: 'Ny version tillgänglig', color: 'var(--accent)' },
+    },
+    downloading: {
+      icon: <RefreshIcon spinning />,
+      color: 'var(--accent)',
+      title: 'Laddar ned...',
+      onClick: null,
+      status: { text: 'Hämtar...', color: 'var(--text-secondary)' },
+    },
+    downloaded: {
+      icon: <RestartIcon />,
+      color: 'var(--accent)',
+      title: 'Starta om och installera',
+      onClick: onRestart,
+      status: { text: 'Starta om', color: 'var(--accent)' },
+    },
+    error: {
+      icon: <AlertIcon />,
+      color: 'var(--danger)',
+      title: 'Kontrollera anslutning',
+      onClick: null,
+      status: { text: 'Kontrollera anslutning', color: 'var(--danger)' },
+    },
   }
 
-  function getStatusText() {
-    switch (updateState) {
-      case 'uptodate':    return { text: 'Senaste versionen', color: 'var(--accent)' }
-      case 'downloading': return { text: 'Laddar ned uppdatering...', color: 'var(--text-secondary)' }
-      case 'error':       return { text: 'Kontrollera anslutning', color: 'var(--danger)' }
-      default:            return null
-    }
-  }
-
-  const { icon, color, title } = getUpdateButtonProps()
-  const status = getStatusText()
+  const cfg = STATE_CONFIG[updateState] ?? STATE_CONFIG[null]
+  const isBusy = updateState === 'checking' || updateState === 'downloading'
 
   return (
     <div
@@ -162,77 +201,49 @@ export default function SettingsPopup({
           <span style={rowText}>
             {appVersion ? `Version ${appVersion}` : 'Version'}
           </span>
-          {status && (
+          {cfg.status && (
             <span style={{
               fontFamily: 'var(--font-body)',
               fontSize: '11px',
-              color: status.color,
+              color: cfg.status.color,
               lineHeight: 1.3,
             }}>
-              {status.text}
+              {cfg.status.text}
             </span>
           )}
         </div>
 
         <button
-          onClick={!isBusy && updateState !== 'available' ? onCheckForUpdates : undefined}
-          title={title}
+          onClick={!isBusy && cfg.onClick ? cfg.onClick : undefined}
+          title={cfg.title}
           style={{
             width: '32px',
             height: '32px',
             borderRadius: '8px',
             border: '1px solid var(--border)',
             background: 'var(--surface)',
-            color,
+            color: cfg.color,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            cursor: isBusy ? 'default' : 'pointer',
+            cursor: isBusy || !cfg.onClick ? 'default' : 'pointer',
             transition: 'background 0.15s, border-color 0.15s, color 0.15s',
             flexShrink: 0,
           }}
           onMouseEnter={e => {
-            if (!isBusy) {
+            if (!isBusy && cfg.onClick) {
               e.currentTarget.style.background = 'var(--surface-hover)'
               e.currentTarget.style.borderColor = 'var(--border-strong)'
-              e.currentTarget.style.color = updateState === 'error' ? 'var(--danger)' : (updateState ? 'var(--accent)' : 'var(--text)')
             }
           }}
           onMouseLeave={e => {
             e.currentTarget.style.background = 'var(--surface)'
             e.currentTarget.style.borderColor = 'var(--border)'
-            e.currentTarget.style.color = color
           }}
         >
-          {icon}
+          {cfg.icon}
         </button>
       </div>
-
-      {/* Download + install button when update is available */}
-      {updateState === 'available' && (
-        <div style={{ padding: '2px 4px 4px' }}>
-          <button
-            onClick={onDownloadAndInstall}
-            style={{
-              width: '100%',
-              padding: '7px 10px',
-              borderRadius: '6px',
-              background: 'var(--accent)',
-              border: 'none',
-              color: '#0D0D0D',
-              fontFamily: 'var(--font-body)',
-              fontSize: '12px',
-              fontWeight: 600,
-              cursor: 'pointer',
-              transition: 'opacity 0.15s',
-            }}
-            onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
-            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
-          >
-            Hämta ny version och starta om
-          </button>
-        </div>
-      )}
     </div>
   )
 }

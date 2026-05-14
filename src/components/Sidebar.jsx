@@ -87,6 +87,7 @@ export default function Sidebar({
   appVersion,
   onCheckForUpdates,
   onDownloadAndInstall,
+  onRestart,
 }) {
   const [showSettings, setShowSettings] = useState(false)
 
@@ -315,6 +316,7 @@ export default function Sidebar({
           appVersion={appVersion}
           onCheckForUpdates={onCheckForUpdates}
           onDownloadAndInstall={onDownloadAndInstall}
+          onRestart={onRestart}
         />
       )}
     </div>
