@@ -23,6 +23,9 @@
     ]
   },
   "dependencies": {
+    "@fontsource-variable/bricolage-grotesque": "^5.2.10",
+    "@fontsource-variable/jost": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
     "electron-store": "^8.1.0"
   },
   "devDependencies": {

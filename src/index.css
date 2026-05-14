@@ -4,8 +4,8 @@
 
 /* ─── Fonts ────────────────────────────────────────────── */
 :root {
-  --font-display: 'Bricolage Grotesque', sans-serif;
-  --font-body:    'Jost', sans-serif;
+  --font-display: 'Bricolage Grotesque Variable', sans-serif;
+  --font-body:    'Jost Variable', sans-serif;
   --font-mono:    'JetBrains Mono', monospace;
 }
 
