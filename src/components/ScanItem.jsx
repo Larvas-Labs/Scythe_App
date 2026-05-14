@@ -67,7 +67,7 @@ export default function ScanItem({ result, selected, onToggle, isLast }) {
           {result.requiresAdmin && (
             <span
               style={{
-                background: 'oklch(80% 0.175 73 / 0.12)',
+                background: 'rgba(255, 184, 0, 0.12)',
                 color: 'var(--warning)',
                 fontSize: '0.65rem',
                 fontWeight: 600,
@@ -130,7 +130,7 @@ export default function ScanItem({ result, selected, onToggle, isLast }) {
             lineHeight: 1,
             transition: 'color 0.15s',
           }}
-          onMouseEnter={e => e.target.style.color = 'var(--accent-blue)'}
+          onMouseEnter={e => e.target.style.color = 'var(--accent)'}
           onMouseLeave={e => e.target.style.color = 'var(--text-muted)'}
         >
           ↗

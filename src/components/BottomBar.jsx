@@ -39,7 +39,7 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
                   fontFamily: 'JetBrains Mono, monospace',
                   fontWeight: 500,
                   fontSize: '0.9rem',
-                  color: 'var(--accent-green)',
+                  color: 'var(--accent)',
                 }}
               >
                 {formatSize(selectedSize)}

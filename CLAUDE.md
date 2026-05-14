@@ -51,105 +51,143 @@ scythe/
 ├── tailwind.config.js
 ├── postcss.config.js
 ├── index.html
-├── main.js                  ← Electron huvudprocess
-├── preload.js               ← Context bridge
+├── main.js                    ← Electron huvudprocess
+├── preload.js                 ← Context bridge
 └── src/
-    ├── main.jsx             ← React entry point
-    ├── index.css            ← Tailwind + CSS-variabler
-    ├── utils.js             ← formatSize(), cn() etc.
+    ├── main.jsx               ← React entry point
+    ├── index.css              ← Tailwind + CSS-variabler
+    ├── utils.js               ← formatSize(), cn() etc.
     └── components/
-        ├── TopBar.jsx       ← Fönsterram + app-titel + scan-knapp
-        ├── StorageRing.jsx  ← Animerad cirkel som visar frigjort utrymme
-        ├── CategoryToggle.jsx ← Inkl/exkl-toggle per kategori före scan
-        ├── ScanProgress.jsx ← Progress-visning under scanning
-        ├── ResultList.jsx   ← Lista med scan-resultat
-        ├── CategorySection.jsx ← Grupperad sektion i resultatlistan
-        ├── ScanItem.jsx     ← Enskild rad i resultatlistan
-        ├── BottomBar.jsx    ← Löpande räknare + radera-knapp
-        ├── DeleteModal.jsx  ← Bekräftelse-modal vid radering
-        └── EmptyState.jsx   ← Visas innan första scan
+        ├── Layout.jsx         ← Root-layout: Sidebar + MainContent sida vid sida
+        ├── Sidebar.jsx        ← Vänster sidebar: logo, kategorier, inställningar
+        ├── CategoryList.jsx   ← Checkboxlista med kategorier + uppskattad storlek
+        ├── SettingsPopup.jsx  ← Popup-modal från inställningar-knappen
+        ├── MainContent.jsx    ← Byter innehåll beroende på appState
+        ├── IdleView.jsx       ← Startvy: scan-knapp + StorageRing tom
+        ├── ScanProgress.jsx   ← Progressvy under scanning
+        ├── ResultsView.jsx    ← Resultatvy: StorageRing + ResultList
+        ├── StorageRing.jsx    ← Animerad ring som visar frigjort utrymme
+        ├── ResultList.jsx     ← Scrollbar lista med scan-resultat
+        ├── CategorySection.jsx← Grupperad sektion i resultatlistan
+        ├── ScanItem.jsx       ← Enskild rad med checkbox + storlek
+        ├── BottomBar.jsx      ← Löpande räknare + Harvest-knapp (i MainContent)
+        ├── DeleteModal.jsx    ← Bekräftelse-modal vid radering
+        ├── UpdateBanner.jsx   ← Diskret banner vid tillgänglig uppdatering
+        └── DoneView.jsx       ← Success-vy efter radering
 ```
 
 ---
 
 ## 4. Design System
 
-### 4.0 UX-inspiration – Claude-appen som referens
+> ⛔ FÖRBJUDNA FÄRGER – används ALDRIG i denna app:
+> `#00E57A` `#0096FF` `#1C1F3A` `#111328` `#0C0E1A` `#07080F` och alla blå/gröna toner.
+> Appen har **en** accentfärg: Amber `#FF9500`. Allt annat är neutralt mörkt grå.
 
-Scythes UX ska påminna om **Claude.app och liknande moderna AI/utility-appar** – inte om traditionella system-utilities. Det innebär:
+### 4.0 UX-inspiration – Codex & Cursor som referens
+
+Scythes UX ska följa mönstret från **Codex (OpenAI) och Cursor** – moderna, avskalade Mac-verktyg med sidebar-navigation. Inte ett traditionellt system-utility.
+
+**Visuell referens:**
+- **Codex:** Smal vänster sidebar med ikon + text-navigation, `Inställningar` isolerat längst ned, generöst whitespace i huvudytan, subtila kort med lätt border
+- **Cursor:** Tydlig panel-uppdelning med borders emellan, monospace för teknisk data, djup mörkgrå ton (inte rent svart)
 
 **Layout-principer:**
-- Tydliga, separerade **boxar/kort** med borders och subtil bakgrundsfärg för varje sektion
-- Generöst **whitespace** – aldrig trångt, aldrig rörigt
-- **Sidebar + main content**-struktur (inte fullscreen-chaos)
-- Varje funktionsblock är tydligt avgränsat med `border`, `border-radius: 12px`, och lätt `background` mot huvudbakgrunden
+- **Sidebar alltid synlig** – inte en drawer eller collapsible, utan en permanent vänster panel (~240px bred)
+- Sidebar och huvudyta separeras av en enkel `1px border` – ingen shadow, ingen gradient
+- Huvudytan är öppen och ren – innehåll centreras vertikalt vid IDLE
+- Inga "floating panels" eller overlays förutom modaler
+
+**Sidebar-känsla (exakt som Codex):**
+- Applogo + namn högst upp med `padding-top: 20px` för traffic lights
+- Nav-items: ikon (16px) + label, ingen border/bakgrund per item, bara en tunn accent-left-border på aktivt item
+- Kategorier under en `text-xs uppercase tracking-wider` sektionsrubrik
+- Varje kategori: anpassad checkbox (inte systemdefault) + namn + uppskattad storlek högerställd
+- `Inställningar`-knapp längst ned, separerad med en `border-top`
 
 **Komponentkänsla:**
-- Knappar: Rundade (`rounded-xl`), tydlig hierarki – primär, sekundär, ghost
-- Inputs/toggles: Mjuka, väldefinierade, inte systemdefault
-- Listor: Varje rad är ett eget kort med hover-state, inte bare text på bakgrund
-- Ikoner: Konsekvent storlek, subtil färg, aldrig dekorativa utan syfte
+- Knappar: `rounded-lg` (inte `rounded-xl`), tydlig primär/sekundär/ghost-hierarki
+- Checkboxar: Custom-byggda, inte `<input type="checkbox">` – fyrkantiga med `border-radius: 4px`, checkmark i `--accent` vid checked
+- Listor i main: Varje rad är ett väldefinierat kort med `border`, `border-radius: 8px`, `padding: 12px 16px`, och hover-state
+- Siffror (GB/MB): Alltid `font-mono`, alltid högerställda, alltid i accentfärg
 
-**Typografisk hierarki:**
-- En tydlig rubriknivå per sektion
-- Storlekar (GB/MB) bryter alltid ut som **hero-element** – stor, mono, accentfärg
-- Beskrivningstexter är alltid muted/sekundär färg
-
-**Rörelsespråk:**
-- Subtila fade-in vid state-ändringar
-- Smooth progress-animationer
-- Ingen "flashig" animation – allt ska kännas purposeful och lugnt
-
-**Exempel på Claude-app-känslan:**
+**Typografisk hierarki (Codex-stil):**
 ```
-┌─────────────────────────────────┐
-│  Sektionsrubrik          Action │  ← tydlig header i boxen
-├─────────────────────────────────┤
-│  Item 1              12.4 GB →  │  ← varje rad är väldefinierad
-│  Item 2               3.2 GB →  │
-│  Item 3               0.8 GB →  │
-└─────────────────────────────────┘
+App-namn:        Syne 700, 15px, --text
+Sektionsrubriker: DM Sans 500, 11px, --text-muted, UPPERCASE, letter-spacing: 0.08em
+Nav-labels:      DM Sans 400, 13px, --text-secondary
+Kategori-namn:   DM Sans 500, 13px, --text
+Storlekar:       JetBrains Mono 400, 12px, --text-muted (sidebar) / stor + accent (main)
+Kort-rubriker:   DM Sans 600, 14px, --text
+```
+
+**ASCII-layout – exakt struktur:**
+```
+┌──────────────┬─────────────────────────────────────────┐
+│ ⠿ Scythe     │  [UpdateBanner – visas vid uppdatering] │
+│              ├─────────────────────────────────────────┤
+│ KATEGORIER   │                                         │
+│ ☑ App-cacher │                                         │
+│   ~12.4 GB   │          MainContent                    │
+│ ☑ Webbläsare │    (IdleView / ScanProgress /           │
+│    ~3.2 GB   │     ResultsView / DoneView)             │
+│ ☑ npm cache  │                                         │
+│    ~1.8 GB   │                                         │
+│ ☑ Xcode      │                                         │
+│   ~38.0 GB   ├─────────────────────────────────────────┤
+│              │  BottomBar: 5 valda • 14.3 GB [Harvest] │
+├──────────────┤                                         │
+│ ⚙ Inställn.  │                                         │
+└──────────────┴─────────────────────────────────────────┘
 ```
 
 ### 4.1 Färgpalett
 
 Appen följer macOS **dark/light mode** automatiskt via `prefers-color-scheme`. Definiera alla färger som CSS-variabler i `:root` och `[data-theme="light"]`.
 
+**Signaturfärg: Amber `#FF9500` – en enda accentfärg, använd sparsamt**
+
+Scythe har exakt **en** accentfärg. Inget gradient, ingen sekundärfärg.
+
+- `--accent` → **endast** på: checked-checkboxar, storlekssiffror i results, primärknapp, BottomBar-siffra, StorageRing-fill, ✓ checkmarks, success-state
+- `--accent-dim` → `rgba(255, 149, 0, 0.12)` – subtil bakgrund vid hover på accent-element
+- **Allt annat** använder `--text`, `--surface`, `--border` – neutrala mörka toner
+- **Fel:** amber på headers, sidebar-bakgrund, generella knappar, borders
+- **Rätt:** 95% av UI är mörkt/neutralt – amber dyker upp på exakt rätt ställen och inget annat
+
 ```css
 /* DARK (default) */
 :root {
-  --bg:           #07080F;   /* Djup space-svart med blå ton */
-  --bg-secondary: #0C0E1A;   /* Sekundär bakgrund */
-  --surface:      #111328;   /* Kortytor, panels */
-  --surface-hover:#161932;   /* Hover-state på ytor */
-  --border:       #1C1F3A;   /* Subtila borders */
-  --border-strong:#252850;   /* Tydligare borders */
+  --bg:           #0D0D0D;   /* Cursor-svart – inte rent svart */
+  --bg-secondary: #131313;   /* Sidebar, sekundära ytor */
+  --surface:      #151515;   /* Kort, panels, widgets */
+  --surface-hover:#1a1a1a;   /* Hover-state på ytor */
+  --border:       #1e1e1e;   /* Subtila borders – Cursor-stil */
+  --border-strong:#2a2a2a;   /* Tydligare borders, modaler */
 
-  --accent-green: #00E57A;   /* Kall grön – frigjort utrymme, success */
-  --accent-blue:  #0096FF;   /* Space blå – primär action, info */
-  --accent-glow-green: rgba(0, 229, 122, 0.15);
-  --accent-glow-blue:  rgba(0, 150, 255, 0.15);
+  --accent:       #FF9500;   /* Amber – Scythes enda signaturfärg */
+  --accent-dim:   rgba(255, 149, 0, 0.12); /* Subtil amber-bakgrund */
 
-  --warning:      #FFB800;   /* Varningar, "unsafe to delete" */
   --danger:       #FF453A;   /* Radera-knappar, destruktiva actions */
-  --danger-glow:  rgba(255, 69, 58, 0.15);
+  --danger-dim:   rgba(255, 69, 58, 0.12);
+  --warning:      #FF9F0A;   /* Varningar, safe:false items – nära amber men distinkt */
 
-  --text:         #E8EAFF;   /* Primär text */
-  --text-secondary: #8890C0; /* Sekundär text, beskrivningar */
-  --text-muted:   #454870;   /* Muted, placeholders */
+  --text:         #E0E0E0;   /* Primär text */
+  --text-secondary: #888;   /* Sekundär text, beskrivningar */
+  --text-muted:   #444;      /* Muted, placeholders, section-labels */
 }
 
 /* LIGHT */
 [data-theme="light"] {
-  --bg:           #F0F2FF;
-  --bg-secondary: #E8EAF6;
+  --bg:           #F5F5F5;
+  --bg-secondary: #EBEBEB;
   --surface:      #FFFFFF;
-  --surface-hover:#F4F5FF;
-  --border:       #D8DAEF;
-  --border-strong:#C0C3E0;
-  --text:         #0A0C1F;
-  --text-secondary: #4A4E80;
-  --text-muted:   #9096C0;
+  --surface-hover:#F0F0F0;
+  --border:       #E0E0E0;
+  --border-strong:#CCCCCC;
+  --text:         #111111;
+  --text-secondary: #555555;
+  --text-muted:   #999999;
 }
 ```
 
@@ -169,22 +207,14 @@ Ladda via Google Fonts i `index.html`:
 
 **Storlekssiffror (GB/MB) ska alltid vara stora och prominenta** – det är appens hjälte-element.
 
-### 4.3 Gradient
-
-Scythes signaturgradient används på accent-element, ikonen och StorageRing:
-
-```css
---gradient-scythe: linear-gradient(135deg, #00E57A 0%, #0096FF 100%);
-```
-
-### 4.4 Ikonen (SVG)
+### 4.3 Ikonen (SVG)
 
 Rita appikonen som en **stiliserad "S"-form gjord av en lie**. Konstruktion:
 
-- Bakgrund: Mörk cirkel `#0C0E1A` med subtil inner glow
-- S-kurvan: En sammanhängande kurva i `--gradient-scythe` (grön→blå), 4–5px stroke, rundade ändar
-- Eggspetsen: Liten vass triangel i `--accent-green` längst ned på S-kurvan
-- Skaftet: Rakt element i blå ton som genomskär S-kurvan diagonalt
+- Bakgrund: Mörk cirkel `#131313` med `border: 1px solid #2a2a2a`
+- S-kurvan: En sammanhängande kurva i `--accent` (#FF9500), 4px stroke, rundade ändar
+- Eggspetsen: Liten vass triangel i `--accent` längst ned på S-kurvan
+- Skaftet: Rakt element i `#555` som genomskär S-kurvan diagonalt
 - Exportera som `icon.svg` i projektets rot
 
 ---
@@ -193,92 +223,318 @@ Rita appikonen som en **stiliserad "S"-form gjord av en lie**. Konstruktion:
 
 ### 5.1 States
 
-Appen har fyra tydliga states:
-
 ```
-IDLE → SCANNING → RESULTS → (DELETING →) IDLE
+IDLE → SCANNING → RESULTS → (DELETING →) DONE → IDLE
 ```
 
-### 5.2 IDLE – Startvy
+Sidebaren är **alltid synlig och alltid interaktiv** i alla states.
 
-Visas när appen öppnas och efter avslutad radering.
+---
 
-**Layout:**
-- Centrerat i content-ytan
-- Scythe-ikonen (stor, ~120px)
-- Rubrik: *"Ready to harvest"* i Syne 700
-- Undertext: *"Kör en scanning för att hitta filer som kan rensas"*
-- Kategorilista med **inkl/exkl-toggles** (se avsnitt 6)
-  - Alla kategorier är **förbokade (ON)** som standard
-  - Inställningen sparas via `electron-store`
-  - Varje toggle visar en **uppskattad storlek** (snabb `du`-check, körs passivt i bakgrunden vid IDLE)
-- Stor primärknapp: **"Kör scanning"** med `--gradient-scythe` bakgrund
+### 5.2 Widget-filosofi – Cursor som referens
 
-### 5.3 SCANNING – Progressvy
-
-- Ersätter kategorilistan med en **progress-sektion**
-- Visar aktuell kategori som skannas: *"Skannar Xcode DerivedData..."*
-- Progressbar (gradient grön→blå) som fylls vartefter kategorier slutförs
-- Varje kategori bockas av med checkmark + storlek när den är klar
-- StorageRing börjar animeras och räknas upp i realtid
-- Knapp: **"Avbryt"** (avbryter pågående scan)
-
-### 5.4 RESULTS – Resultatvy
-
-**Huvud-layout (3 delar):**
+Varje del av appen är en **distinkt widget** – en avgränsad ruta med egen bakgrundsfärg, border och border-radius. Ingen del flyter in i en annan. Det ger tydlig visuell separation och gör det enkelt att förstå vad som är vad.
 
 ```
-┌─────────────────────────────────────────────┐
-│  TopBar: [●●●] Scythe          [Ny scanning]│
-├──────────────┬──────────────────────────────┤
-│              │                              │
-│ StorageRing  │  Kategorisektioner med items │
-│   (vänster)  │  (scrollbar höger)           │
-│              │                              │
-├──────────────┴──────────────────────────────┤
-│  BottomBar: X valda • Y GB  [🌾 Harvest]    │
-└─────────────────────────────────────────────┘
+Bakgrund (--bg): #0D0D0D  ← appens "bord" som allt ligger på
+  │
+  ├── Sidebar-widget       background: --surface, border-right: --border
+  │     ├── Logo-sektion   border-bottom: --border, padding: 16px
+  │     ├── Kategori-widget  background: --bg-secondary, border: --border,
+  │     │                    border-radius: 10px, margin: 8px, padding: 12px
+  │     └── Settings-widget  border-top: --border, padding: 12px
+  │
+  └── Main-area            background: --bg
+        ├── UpdateBanner   background: --accent-dim, border-bottom: --border
+        ├── Content-widget background: --surface, border: --border,
+        │                  border-radius: 12px, margin: 16px, padding: 20px
+        └── BottomBar      background: --surface, border-top: --border
 ```
 
-**StorageRing (vänster panel, sticky):**
-- Animerad ring/donut chart ~200px diameter
-- Visar totalt hittad storlek i centrum: stor siffra, JetBrains Mono
-- Under siffran: *"kan rensas"* i DM Sans muted
-- Under ringen: *"Valt: X GB"* som uppdateras i realtid
-- Grön→blå gradient på ring-fill
-- Liten legend: färgkodade prickar per kategori
+**Regel:** Varje widget har alltid `border`, `border-radius`, och `background` som skiljer den från sin omgivning. Inga "nakna" sektioner utan avgränsning.
 
-**Resultatlistan (höger, scrollbar):**
-- Grupperad per kategori med sticky section-header
-- Section-header: kategorinamn + total storlek + "Välj alla i kategori"-checkbox
-- Varje item-rad: checkbox | ikon | namn | beskrivning | **storlek (stor, mono)** | "Visa i Finder"-ikon
-- Items sorteras: störst storlek överst
-- Items med `safe: false` markeras med ⚠️-ikon och warning-färg
-- Items som inte existerar på datorn visas gråade med *"Hittades inte"*
-- Kategorin **Avancerat** har en tydlig separator och varningstext
+---
 
-### 5.5 BottomBar (alltid synlig i RESULTS)
+### 5.3 Sidebar – `Sidebar.jsx` (alltid synlig, 240px)
 
-- Vänster: `"5 valda • 12.4 GB frigörs"` – uppdateras live
-- Höger: Knapp **"🌾 Harvest"** i danger-röd (destruktiv action)
-- Extra: **"Töm papperskorg (2.1 GB)"** som sekundär knapp om papperskorgen har innehåll
+Sidebaren är uppdelad i tre tydliga delar med borders emellan:
 
-### 5.6 DeleteModal – Bekräftelse
+**Del 1 – Logo-sektion (toppen)**
+```
+padding-top: 20px  ← utrymme för macOS traffic lights
+┌──────────────────────────┐
+│  ⠿  Scythe               │  ← app-ikon (20px SVG) + Syne 700 15px
+└──────────────────────────┘
+border-bottom: 1px solid --border
+```
 
-Visas alltid innan radering sker.
+**Del 2 – Kategori-widget (mitten, scrollbar)**
+En distinct widget med egen background inuti sidebaren:
 
-- Rubrik: *"Permanent radering"* med ⚠️
-- Lista på vad som ska raderas med storlekar
-- **Stor tydlig varning:** *"Dessa filer kan inte återställas. De raderas permanent, inte till papperskorgen."*
-- För admin-items: *"macOS kommer be om ditt lösenord"*
-- Knapp: **"Avbryt"** | **"Radera permanent (X GB)"** (danger-röd)
+```
+background: --bg-secondary
+border: 1px solid --border
+border-radius: 10px
+margin: 12px 8px
+padding: 8px
+```
 
-### 5.7 Post-delete
+Innehåll:
+- Sektionsrubrik: `"KATEGORIER"` – DM Sans 500, 10px, --text-muted, uppercase, letter-spacing: 0.1em
+- Varje kategori-rad:
+  ```
+  [☑] Kategorinamn          ~12.4 GB
+  ```
+  - Custom checkbox: 14px, border-radius: 3px, border: --border, checked = `--accent` bakgrund + vit checkmark SVG
+  - Namn: DM Sans 500, 13px, --text
+  - Storlek: JetBrains Mono 400, 11px, --text-muted, högerställd
+  - Hover: rad får `background: --surface-hover`, border-radius: 6px
+  - Kategorigrupper separeras med en `8px` margin och subtil grupprubrik
 
-- Animerad **"success"-state** med StorageRing som fylls i grönt
-- Stor siffra: *"14.3 GB frigjort"*
-- Lista på vad som rensades med ✓ checkmarks
-- Knapp: *"Kör ny scanning"*
+- Kategorigrupper i sidebaren:
+  - **Cacher** (App-cacher, Logs, Papperskorg)
+  - **Webbläsare** (Chrome, Safari, Firefox, Arc, Brave)
+  - **Utvecklare** (npm, Yarn, Homebrew, Xcode, Simulatorer)
+  - **Appar** (Slack, Spotify, Zoom, VS Code, Figma, Docker)
+  - **⚠ Avancerat** (Systemcacher, Systemloggar, Temp-filer) – röd gruppfärg
+
+**Del 3 – Settings-widget (botten)**
+```
+border-top: 1px solid --border
+padding: 12px
+```
+En enda knapp:
+```
+[⚙]  Inställningar
+```
+- DM Sans 400, 13px, --text-secondary
+- Ikon: 14px, --text-muted
+- Hover: background --surface-hover, border-radius: 6px
+- Klick → öppnar `SettingsPopup`
+
+---
+
+### 5.4 SettingsPopup – `SettingsPopup.jsx`
+
+Popup som visas **ovanför** inställningsknappen (inte en modal, utan en contextmenu-liknande widget):
+
+```
+position: absolute
+bottom: 60px
+left: 12px
+width: 216px
+background: --surface
+border: 1px solid --border-strong
+border-radius: 10px
+box-shadow: 0 8px 32px rgba(0,0,0,0.4)
+padding: 8px
+```
+
+Innehåll:
+
+**Utseende**
+```
+┌────────────────────────────────┐
+│  UTSEENDE                      │
+│  Tema         [Mörkt ▾]        │  ← dropdown: Mörkt / Ljust / System
+└────────────────────────────────┘
+```
+- Separator: `border-bottom: --border`
+
+**Uppdateringar**
+```
+┌────────────────────────────────┐
+│  UPPDATERINGAR                 │
+│  Version 1.0.0                 │
+│  [Sök efter uppdateringar]     │  ← ghost-knapp, full bredd
+└────────────────────────────────┘
+```
+- Ghost-knapp: border: --border, border-radius: 6px, padding: 6px 10px, text: DM Sans 13px
+- Vid klick: knappen visar spinner → `"Kontrollerar..."` → `"Uppdaterad ✓"` eller `"Ny version tillgänglig"`
+
+Stäng popup: klick utanför eller Escape.
+
+---
+
+### 5.5 MainContent – states
+
+**IDLE – `IdleView.jsx`**
+
+Centrerat i main-ytan, single content-widget:
+
+```
+background: --surface
+border: 1px solid --border
+border-radius: 12px
+margin: 32px
+padding: 40px
+text-align: center
+```
+
+Innehåll:
+- Scythe SVG-ikon, 80px
+- Rubrik: `"Ready to harvest"` – Syne 700, 22px
+- Undertext: `"Välj kategorier i sidebaren och kör scanning"` – DM Sans 400, 14px, --text-secondary
+- Primärknapp: `"Kör scanning"` – --accent bakgrund, DM Sans 600, border-radius: 8px, padding: 12px 32px
+
+---
+
+**SCANNING – `ScanProgress.jsx`**
+
+Ersätter IdleView i main-ytan. En progress-widget:
+
+```
+background: --surface
+border: 1px solid --border
+border-radius: 12px
+margin: 16px
+padding: 24px
+```
+
+Innehåll:
+- Rubrik: `"Skannar..."` – Syne 700, 18px
+- Aktuell kategori: `"Skannar Xcode DerivedData..."` – DM Sans 400, 13px, --text-secondary, italic
+- Progressbar:
+  ```
+  background: --bg-secondary, border-radius: 4px, height: 4px
+  fill: ----accent, transition: width 0.3s ease
+  ```
+- Kompletteringslista: varje avklarad kategori visas med `✓` i --accent + storlek
+  - Varje rad: eget litet kort, background: --bg-secondary, border-radius: 6px
+- Avbryt-knapp: ghost-stil, längst ned
+
+---
+
+**RESULTS – `ResultsView.jsx`**
+
+Delad layout i main-ytan: StorageRing-widget till vänster + ResultList till höger.
+
+```
+┌──────────────────────────────────────────────┐
+│  [StorageRing-widget]  [ResultList-widget]   │
+│  200px bred, sticky    flex: 1, scrollbar    │
+└──────────────────────────────────────────────┘
+```
+
+**StorageRing-widget:**
+```
+background: --surface
+border: 1px solid --border
+border-radius: 12px
+margin: 16px 8px 16px 16px
+padding: 20px
+position: sticky, top: 16px
+width: 200px
+```
+- Donut-ring SVG, 160px, --accent fill
+- Centrum: total storlek hittad, JetBrains Mono 700, 24px, --text
+- Under: `"kan rensas"` DM Sans 400, 12px, --text-muted
+- Separator
+- `"Valt: 14.3 GB"` – uppdateras live, --accent, mono 600 18px
+- Färglegend per kategorigrupp: prick + namn + storlek
+
+**ResultList-widget:**
+```
+background: --surface
+border: 1px solid --border
+border-radius: 12px
+margin: 16px 16px 16px 8px
+padding: 0
+overflow: hidden  ← border-radius funkar med sticky headers
+```
+
+Per kategori-sektion:
+```
+Sticky header:
+  background: --bg-secondary
+  border-bottom: 1px solid --border
+  padding: 10px 16px
+  → [☑ Välj alla] Kategorinamn          Totalt: 12.4 GB
+
+Varje item-rad:
+  padding: 10px 16px
+  border-bottom: 1px solid --border (ej sista)
+  hover: background --surface-hover
+  → [☑] Ikon  Namn             Beskrivning       12.4 GB  [↗]
+```
+
+- Storlek högerställd: JetBrains Mono, 13px, --text-secondary
+- `[↗]` = "Visa i Finder"-ikon, visas vid hover
+- `safe: false`-items: ⚠️ ikon + warning-färg på storlekssiffran
+- Saknade paths: rad gråad + `"Hittades inte"` kursiv
+- **Avancerat**-sektion: röd section-header + varningstext ovanför första raden
+
+---
+
+### 5.6 BottomBar – `BottomBar.jsx`
+
+Alltid synlig under main-ytan i RESULTS/DELETING:
+
+```
+background: --surface
+border-top: 1px solid --border
+padding: 12px 20px
+display: flex, align-items: center, justify-content: space-between
+```
+
+Vänster:
+```
+5 valda  •  14.3 GB frigörs
+↑ DM Sans 400 13px    ↑ JetBrains Mono 600 16px --accent
+```
+
+Höger (knappar, gap: 8px):
+```
+[Töm papperskorg  2.1 GB]   [🌾 Harvest]
+ ↑ ghost-knapp, visas bara   ↑ background: --danger
+   om papperskorg > 0           border-radius: 8px
+                                padding: 8px 20px
+                                DM Sans 600 14px
+```
+
+---
+
+### 5.7 DeleteModal – `DeleteModal.jsx`
+
+Centrerad modal med backdrop:
+
+```
+backdrop: rgba(0,0,0,0.6), blur: 4px
+modal-widget:
+  background: --surface
+  border: 1px solid --border-strong
+  border-radius: 14px
+  width: 480px
+  padding: 28px
+  box-shadow: 0 24px 64px rgba(0,0,0,0.5)
+```
+
+Innehåll:
+- Rubrik: `"⚠ Permanent radering"` – Syne 700, 18px
+- Lista: varje item som ska raderas i eget litet kort (background: --bg-secondary)
+- Varningstext (röd bakgrund, border-radius: 8px): `"Dessa filer kan inte återställas"`
+- För admin-items: infóruta om lösenordsdialog
+- Knappar: `[Avbryt]` ghost + `[Radera permanent · X GB]` --danger
+
+---
+
+### 5.8 DoneView – `DoneView.jsx`
+
+Success-state efter radering. Ersätter ResultsView i main-ytan:
+
+```
+background: --surface
+border: 1px solid --border
+border-radius: 12px
+margin: 32px
+padding: 40px
+text-align: center
+```
+
+- Stor checkmark-animation i --accent
+- `"14.3 GB frigjort"` – JetBrains Mono 700, 36px, --accent
+- Lista på rensade kategorier med ✓ och storlek (kompakt kort per item)
+- Knapp: `"Kör ny scanning"` – primär, --accent
 
 ---
 
@@ -350,7 +606,7 @@ new BrowserWindow({
   minHeight: 580,
   titleBarStyle: 'hiddenInset',
   trafficLightPosition: { x: 16, y: 20 },
-  backgroundColor: '#07080F',
+  backgroundColor: '#0D0D0D',
   webPreferences: {
     preload: path.join(__dirname, 'preload.js'),
     contextIsolation: true,
@@ -465,7 +721,7 @@ const [deleteResult, setDeleteResult] = useState(null)
 
 7. **Deletions-modal är obligatorisk** – kan aldrig kringgås. Visa alltid exakt vad som raderas.
 
-8. **Post-delete success-animationen** ska vara belönande och tydlig. Stor siffra, grön färg, känsla av prestation.
+8. **Post-delete success-animationen** ska vara belönande och tydlig. Stor siffra, amber färg, känsla av prestation.
 
 9. **Scanning kan avbrytas** när som helst. Resultat som hann skannas visas ändå.
 
@@ -562,7 +818,7 @@ Skapa `src/components/UpdateBanner.jsx`:
 // States: 'available' | 'downloaded' | null
 // 'available': "Ny version laddas ned..."
 // 'downloaded': "Uppdatering klar – [Installera och starta om]"
-// Styling: tunn banner under TopBar, accent-blå bakgrund, DM Sans text
+// Styling: tunn banner under TopBar, --accent-dim bakgrund, DM Sans text
 ```
 
 ### Preload – exponera update-events

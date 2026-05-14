@@ -41,19 +41,7 @@ export default function TopBar({ appState, onNewScan, onStartScan, theme, onTogg
         userSelect: 'none',
       }}
     >
-      {/* App name */}
-      <span
-        style={{
-          fontFamily: 'Bricolage Grotesque, sans-serif',
-          fontWeight: 700,
-          fontSize: '13px',
-          letterSpacing: '0.12em',
-          textTransform: 'uppercase',
-          color: 'var(--text-secondary)',
-        }}
-      >
-        Scythe
-      </span>
+      <div />
 
       {/* Right side — no drag */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', WebkitAppRegion: 'no-drag' }}>

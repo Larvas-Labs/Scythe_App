@@ -10,7 +10,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'oklch(10% 0.015 280 / 0.88)',
+        background: 'rgba(7, 8, 15, 0.88)',
         backdropFilter: 'blur(4px)',
         zIndex: 100,
         display: 'flex',

@@ -1,13 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import TopBar from './components/TopBar.jsx'
-import EmptyState from './components/EmptyState.jsx'
-import ScanProgress from './components/ScanProgress.jsx'
-import ResultList from './components/ResultList.jsx'
+import Layout from './components/Layout.jsx'
+import Sidebar from './components/Sidebar.jsx'
+import MainContent from './components/MainContent.jsx'
 import BottomBar from './components/BottomBar.jsx'
 import DeleteModal from './components/DeleteModal.jsx'
 import UpdateBanner from './components/UpdateBanner.jsx'
-import NavRail from './components/NavRail.jsx'
-import { selectedSize, formatSize } from './utils.js'
+import { selectedSize } from './utils.js'
 
 
 export default function App() {
@@ -23,7 +21,7 @@ export default function App() {
   const [deleteResult, setDeleteResult] = useState(null)
   const [trashSize, setTrashSize] = useState(0)
   const [theme, setTheme] = useState('dark')
-  const [updateState, setUpdateState] = useState(null) // 'available' | 'downloaded' | null
+  const [updateState, setUpdateState] = useState(null)
 
   useEffect(() => {
     window.scythe.storeGet('enabledCategories').then(saved => {
@@ -171,164 +169,30 @@ export default function App() {
 
   const totalFoundSize = scanResults.reduce((sum, r) => sum + (r.size || 0), 0)
   const chosenSize = selectedSize(scanResults, selectedIds)
-  const scanningItems = Object.values(scanProgress)
-  const completedCount = scanningItems.filter(i => i.status === 'done').length
-  const totalCount = scanningItems.length
 
   return (
-    <div
-      className="flex flex-col"
-      style={{ height: '100vh', background: 'var(--app-bg)', color: 'var(--text)', overflow: 'hidden' }}
-    >
-      <TopBar
-        appState={appState}
-        onNewScan={appState === 'results' || appState === 'done' ? resetToIdle : undefined}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      />
-      <UpdateBanner
-        updateState={updateState}
-        onInstall={() => window.scythe.installUpdate()}
-      />
-
-      <div className="flex flex-1 overflow-hidden">
-        <NavRail
+    <Layout
+      sidebar={
+        <Sidebar
           appState={appState}
           enabledCategories={enabledCategories}
+          estimates={estimates}
           scanProgress={scanProgress}
           scanResults={scanResults}
-          estimates={estimates}
-          totalFoundSize={totalFoundSize}
-          chosenSize={chosenSize}
-          onStartScan={startScan}
-          onAbortScan={abortScan}
-          onCategoryClick={(key) => {
-            if (appState === 'idle') {
-              toggleCategory(key)
-            } else if (appState === 'results') {
-              document.getElementById('cat-' + key)?.scrollIntoView({ behavior: 'smooth' })
-            }
-          }}
+          onCategoryToggle={toggleCategory}
+          onCategoryScroll={key => document.getElementById('cat-' + key)?.scrollIntoView({ behavior: 'smooth' })}
+          onNewScan={appState === 'results' || appState === 'done' ? resetToIdle : undefined}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
-        <div className="flex flex-1 overflow-hidden">
-        {appState === 'idle' && (
-          <div className="flex flex-col flex-1 items-center justify-center overflow-y-auto" style={{ padding: '28px 32px' }}>
-            <EmptyState />
-          </div>
-        )}
-
-        {appState === 'scanning' && (
-          <div className="flex-1 overflow-y-auto p-8">
-            <ScanProgress
-              progress={scanProgress}
-              completedCount={completedCount}
-              totalCount={totalCount}
-              onAbort={abortScan}
-            />
-          </div>
-        )}
-
-        {appState === 'results' && (
-          <div className="flex-1 overflow-y-auto">
-            <ResultList
-              results={scanResults}
-              selectedIds={selectedIds}
-              onToggleItem={toggleItem}
-              onToggleCategory={toggleCategory_results}
-            />
-          </div>
-        )}
-
-        {appState === 'deleting' && (
-          <div className="flex flex-1 items-center justify-center">
-            <div className="text-center space-y-4">
-              <div
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontWeight: 700,
-                  fontSize: '2rem',
-                  color: 'var(--text)',
-                }}
-              >
-                Raderar...
-              </div>
-              <p style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }}>
-                Vänta medan filerna raderas permanent
-              </p>
-            </div>
-          </div>
-        )}
-
-        {appState === 'done' && deleteResult && (
-          <div className="flex flex-1 items-center justify-center">
-            <div className="text-center space-y-6 max-w-md px-8">
-              <div style={{ fontSize: '3rem' }}>✓</div>
-              <div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontWeight: 500,
-                    fontSize: '3rem',
-                    lineHeight: 1.1,
-                    color: 'var(--accent-green)',
-                  }}
-                >
-                  {formatSize(deleteResult.totalFreed)}
-                </div>
-                <div
-                  style={{
-                    fontFamily: 'var(--font-body)',
-                    color: 'var(--text-secondary)',
-                    marginTop: '0.25rem',
-                    fontSize: '1rem',
-                  }}
-                >
-                  frigjort
-                </div>
-              </div>
-              <div className="space-y-2">
-                {deleteResult.results.filter(r => r.success).map(r => (
-                  <div
-                    key={r.path}
-                    className="flex items-center gap-3"
-                    style={{
-                      background: 'var(--surface)',
-                      border: '1px solid var(--border)',
-                      borderRadius: '8px',
-                      padding: '8px 12px',
-                    }}
-                  >
-                    <span style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-body)' }}>✓</span>
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '0.75rem',
-                        color: 'var(--text-secondary)',
-                        flex: 1,
-                        textOverflow: 'ellipsis',
-                        overflow: 'hidden',
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
-                      {r.path}
-                    </span>
-                  </div>
-                ))}
-              </div>
-              <button
-                className="btn-primary"
-                style={{ padding: '11px 32px', borderRadius: '10px', fontSize: '0.9rem' }}
-                onClick={resetToIdle}
-              >
-                Kör ny scanning
-              </button>
-            </div>
-          </div>
-        )}
-        </div>
-      </div>
-
-      {appState === 'results' && (
+      }
+      updateBanner={
+        <UpdateBanner
+          updateState={updateState}
+          onInstall={() => window.scythe.installUpdate()}
+        />
+      }
+      bottomBar={appState === 'results' ? (
         <BottomBar
           selectedCount={selectedIds.size}
           selectedSize={chosenSize}
@@ -336,7 +200,22 @@ export default function App() {
           onHarvest={initiateDelete}
           onEmptyTrash={emptyTrash}
         />
-      )}
+      ) : null}
+    >
+      <MainContent
+        appState={appState}
+        scanResults={scanResults}
+        scanProgress={scanProgress}
+        selectedIds={selectedIds}
+        totalFoundSize={totalFoundSize}
+        chosenSize={chosenSize}
+        deleteResult={deleteResult}
+        onStartScan={startScan}
+        onToggleItem={toggleItem}
+        onToggleCategory={toggleCategory_results}
+        onAbortScan={abortScan}
+        onNewScan={resetToIdle}
+      />
 
       {showDeleteModal && (
         <DeleteModal
@@ -345,6 +224,6 @@ export default function App() {
           onCancel={() => setShowDeleteModal(false)}
         />
       )}
-    </div>
+    </Layout>
   )
 }

@@ -27,6 +27,26 @@ const CAT_TO_IDS = {
   advanced:  ['system-caches', 'system-logs', 'temp-system'],
 }
 
+function SunIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="4"/>
+      <line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/>
+      <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/>
+      <line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/>
+      <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/>
+    </svg>
+  )
+}
+
+function MoonIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  )
+}
+
 export default function NavRail({
   appState,
   enabledCategories,
@@ -34,25 +54,39 @@ export default function NavRail({
   scanResults,
   estimates = {},
   onCategoryClick,
-  onStartScan,
   onAbortScan,
   totalFoundSize = 0,
   chosenSize = 0,
+  theme,
+  onToggleTheme,
 }) {
   const categories = Object.keys(CATEGORY_LABELS)
 
   return (
     <div
       style={{
-        width: '200px',
+        width: '216px',
         flexShrink: 0,
-        background: 'var(--bg-secondary)',
-        borderRight: '1px solid var(--border)',
         display: 'flex',
         flexDirection: 'column',
-        overflow: 'hidden',
+        padding: '8px 0 8px 8px',
       }}
     >
+      {/* Frosted floating panel */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          borderRadius: '14px',
+          border: '1px solid oklch(35% 0.04 280 / 0.6)',
+          background: 'oklch(18% 0.028 279 / 0.7)',
+          backdropFilter: 'blur(32px)',
+          WebkitBackdropFilter: 'blur(32px)',
+        }}
+      >
+
       {/* Category list */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '8px 8px 0' }}>
         <div className="label-xs" style={{ padding: '8px 8px 6px' }}>
@@ -181,16 +215,6 @@ export default function NavRail({
           </div>
         )}
 
-        {appState === 'idle' && (
-          <button
-            className="btn-primary"
-            style={{ padding: '10px 16px', borderRadius: '10px', fontSize: '0.875rem' }}
-            onClick={onStartScan}
-          >
-            Kör scanning
-          </button>
-        )}
-
         {appState === 'scanning' && (
           <button
             className="btn-ghost"
@@ -200,7 +224,19 @@ export default function NavRail({
             Avbryt
           </button>
         )}
+
+        {/* Theme toggle */}
+        <button
+          className="theme-toggle"
+          onClick={onToggleTheme}
+          title={theme === 'dark' ? 'Byt till ljust läge' : 'Byt till mörkt läge'}
+          style={{ alignSelf: 'flex-start' }}
+        >
+          {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+        </button>
       </div>
+
+      </div>{/* end frosted panel */}
     </div>
   )
 }
