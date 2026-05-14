@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import TopBar from './components/TopBar.jsx'
 import EmptyState from './components/EmptyState.jsx'
-import CategoryToggle from './components/CategoryToggle.jsx'
 import ScanProgress from './components/ScanProgress.jsx'
-import StorageRing from './components/StorageRing.jsx'
 import ResultList from './components/ResultList.jsx'
 import BottomBar from './components/BottomBar.jsx'
 import DeleteModal from './components/DeleteModal.jsx'
@@ -11,13 +9,6 @@ import UpdateBanner from './components/UpdateBanner.jsx'
 import NavRail from './components/NavRail.jsx'
 import { selectedSize, formatSize } from './utils.js'
 
-const CATEGORY_LABELS = {
-  user: 'Användarcacher',
-  browsers: 'Webbläsare',
-  developer: 'Utvecklarverktyg',
-  apps: 'Appdata',
-  advanced: 'Avancerat',
-}
 
 export default function App() {
   const [appState, setAppState] = useState('idle')
@@ -187,12 +178,11 @@ export default function App() {
   return (
     <div
       className="flex flex-col"
-      style={{ height: '100vh', background: 'var(--bg)', color: 'var(--text)', overflow: 'hidden' }}
+      style={{ height: '100vh', background: 'var(--app-bg)', color: 'var(--text)', overflow: 'hidden' }}
     >
       <TopBar
         appState={appState}
         onNewScan={appState === 'results' || appState === 'done' ? resetToIdle : undefined}
-        onStartScan={appState === 'idle' ? startScan : undefined}
         theme={theme}
         onToggleTheme={toggleTheme}
       />
@@ -207,6 +197,11 @@ export default function App() {
           enabledCategories={enabledCategories}
           scanProgress={scanProgress}
           scanResults={scanResults}
+          estimates={estimates}
+          totalFoundSize={totalFoundSize}
+          chosenSize={chosenSize}
+          onStartScan={startScan}
+          onAbortScan={abortScan}
           onCategoryClick={(key) => {
             if (appState === 'idle') {
               toggleCategory(key)
@@ -217,77 +212,30 @@ export default function App() {
         />
         <div className="flex flex-1 overflow-hidden">
         {appState === 'idle' && (
-          <div className="flex flex-col flex-1 overflow-y-auto" style={{ padding: '28px 32px' }}>
-            <EmptyState onStartScan={startScan} />
-
-            {/* Category selection card — §4.0 boxed section */}
-            <div
-              className="section-card"
-              style={{ marginTop: '24px' }}
-            >
-              <div
-                style={{
-                  padding: '12px 16px 10px',
-                  borderBottom: '1px solid var(--border)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <span className="label-xs">Kategorier att skanna</span>
-              </div>
-              <div style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-                  <CategoryToggle
-                    key={key}
-                    categoryKey={key}
-                    label={label}
-                    enabled={enabledCategories[key]}
-                    onToggle={() => toggleCategory(key)}
-                    estimates={estimates}
-                    isAdvanced={key === 'advanced'}
-                  />
-                ))}
-              </div>
-            </div>
+          <div className="flex flex-col flex-1 items-center justify-center overflow-y-auto" style={{ padding: '28px 32px' }}>
+            <EmptyState />
           </div>
         )}
 
         {appState === 'scanning' && (
-          <div className="flex flex-1 overflow-hidden">
-            <div
-              className="w-64 flex-shrink-0 flex items-center justify-center"
-              style={{ borderRight: '1px solid var(--border)' }}
-            >
-              <StorageRing size={totalFoundSize} selectedSize={0} animating />
-            </div>
-            <div className="flex-1 overflow-y-auto p-8">
-              <ScanProgress
-                progress={scanProgress}
-                completedCount={completedCount}
-                totalCount={totalCount}
-                onAbort={abortScan}
-              />
-            </div>
+          <div className="flex-1 overflow-y-auto p-8">
+            <ScanProgress
+              progress={scanProgress}
+              completedCount={completedCount}
+              totalCount={totalCount}
+              onAbort={abortScan}
+            />
           </div>
         )}
 
         {appState === 'results' && (
-          <div className="flex flex-1 overflow-hidden">
-            <div
-              className="w-64 flex-shrink-0 flex flex-col items-center justify-center p-6"
-              style={{ borderRight: '1px solid var(--border)' }}
-            >
-              <StorageRing size={totalFoundSize} selectedSize={chosenSize} />
-            </div>
-            <div className="flex-1 overflow-y-auto">
-              <ResultList
-                results={scanResults}
-                selectedIds={selectedIds}
-                onToggleItem={toggleItem}
-                onToggleCategory={toggleCategory_results}
-              />
-            </div>
+          <div className="flex-1 overflow-y-auto">
+            <ResultList
+              results={scanResults}
+              selectedIds={selectedIds}
+              onToggleItem={toggleItem}
+              onToggleCategory={toggleCategory_results}
+            />
           </div>
         )}
 

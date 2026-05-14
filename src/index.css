@@ -70,6 +70,12 @@
 
   --gradient-scythe: linear-gradient(135deg, oklch(83% 0.245 152) 0%, oklch(63% 0.244 257) 100%);
 
+  /* Gradient app background — subtle brand glow */
+  --app-bg:
+    radial-gradient(ellipse 55% 45% at 100% 0%,   oklch(14% 0.08 152 / 0.55) 0%, transparent 55%),
+    radial-gradient(ellipse 45% 45% at 0%   100%,  oklch(11% 0.06 257 / 0.45) 0%, transparent 50%),
+    oklch(4.5% 0.013 279);
+
   color-scheme: dark;
 }
 
@@ -87,6 +93,8 @@
   --text:           oklch(9.5% 0.02  280);
   --text-secondary: oklch(40%  0.05  280);
   --text-muted:     oklch(64%  0.045 280);
+
+  --app-bg: oklch(96% 0.013 280);
 
   color-scheme: light;
 }

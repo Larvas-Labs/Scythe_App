@@ -37,16 +37,16 @@ function ScytheIcon({ size = 120 }) {
   )
 }
 
-export default function EmptyState({ onStartScan }) {
+export default function EmptyState() {
   return (
-    <div className="flex flex-col items-center text-center pt-8 pb-4">
-      <ScytheIcon size={120} />
+    <div className="flex flex-col items-center text-center">
+      <ScytheIcon size={100} />
       <h1
         style={{
           fontFamily: 'var(--font-display)',
           fontWeight: 700,
-          fontSize: '1.75rem',
-          marginTop: '1.5rem',
+          fontSize: '1.6rem',
+          marginTop: '1.25rem',
           marginBottom: '0.5rem',
           color: 'var(--text)',
         }}
@@ -57,25 +57,13 @@ export default function EmptyState({ onStartScan }) {
         style={{
           fontFamily: 'var(--font-body)',
           color: 'var(--text-secondary)',
-          fontSize: '0.9rem',
-          maxWidth: '300px',
+          fontSize: '0.875rem',
+          maxWidth: '260px',
           lineHeight: 1.6,
-          marginBottom: '1.5rem',
         }}
       >
-        Kör en scanning för att hitta filer som kan rensas
+        Välj kategorier och kör en scanning för att hitta filer som kan rensas
       </p>
-      <button
-        className="btn-primary"
-        style={{
-          padding: '11px 36px',
-          borderRadius: '10px',
-          fontSize: '0.9rem',
-        }}
-        onClick={onStartScan}
-      >
-        Kör scanning
-      </button>
     </div>
   )
 }
