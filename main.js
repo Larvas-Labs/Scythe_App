@@ -393,12 +393,78 @@ app.whenReady().then(() => {
   }
 })
 
-ipcMain.handle('update:open-release', async (_, version) => {
-  const url = version
-    ? `https://github.com/peterhagman/Scythe/releases/tag/v${version}`
-    : `https://github.com/peterhagman/Scythe/releases/latest`
-  await shell.openExternal(url)
-  return { ok: true }
+// ─── Helper: Download file with redirect following ───────────────────────────
+function downloadFile(url, dest, onProgress) {
+  return new Promise((resolve, reject) => {
+    const follow = (currentUrl, hops = 0) => {
+      if (hops > 10) { reject(new Error('Too many redirects')); return }
+      const parsed = new URL(currentUrl)
+      const client = parsed.protocol === 'https:' ? require('https') : require('http')
+      client.get(currentUrl, (res) => {
+        if ([301, 302, 303, 307, 308].includes(res.statusCode)) {
+          res.resume()
+          follow(res.headers.location, hops + 1)
+          return
+        }
+        if (res.statusCode !== 200) { reject(new Error(`HTTP ${res.statusCode}`)); return }
+        const total = parseInt(res.headers['content-length'] || '0', 10)
+        let downloaded = 0
+        const file = fs.createWriteStream(dest)
+        res.on('data', chunk => {
+          downloaded += chunk.length
+          if (total > 0) onProgress(Math.round((downloaded / total) * 100))
+        })
+        res.pipe(file)
+        file.on('finish', () => file.close(resolve))
+        file.on('error', err => { try { fs.unlinkSync(dest) } catch {} reject(err) })
+      }).on('error', reject)
+    }
+    follow(url)
+  })
+}
+
+ipcMain.handle('update:download-and-install', async (event, version) => {
+  try {
+    const arch = process.arch
+    const filename = arch === 'arm64'
+      ? `Scythe-${version}-arm64-mac.zip`
+      : `Scythe-${version}-mac.zip`
+    const url = `https://github.com/peterhagman/Scythe/releases/download/v${version}/${filename}`
+
+    const tmpDir = path.join(os.tmpdir(), `scythe-update-${Date.now()}`)
+    const zipPath = path.join(tmpDir, filename)
+    fs.mkdirSync(tmpDir, { recursive: true })
+
+    await downloadFile(url, zipPath, (percent) => {
+      event.sender.send('update:download-progress', { percent })
+    })
+
+    execSync(`unzip -o "${zipPath}" -d "${tmpDir}"`, { timeout: 60000 })
+
+    const newAppSrc = path.join(tmpDir, 'Scythe.app')
+    // process.execPath = /path/Scythe.app/Contents/MacOS/Scythe → go up 3 levels
+    const appBundlePath = path.resolve(process.execPath, '../../..')
+
+    execSync(`ditto "${newAppSrc}" "${appBundlePath}"`, { timeout: 30000 })
+    execSync(`xattr -cr "${appBundlePath}"`, { timeout: 10000 })
+
+    try { fs.rmSync(tmpDir, { recursive: true, force: true }) } catch {}
+
+    event.sender.send('update:ready')
+    return { ok: true }
+  } catch (err) {
+    event.sender.send('update:error', err?.message || String(err))
+    return { error: err?.message }
+  }
+})
+
+ipcMain.handle('update:restart', () => {
+  app.relaunch()
+  app.quit()
+})
+
+ipcMain.handle('update:quit', () => {
+  app.quit()
 })
 
 ipcMain.handle('update:check', async () => {

@@ -4,6 +4,7 @@ import Sidebar from './components/Sidebar.jsx'
 import MainContent from './components/MainContent.jsx'
 import BottomBar from './components/BottomBar.jsx'
 import DeleteModal from './components/DeleteModal.jsx'
+import UpdateBanner from './components/UpdateBanner.jsx'
 import { selectedSize } from './utils.js'
 
 
@@ -20,9 +21,11 @@ export default function App() {
   const [deleteResult, setDeleteResult] = useState(null)
   const [trashSize, setTrashSize] = useState(0)
   const [theme, setTheme] = useState('dark')
-  const [updateState, setUpdateState] = useState(null) // null | 'checking' | 'uptodate' | 'available' | 'error'
+  const [updateState, setUpdateState] = useState(null) // null | 'checking' | 'uptodate' | 'available' | 'downloading' | 'ready' | 'error'
   const [appVersion, setAppVersion] = useState('')
   const [availableVersion, setAvailableVersion] = useState(null)
+  const [downloadProgress, setDownloadProgress] = useState(0)
+  const [bannerDismissed, setBannerDismissed] = useState(false)
 
   useEffect(() => {
     window.scythe.storeGet('enabledCategories').then(saved => {
@@ -37,6 +40,7 @@ export default function App() {
       window.scythe.onUpdateAvailable((info) => {
         setAvailableVersion(info?.version || null)
         setUpdateState('available')
+        setBannerDismissed(false)
       })
       window.scythe.onUpdateNotAvailable?.(() => {
         setUpdateState('uptodate')
@@ -45,6 +49,12 @@ export default function App() {
       window.scythe.onUpdateError?.(() => {
         setUpdateState('error')
         setTimeout(() => setUpdateState(null), 4000)
+      })
+      window.scythe.onDownloadProgress?.((data) => {
+        setDownloadProgress(data.percent)
+      })
+      window.scythe.onUpdateReady?.(() => {
+        setUpdateState('ready')
       })
     }
     window.scythe.getVersion?.().then(v => { if (v) setAppVersion(v) })
@@ -175,9 +185,19 @@ export default function App() {
     await window.scythe.checkForUpdates?.()
   }, [])
 
-  const downloadAndInstall = useCallback(async () => {
-    await window.scythe.openRelease?.(availableVersion)
+  const startDownload = useCallback(() => {
+    setUpdateState('downloading')
+    setDownloadProgress(0)
+    window.scythe.downloadAndInstall?.(availableVersion)
   }, [availableVersion])
+
+  const restartApp = useCallback(() => {
+    window.scythe.restartApp?.()
+  }, [])
+
+  const quitApp = useCallback(() => {
+    window.scythe.quitApp?.()
+  }, [])
 
   const resetToIdle = useCallback(() => {
     setAppState('idle')
@@ -206,12 +226,26 @@ export default function App() {
           theme={theme}
           onToggleTheme={toggleTheme}
           updateState={updateState}
+          availableVersion={availableVersion}
+          downloadProgress={downloadProgress}
           appVersion={appVersion}
           onCheckForUpdates={checkForUpdates}
-          onDownloadAndInstall={downloadAndInstall}
-          onRestart={() => window.scythe.installUpdate()}
+          onDownloadAndInstall={startDownload}
+          onRestart={restartApp}
+          onQuit={quitApp}
         />
       }
+      updateBanner={!bannerDismissed ? (
+        <UpdateBanner
+          updateState={updateState}
+          availableVersion={availableVersion}
+          downloadProgress={downloadProgress}
+          onDownload={startDownload}
+          onDismiss={() => setBannerDismissed(true)}
+          onRestart={restartApp}
+          onQuit={quitApp}
+        />
+      ) : null}
       bottomBar={appState === 'results' ? (
         <BottomBar
           selectedCount={selectedIds.size}
