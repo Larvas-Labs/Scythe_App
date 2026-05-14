@@ -4,7 +4,6 @@ import Sidebar from './components/Sidebar.jsx'
 import MainContent from './components/MainContent.jsx'
 import BottomBar from './components/BottomBar.jsx'
 import DeleteModal from './components/DeleteModal.jsx'
-import UpdateBanner from './components/UpdateBanner.jsx'
 import { selectedSize } from './utils.js'
 
 
@@ -209,12 +208,6 @@ export default function App() {
           onCheckForUpdates={checkForUpdates}
           onDownloadAndInstall={downloadAndInstall}
           onRestart={() => window.scythe.installUpdate()}
-        />
-      }
-      updateBanner={
-        <UpdateBanner
-          updateState={updateState}
-          onInstall={() => window.scythe.installUpdate()}
         />
       }
       bottomBar={appState === 'results' ? (
