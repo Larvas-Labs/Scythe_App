@@ -11,7 +11,7 @@ export default function ScanProgress({ progress, completedCount, totalCount, onA
       <div style={{ marginBottom: '24px' }}>
         <h2
           style={{
-            fontFamily: 'Syne, sans-serif',
+            fontFamily: 'var(--font-display)',
             fontWeight: 700,
             fontSize: '1.4rem',
             color: 'var(--text)',
@@ -24,7 +24,7 @@ export default function ScanProgress({ progress, completedCount, totalCount, onA
         {currentItem && (
           <p
             style={{
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'var(--font-body)',
               color: 'var(--text-secondary)',
               fontSize: '0.875rem',
               margin: 0,
@@ -46,13 +46,13 @@ export default function ScanProgress({ progress, completedCount, totalCount, onA
         }}
       >
         <div
-          className="progress-bar-fill"
+          className="progress-fill"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
       <div
         style={{
-          fontFamily: 'DM Sans, sans-serif',
+          fontFamily: 'var(--font-body)',
           fontSize: '0.8rem',
           color: 'var(--text-muted)',
           marginBottom: '24px',
@@ -84,7 +84,7 @@ export default function ScanProgress({ progress, completedCount, totalCount, onA
 
             <span
               style={{
-                fontFamily: 'DM Sans, sans-serif',
+                fontFamily: 'var(--font-body)',
                 fontSize: '0.875rem',
                 color: item.status === 'done' ? 'var(--text)' : 'var(--text-secondary)',
                 flex: 1,
@@ -117,7 +117,7 @@ export default function ScanProgress({ progress, completedCount, totalCount, onA
           background: 'transparent',
           border: '1px solid var(--border-strong)',
           color: 'var(--text-secondary)',
-          fontFamily: 'DM Sans, sans-serif',
+          fontFamily: 'var(--font-body)',
           fontSize: '0.875rem',
           cursor: 'pointer',
           transition: 'border-color 0.15s, color 0.15s',

@@ -4,31 +4,31 @@ function ScytheIcon({ size = 120 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="scythe-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#00E57A" />
-          <stop offset="100%" stopColor="#0096FF" />
+        <linearGradient id="scythe-grad-es" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="oklch(80% 0.18 155)" />
+          <stop offset="100%" stopColor="oklch(61% 0.20 260)" />
         </linearGradient>
-        <radialGradient id="bg-glow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#161932" />
-          <stop offset="100%" stopColor="#0C0E1A" />
+        <radialGradient id="bg-glow-es" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="oklch(20.5% 0.022 280)" />
+          <stop offset="100%" stopColor="oklch(13% 0.018 280)" />
         </radialGradient>
       </defs>
-      <circle cx="60" cy="60" r="58" fill="url(#bg-glow)" stroke="#1C1F3A" strokeWidth="2" />
+      <circle cx="60" cy="60" r="58" fill="url(#bg-glow-es)" stroke="oklch(24% 0.018 280)" strokeWidth="2" />
       <path
         d="M 42 28 C 42 28 72 32 72 50 C 72 65 38 65 38 78 C 38 92 70 95 70 95"
-        stroke="url(#scythe-grad)"
+        stroke="url(#scythe-grad-es)"
         strokeWidth="4.5"
         strokeLinecap="round"
         fill="none"
       />
       <polygon
         points="70,95 64,88 76,89"
-        fill="#00E57A"
+        fill="oklch(80% 0.18 155)"
       />
       <line
         x1="78" y1="25"
         x2="44" y2="98"
-        stroke="#0096FF"
+        stroke="oklch(61% 0.20 260)"
         strokeWidth="2.5"
         strokeLinecap="round"
         opacity="0.7"
@@ -43,7 +43,7 @@ export default function EmptyState({ onStartScan }) {
       <ScytheIcon size={120} />
       <h1
         style={{
-          fontFamily: 'Syne, sans-serif',
+          fontFamily: 'var(--font-display)',
           fontWeight: 700,
           fontSize: '1.75rem',
           marginTop: '1.5rem',
@@ -55,23 +55,22 @@ export default function EmptyState({ onStartScan }) {
       </h1>
       <p
         style={{
-          fontFamily: 'DM Sans, sans-serif',
+          fontFamily: 'var(--font-body)',
           color: 'var(--text-secondary)',
-          fontSize: '0.95rem',
-          maxWidth: '320px',
-          lineHeight: 1.5,
+          fontSize: '0.9rem',
+          maxWidth: '300px',
+          lineHeight: 1.6,
           marginBottom: '1.5rem',
         }}
       >
         Kör en scanning för att hitta filer som kan rensas
       </p>
       <button
-        className="btn-gradient"
+        className="btn-primary"
         style={{
-          padding: '12px 40px',
-          borderRadius: '12px',
-          fontSize: '1rem',
-          fontWeight: 600,
+          padding: '11px 36px',
+          borderRadius: '10px',
+          fontSize: '0.9rem',
         }}
         onClick={onStartScan}
       >

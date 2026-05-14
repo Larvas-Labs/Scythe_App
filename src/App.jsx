@@ -251,12 +251,16 @@ export default function App() {
           <div className="flex flex-1 items-center justify-center">
             <div className="text-center space-y-4">
               <div
-                className="text-5xl font-syne font-bold gradient-text"
-                style={{ fontFamily: 'Syne, sans-serif' }}
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontWeight: 700,
+                  fontSize: '2rem',
+                  color: 'var(--text)',
+                }}
               >
                 Raderar...
               </div>
-              <p style={{ color: 'var(--text-secondary)', fontFamily: 'DM Sans, sans-serif' }}>
+              <p style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-body)' }}>
                 Vänta medan filerna raderas permanent
               </p>
             </div>
@@ -266,20 +270,25 @@ export default function App() {
         {appState === 'done' && deleteResult && (
           <div className="flex flex-1 items-center justify-center">
             <div className="text-center space-y-6 max-w-md px-8">
-              <div style={{ fontSize: '4rem' }}>✅</div>
+              <div style={{ fontSize: '3rem' }}>✓</div>
               <div>
                 <div
-                  className="gradient-text"
-                  style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800, fontSize: '3rem', lineHeight: 1.1 }}
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 500,
+                    fontSize: '3rem',
+                    lineHeight: 1.1,
+                    color: 'var(--accent-green)',
+                  }}
                 >
                   {formatSize(deleteResult.totalFreed)}
                 </div>
                 <div
                   style={{
-                    fontFamily: 'DM Sans, sans-serif',
+                    fontFamily: 'var(--font-body)',
                     color: 'var(--text-secondary)',
                     marginTop: '0.25rem',
-                    fontSize: '1.1rem',
+                    fontSize: '1rem',
                   }}
                 >
                   frigjort
@@ -297,10 +306,10 @@ export default function App() {
                       padding: '8px 12px',
                     }}
                   >
-                    <span style={{ color: 'var(--accent-green)' }}>✓</span>
+                    <span style={{ color: 'var(--accent-green)', fontFamily: 'var(--font-body)' }}>✓</span>
                     <span
                       style={{
-                        fontFamily: 'JetBrains Mono, monospace',
+                        fontFamily: 'var(--font-mono)',
                         fontSize: '0.75rem',
                         color: 'var(--text-secondary)',
                         flex: 1,
@@ -315,8 +324,8 @@ export default function App() {
                 ))}
               </div>
               <button
-                className="btn-gradient"
-                style={{ padding: '12px 32px', borderRadius: '10px', fontSize: '1rem' }}
+                className="btn-primary"
+                style={{ padding: '11px 32px', borderRadius: '10px', fontSize: '0.9rem' }}
                 onClick={resetToIdle}
               >
                 Kör ny scanning

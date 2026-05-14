@@ -2,11 +2,11 @@ import React from 'react'
 import { formatSize } from '../utils.js'
 
 const CATEGORY_COLORS = {
-  user:      '#00E57A',
-  browsers:  '#0096FF',
-  developer: '#7B61FF',
-  apps:      '#FF9500',
-  advanced:  '#FF453A',
+  user:      'oklch(80% 0.18 155)',
+  browsers:  'oklch(61% 0.20 260)',
+  developer: 'oklch(68% 0.19 300)',
+  apps:      'oklch(72% 0.17 60)',
+  advanced:  'oklch(60% 0.22 25)',
 }
 
 export default function StorageRing({ size = 0, selectedSize = 0, animating = false }) {
@@ -31,8 +31,8 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
         >
           <defs>
             <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#00E57A" />
-              <stop offset="100%" stopColor="#0096FF" />
+              <stop offset="0%" stopColor="oklch(80% 0.18 155)" />
+              <stop offset="100%" stopColor="oklch(61% 0.20 260)" />
             </linearGradient>
             <filter id="ring-glow" x="-20%" y="-20%" width="140%" height="140%">
               <feGaussianBlur stdDeviation="4" result="blur" />
@@ -93,7 +93,7 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
           </div>
           <div
             style={{
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'var(--font-body)',
               fontSize: '0.7rem',
               color: 'var(--text-muted)',
               marginTop: '2px',
@@ -117,7 +117,7 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
         </div>
         <div
           style={{
-            fontFamily: 'DM Sans, sans-serif',
+            fontFamily: 'var(--font-body)',
             fontSize: '0.75rem',
             color: 'var(--text-muted)',
             marginTop: '2px',
@@ -131,7 +131,7 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
         {Object.entries(CATEGORY_COLORS).map(([cat, color]) => (
           <div key={cat} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: color, flexShrink: 0 }} />
-            <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'capitalize' }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.7rem', color: 'var(--text-muted)', textTransform: 'capitalize' }}>
               {cat}
             </span>
           </div>

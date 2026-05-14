@@ -34,7 +34,7 @@ export default function ScanItem({ result, selected, onToggle }) {
       }}
     >
       <div
-        className={cn('custom-checkbox', selected && 'checked')}
+        className={cn('s-checkbox', selected && 'checked')}
         style={{ pointerEvents: 'none' }}
       >
         {selected && (
@@ -49,7 +49,7 @@ export default function ScanItem({ result, selected, onToggle }) {
       <div style={{ flex: 1, minWidth: 0 }}>
         <div
           style={{
-            fontFamily: 'DM Sans, sans-serif',
+            fontFamily: 'var(--font-body)',
             fontSize: '0.875rem',
             fontWeight: 500,
             color: 'var(--text)',
@@ -78,7 +78,7 @@ export default function ScanItem({ result, selected, onToggle }) {
         </div>
         <div
           style={{
-            fontFamily: 'DM Sans, sans-serif',
+            fontFamily: 'var(--font-body)',
             fontSize: '0.75rem',
             color: 'var(--text-muted)',
             overflow: 'hidden',
@@ -92,7 +92,7 @@ export default function ScanItem({ result, selected, onToggle }) {
 
       <div style={{ flexShrink: 0, textAlign: 'right' }}>
         {notFound ? (
-          <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.75rem', color: 'var(--text-muted)' }}>—</span>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.75rem', color: 'var(--text-muted)' }}>—</span>
         ) : (
           <span
             style={{

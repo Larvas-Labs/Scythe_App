@@ -11,11 +11,11 @@ const CATEGORY_LABELS = {
 }
 
 const CATEGORY_COLORS = {
-  user:      '#00E57A',
-  browsers:  '#0096FF',
-  developer: '#7B61FF',
-  apps:      '#FF9500',
-  advanced:  '#FF453A',
+  user:      'oklch(80% 0.18 155)',
+  browsers:  'oklch(61% 0.20 260)',
+  developer: 'oklch(68% 0.19 300)',
+  apps:      'oklch(72% 0.17 60)',
+  advanced:  'oklch(60% 0.22 25)',
 }
 
 export default function CategorySection({ category, results, selectedIds, onToggleItem, onToggleCategory }) {
@@ -37,10 +37,10 @@ export default function CategorySection({ category, results, selectedIds, onTogg
             borderRadius: '8px',
           }}
         >
-          <div style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '0.8rem', color: 'var(--danger)', marginBottom: '2px' }}>
+          <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.8rem', color: 'var(--danger)', marginBottom: '2px' }}>
             ⚠️ Avancerat — Systemfiler
           </div>
-          <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+          <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
             Dessa åtgärder påverkar systemfiler och kräver administratörslösenord.
           </div>
         </div>
@@ -60,7 +60,7 @@ export default function CategorySection({ category, results, selectedIds, onTogg
         }}
       >
         <div
-          className={cn('custom-checkbox', allSelected && 'checked', !allSelected && someSelected && 'indeterminate')}
+          className={cn('s-checkbox', allSelected && 'checked', !allSelected && someSelected && 'indeterminate')}
           onClick={() => onToggleCategory(category)}
           style={{ cursor: 'pointer' }}
         >
@@ -76,7 +76,7 @@ export default function CategorySection({ category, results, selectedIds, onTogg
 
         <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: CATEGORY_COLORS[category], flexShrink: 0 }} />
 
-        <span style={{ fontFamily: 'DM Sans, sans-serif', fontWeight: 600, fontSize: '0.875rem', color: 'var(--text)', flex: 1 }}>
+        <span style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.875rem', color: 'var(--text)', flex: 1 }}>
           {CATEGORY_LABELS[category] || category}
         </span>
 

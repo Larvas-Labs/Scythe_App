@@ -10,7 +10,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(7, 8, 15, 0.85)',
+        background: 'oklch(10% 0.015 280 / 0.88)',
         backdropFilter: 'blur(4px)',
         zIndex: 100,
         display: 'flex',
@@ -40,7 +40,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
           <div style={{ fontSize: '1.4rem', marginBottom: '6px' }}>⚠️</div>
           <h2
             style={{
-              fontFamily: 'Syne, sans-serif',
+              fontFamily: 'var(--font-display)',
               fontWeight: 700,
               fontSize: '1.25rem',
               color: 'var(--text)',
@@ -52,7 +52,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
           </h2>
           <p
             style={{
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'var(--font-body)',
               fontSize: '0.875rem',
               color: 'var(--text-secondary)',
               margin: 0,
@@ -79,7 +79,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
             >
               <span style={{ fontSize: '0.9rem' }}>{item.icon}</span>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text)' }}>
+                <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.875rem', fontWeight: 500, color: 'var(--text)' }}>
                   {item.name}
                   {item.requiresAdmin && (
                     <span
@@ -132,7 +132,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
               border: '1px solid rgba(255, 184, 0, 0.2)',
               borderRadius: '8px',
               padding: '10px 14px',
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'var(--font-body)',
               fontSize: '0.8rem',
               color: 'var(--warning)',
               lineHeight: 1.5,
@@ -151,7 +151,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
               background: 'transparent',
               border: '1px solid var(--border-strong)',
               color: 'var(--text-secondary)',
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'var(--font-body)',
               fontSize: '0.875rem',
               cursor: 'pointer',
               transition: 'border-color 0.15s, color 0.15s',

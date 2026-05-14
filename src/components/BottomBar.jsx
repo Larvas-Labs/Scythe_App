@@ -23,7 +23,7 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         <span
           style={{
-            fontFamily: 'DM Sans, sans-serif',
+            fontFamily: 'var(--font-body)',
             fontSize: '0.875rem',
             color: hasSelection ? 'var(--text)' : 'var(--text-muted)',
           }}
@@ -60,7 +60,7 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
               background: 'transparent',
               border: '1px solid var(--border-strong)',
               color: 'var(--text-secondary)',
-              fontFamily: 'DM Sans, sans-serif',
+              fontFamily: 'var(--font-body)',
               fontSize: '0.8rem',
               fontWeight: 500,
               cursor: 'pointer',

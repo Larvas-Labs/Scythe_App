@@ -43,7 +43,7 @@ export default function CategoryToggle({ categoryKey, label, enabled, onToggle, 
           >
             <div
               style={{
-                fontFamily: 'DM Sans, sans-serif',
+                fontFamily: 'var(--font-body)',
                 fontWeight: 600,
                 fontSize: '0.8rem',
                 color: 'var(--warning)',
@@ -54,7 +54,7 @@ export default function CategoryToggle({ categoryKey, label, enabled, onToggle, 
             </div>
             <div
               style={{
-                fontFamily: 'DM Sans, sans-serif',
+                fontFamily: 'var(--font-body)',
                 fontSize: '0.78rem',
                 color: 'var(--text-secondary)',
                 lineHeight: 1.4,
@@ -91,7 +91,7 @@ export default function CategoryToggle({ categoryKey, label, enabled, onToggle, 
 
         <span
           style={{
-            fontFamily: 'DM Sans, sans-serif',
+            fontFamily: 'var(--font-body)',
             fontWeight: 500,
             fontSize: '0.9rem',
             color: enabled ? 'var(--text)' : 'var(--text-muted)',

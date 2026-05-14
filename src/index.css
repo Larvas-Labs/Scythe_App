@@ -2,49 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ─── CSS Variables ─────────────────────────────────── */
+/* ─── Fonts ────────────────────────────────────────────── */
 :root {
-  --bg:           #07080F;
-  --bg-secondary: #0C0E1A;
-  --surface:      #111328;
-  --surface-hover:#161932;
-  --border:       #1C1F3A;
-  --border-strong:#252850;
-
-  --accent-green: #00E57A;
-  --accent-blue:  #0096FF;
-  --accent-glow-green: rgba(0, 229, 122, 0.15);
-  --accent-glow-blue:  rgba(0, 150, 255, 0.15);
-
-  --warning:      #FFB800;
-  --danger:       #FF453A;
-  --danger-glow:  rgba(255, 69, 58, 0.15);
-
-  --text:         #E8EAFF;
-  --text-secondary: #8890C0;
-  --text-muted:   #454870;
-
-  --gradient-scythe: linear-gradient(135deg, #00E57A 0%, #0096FF 100%);
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body:    'Jost', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg:           #F0F2FF;
-    --bg-secondary: #E8EAF6;
-    --surface:      #FFFFFF;
-    --surface-hover:#F4F5FF;
-    --border:       #D8DAEF;
-    --border-strong:#C0C3E0;
-    --text:         #0A0C1F;
-    --text-secondary: #4A4E80;
-    --text-muted:   #9096C0;
-  }
+/* ─── Dark theme (default) ─────────────────────────────── */
+:root {
+  --bg:           oklch(10% 0.015 280);
+  --bg-secondary: oklch(13% 0.018 280);
+  --surface:      oklch(17% 0.022 280);
+  --surface-hover:oklch(20.5% 0.022 280);
+  --border:       oklch(24% 0.018 280);
+  --border-strong:oklch(31% 0.022 280);
+
+  --accent-green: oklch(80% 0.18 155);
+  --accent-blue:  oklch(61% 0.20 260);
+  --accent-glow-green: oklch(80% 0.18 155 / 0.12);
+  --accent-glow-blue:  oklch(61% 0.20 260 / 0.12);
+
+  --warning:      oklch(78% 0.16 80);
+  --danger:       oklch(60% 0.22 25);
+  --danger-glow:  oklch(60% 0.22 25 / 0.12);
+
+  --text:           oklch(93% 0.006 280);
+  --text-secondary: oklch(62% 0.018 280);
+  --text-muted:     oklch(40% 0.014 280);
+
+  --gradient-scythe: linear-gradient(135deg, oklch(80% 0.18 155) 0%, oklch(61% 0.20 260) 100%);
+
+  color-scheme: dark;
 }
 
-/* ─── Base ───────────────────────────────────────────── */
-* {
-  box-sizing: border-box;
+/* ─── Light theme ───────────────────────────────────────── */
+[data-theme="light"] {
+  --bg:           oklch(97% 0.006 280);
+  --bg-secondary: oklch(93.5% 0.008 280);
+  --surface:      oklch(100% 0 0);
+  --surface-hover:oklch(95.5% 0.007 280);
+  --border:       oklch(87% 0.009 280);
+  --border-strong:oklch(79% 0.013 280);
+
+  --text:           oklch(14% 0.015 280);
+  --text-secondary: oklch(42% 0.02 280);
+  --text-muted:     oklch(62% 0.014 280);
+
+  color-scheme: light;
 }
+
+/* ─── Base ──────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
 
 html, body, #root {
   height: 100%;
@@ -54,69 +63,67 @@ html, body, #root {
 body {
   background-color: var(--bg);
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: var(--font-body);
+  font-size: 14px;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   margin: 0;
+  line-height: 1.5;
 }
 
-/* ─── Typography helpers ─────────────────────────────── */
-.font-syne   { font-family: 'Syne', sans-serif; }
-.font-dm     { font-family: 'DM Sans', sans-serif; }
-.font-mono   { font-family: 'JetBrains Mono', monospace; }
+/* ─── Custom scrollbar ──────────────────────────────────── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* ─── Custom Scrollbar ───────────────────────────────── */
-::-webkit-scrollbar {
-  width: 4px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
-}
-
-/* ─── Gradient text utility ──────────────────────────── */
-.gradient-text {
+/* ─── Buttons ───────────────────────────────────────────── */
+.btn-primary {
   background: var(--gradient-scythe);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* ─── Gradient button ────────────────────────────────── */
-.btn-gradient {
-  background: var(--gradient-scythe);
-  color: #07080F;
-  font-family: 'DM Sans', sans-serif;
+  color: oklch(10% 0.015 280);
+  font-family: var(--font-body);
   font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.01em;
   border: none;
   cursor: pointer;
+  border-radius: 8px;
   transition: opacity 0.15s ease, transform 0.1s ease;
 }
-.btn-gradient:hover { opacity: 0.9; }
-.btn-gradient:active { transform: scale(0.98); }
+.btn-primary:hover  { opacity: 0.88; }
+.btn-primary:active { transform: scale(0.97); }
 
-/* ─── Danger button ──────────────────────────────────── */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 13px;
+  border: 1px solid var(--border-strong);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.btn-ghost:hover { background: var(--surface); color: var(--text); }
+
 .btn-danger {
   background: var(--danger);
-  color: #fff;
-  font-family: 'DM Sans', sans-serif;
+  color: oklch(97% 0.003 280);
+  font-family: var(--font-body);
   font-weight: 600;
+  font-size: 13px;
   border: none;
   cursor: pointer;
+  border-radius: 8px;
   transition: opacity 0.15s ease, transform 0.1s ease;
 }
-.btn-danger:hover { opacity: 0.85; }
-.btn-danger:active { transform: scale(0.98); }
+.btn-danger:hover  { opacity: 0.85; }
+.btn-danger:active { transform: scale(0.97); }
 
-/* ─── Toggle switch ──────────────────────────────────── */
+/* ─── Toggle switch ─────────────────────────────────────── */
 .toggle-track {
-  width: 36px;
-  height: 20px;
+  width: 34px;
+  height: 19px;
   border-radius: 10px;
   background: var(--border-strong);
   position: relative;
@@ -124,40 +131,37 @@ body {
   cursor: pointer;
   flex-shrink: 0;
 }
-.toggle-track.on {
-  background: var(--accent-green);
-}
+.toggle-track.on { background: var(--accent-green); }
 .toggle-thumb {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
-  background: #fff;
+  background: oklch(97% 0.004 280);
   position: absolute;
   top: 2px;
   left: 2px;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px oklch(0% 0 0 / 0.25);
 }
-.toggle-track.on .toggle-thumb {
-  transform: translateX(16px);
-}
+.toggle-track.on .toggle-thumb { transform: translateX(15px); }
 
-/* ─── Progress bar ───────────────────────────────────── */
-.progress-bar-fill {
+/* ─── Progress bar ──────────────────────────────────────── */
+.progress-fill {
   background: var(--gradient-scythe);
   height: 100%;
-  border-radius: 4px;
-  transition: width 0.4s ease;
+  border-radius: 3px;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ─── Ring animation ─────────────────────────────────── */
+/* ─── Ring animation ────────────────────────────────────── */
 .ring-dash {
-  transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* ─── Checkbox ───────────────────────────────────────── */
-.custom-checkbox {
-  width: 16px;
-  height: 16px;
+/* ─── Checkbox ──────────────────────────────────────────── */
+.s-checkbox {
+  width: 15px;
+  height: 15px;
   border-radius: 4px;
   border: 1.5px solid var(--border-strong);
   background: transparent;
@@ -166,13 +170,34 @@ body {
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.12s, border-color 0.12s;
 }
-.custom-checkbox.checked {
-  background: var(--accent-blue);
-  border-color: var(--accent-blue);
+.s-checkbox.checked       { background: var(--accent-blue); border-color: var(--accent-blue); }
+.s-checkbox.indeterminate { background: var(--accent-blue); border-color: var(--accent-blue); }
+
+/* ─── Theme toggle ──────────────────────────────────────── */
+.theme-toggle {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  flex-shrink: 0;
 }
-.custom-checkbox.indeterminate {
-  background: var(--accent-blue);
-  border-color: var(--accent-blue);
+.theme-toggle:hover { background: var(--surface-hover); color: var(--text); border-color: var(--border-strong); }
+
+/* ─── Utility labels ────────────────────────────────────── */
+.label-xs {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
