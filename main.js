@@ -375,13 +375,13 @@ function createWindow() {
 app.whenReady().then(() => {
   createWindow()
   if (!isDev && autoUpdater) {
-    autoUpdater.checkForUpdatesAndNotify()
     autoUpdater.on('update-available', (info) => {
       mainWindow?.webContents.send('update:available', info)
     })
     autoUpdater.on('update-downloaded', (info) => {
       mainWindow?.webContents.send('update:downloaded', info)
     })
+    autoUpdater.checkForUpdatesAndNotify()
   }
 })
 

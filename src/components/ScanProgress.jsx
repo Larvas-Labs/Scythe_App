@@ -77,7 +77,7 @@ export default function ScanProgress({ progress, completedCount, totalCount, onA
             }}
           >
             {item.status === 'done' ? (
-              <span style={{ color: 'var(--accent-green)', fontSize: '0.9rem' }}>✓</span>
+              <span style={{ color: 'var(--accent)', fontSize: '0.9rem' }}>✓</span>
             ) : (
               <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>◌</span>
             )}
@@ -98,7 +98,7 @@ export default function ScanProgress({ progress, completedCount, totalCount, onA
                 style={{
                   fontFamily: 'JetBrains Mono, monospace',
                   fontSize: '0.8rem',
-                  color: 'var(--accent-green)',
+                  color: 'var(--accent)',
                 }}
               >
                 {formatSize(item.size)}

@@ -12,11 +12,11 @@ const CATEGORY_LABELS = {
 }
 
 const CATEGORY_COLORS = {
-  user:      'oklch(83% 0.245 152)',
-  browsers:  'oklch(63% 0.244 257)',
-  developer: 'oklch(68% 0.19 300)',
-  apps:      'oklch(72% 0.17 60)',
-  advanced:  'oklch(62% 0.247 22)',
+  user:      'var(--text-secondary)',
+  browsers:  'var(--text-secondary)',
+  developer: 'var(--text-secondary)',
+  apps:      'var(--text-secondary)',
+  advanced:  'var(--danger)',
 }
 
 export default function CategorySection({ category, results, selectedIds, onToggleItem, onToggleCategory }) {
@@ -34,8 +34,8 @@ export default function CategorySection({ category, results, selectedIds, onTogg
           style={{
             margin: '8px 16px 8px',
             padding: '10px 14px',
-            background: 'oklch(62% 0.247 22 / 0.07)',
-            border: '1px solid oklch(62% 0.247 22 / 0.2)',
+            background: 'rgba(255, 69, 58, 0.07)',
+            border: '1px solid rgba(255, 69, 58, 0.20)',
             borderRadius: '10px',
           }}
         >
@@ -95,6 +95,7 @@ export default function CategorySection({ category, results, selectedIds, onTogg
         {/* Items */}
         <div>
           {results
+            .filter(r => r.exists)
             .slice()
             .sort((a, b) => (b.size || 0) - (a.size || 0))
             .map((result, i, arr) => (

@@ -42,59 +42,40 @@
 }
 
 /* ─── Dark theme (default) ─────────────────────────────── */
-/* Colors match spec hex values expressed as OKLCH          */
-/* #07080F #0C0E1A #111328 #161932 #1C1F3A #252850          */
 :root {
-  --bg:            oklch(4.5% 0.013 279);
-  --bg-secondary:  oklch(7.5% 0.018 279);
-  --surface:       oklch(11%  0.025 279);
-  --surface-hover: oklch(13.5% 0.025 279);
-  --border:        oklch(16.5% 0.026 280);
-  --border-strong: oklch(22%  0.032 280);
+  --bg:            #0D0D0D;
+  --bg-secondary:  #131313;
+  --surface:       #151515;
+  --surface-hover: #1a1a1a;
+  --border:        #1e1e1e;
+  --border-strong: #2a2a2a;
 
-  /* #00E57A → oklch(83% 0.245 152)  #0096FF → oklch(63% 0.244 257) */
-  --accent-green:      oklch(83% 0.245 152);
-  --accent-blue:       oklch(63% 0.244 257);
-  --accent-glow-green: oklch(83% 0.245 152 / 0.15);
-  --accent-glow-blue:  oklch(63% 0.244 257 / 0.15);
+  --accent:        #FF9500;
+  --accent-dim:    rgba(255, 149, 0, 0.12);
 
-  /* #FFB800  #FF453A */
-  --warning:     oklch(80% 0.175 73);
-  --danger:      oklch(62% 0.247 22);
-  --danger-glow: oklch(62% 0.247 22 / 0.15);
+  --danger:        #FF453A;
+  --danger-dim:    rgba(255, 69, 58, 0.12);
+  --warning:       #FF9F0A;
 
-  /* #E8EAFF  #8890C0  #454870 */
-  --text:           oklch(93% 0.022 280);
-  --text-secondary: oklch(61% 0.05  280);
-  --text-muted:     oklch(37% 0.052 280);
-
-  --gradient-scythe: linear-gradient(135deg, oklch(83% 0.245 152) 0%, oklch(63% 0.244 257) 100%);
-
-  /* Gradient app background — subtle brand glow */
-  --app-bg:
-    radial-gradient(ellipse 55% 45% at 100% 0%,   oklch(14% 0.08 152 / 0.55) 0%, transparent 55%),
-    radial-gradient(ellipse 45% 45% at 0%   100%,  oklch(11% 0.06 257 / 0.45) 0%, transparent 50%),
-    oklch(4.5% 0.013 279);
+  --text:          #E0E0E0;
+  --text-secondary:#888888;
+  --text-muted:    #444444;
 
   color-scheme: dark;
 }
 
 /* ─── Light theme ───────────────────────────────────────── */
-/* #F0F2FF #E8EAF6 #FFFFFF #F4F5FF #D8DAEF #C0C3E0          */
-/* #0A0C1F #4A4E80 #9096C0                                   */
 [data-theme="light"] {
-  --bg:            oklch(96%   0.013 280);
-  --bg-secondary:  oklch(93%   0.011 280);
-  --surface:       oklch(100%  0     0);
-  --surface-hover: oklch(97.5% 0.01  280);
-  --border:        oklch(88%   0.016 280);
-  --border-strong: oklch(81%   0.022 280);
+  --bg:            #F5F5F5;
+  --bg-secondary:  #EBEBEB;
+  --surface:       #FFFFFF;
+  --surface-hover: #F0F0F0;
+  --border:        #E0E0E0;
+  --border-strong: #CCCCCC;
 
-  --text:           oklch(9.5% 0.02  280);
-  --text-secondary: oklch(40%  0.05  280);
-  --text-muted:     oklch(64%  0.045 280);
-
-  --app-bg: oklch(96% 0.013 280);
+  --text:          #111111;
+  --text-secondary:#555555;
+  --text-muted:    #999999;
 
   color-scheme: light;
 }
@@ -126,8 +107,8 @@ body {
 
 /* ─── Buttons ───────────────────────────────────────────── */
 .btn-primary {
-  background: var(--gradient-scythe);
-  color: oklch(5% 0.014 280);
+  background: var(--accent);
+  color: #0D0D0D;
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 13px;
@@ -155,7 +136,7 @@ body {
 
 .btn-danger {
   background: var(--danger);
-  color: oklch(97% 0.003 280);
+  color: #F0F2FF;
   font-family: var(--font-body);
   font-weight: 600;
   font-size: 13px;
@@ -178,23 +159,23 @@ body {
   cursor: pointer;
   flex-shrink: 0;
 }
-.toggle-track.on { background: var(--accent-green); }
+.toggle-track.on { background: var(--accent); }
 .toggle-thumb {
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  background: oklch(97% 0.004 280);
+  background: #F4F5FF;
   position: absolute;
   top: 2px;
   left: 2px;
   transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 1px 3px oklch(0% 0 0 / 0.25);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
 }
 .toggle-track.on .toggle-thumb { transform: translateX(15px); }
 
 /* ─── Progress bar ──────────────────────────────────────── */
 .progress-fill {
-  background: var(--gradient-scythe);
+  background: var(--accent);
   height: 100%;
   border-radius: 3px;
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -203,6 +184,20 @@ body {
 /* ─── Ring animation ────────────────────────────────────── */
 .ring-dash {
   transition: stroke-dashoffset 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Scan button animations ────────────────────────────── */
+@keyframes scan-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes scan-pulse-ring {
+  0%   { transform: scale(1);   opacity: 0.55; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+@keyframes scan-breathe {
+  0%, 100% { transform: scale(1);    box-shadow: 0 0 0   0px rgba(255, 149, 0, 0.35); }
+  50%       { transform: scale(1.04); box-shadow: 0 0 24px 6px rgba(255, 149, 0, 0.18); }
 }
 
 /* ─── Checkbox ──────────────────────────────────────────── */
@@ -219,8 +214,8 @@ body {
   flex-shrink: 0;
   transition: background 0.12s, border-color 0.12s;
 }
-.s-checkbox.checked       { background: var(--accent-blue); border-color: var(--accent-blue); }
-.s-checkbox.indeterminate { background: var(--accent-blue); border-color: var(--accent-blue); }
+.s-checkbox.checked       { background: var(--accent); border-color: var(--accent); }
+.s-checkbox.indeterminate { background: var(--accent); border-color: var(--accent); }
 
 /* ─── Theme toggle ──────────────────────────────────────── */
 .theme-toggle {

@@ -13,7 +13,7 @@ export default function ResultList({ results, selectedIds, onToggleItem, onToggl
     <div style={{ paddingBottom: '80px' }}>
       {CATEGORY_ORDER.map(category => {
         const items = grouped[category]
-        if (!items || items.length === 0) return null
+        if (!items || items.length === 0 || items.every(r => !r.exists)) return null
         return (
           <CategorySection
             key={category}

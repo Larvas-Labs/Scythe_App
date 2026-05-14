@@ -22,8 +22,8 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
         >
           <defs>
             <linearGradient id="ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="oklch(83% 0.245 152)" />
-              <stop offset="100%" stopColor="oklch(63% 0.244 257)" />
+              <stop offset="0%" stopColor="#FF9500" />
+              <stop offset="100%" stopColor="#FF9500" />
             </linearGradient>
             <filter id="ring-glow" x="-20%" y="-20%" width="140%" height="140%">
               <feGaussianBlur stdDeviation="4" result="blur" />
@@ -76,7 +76,7 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
               fontFamily: 'var(--font-mono)',
               fontWeight: 500,
               fontSize: size >= 1024 ** 3 ? (svgSize < 180 ? '1rem' : '1.5rem') : (svgSize < 180 ? '0.9rem' : '1.25rem'),
-              color: 'var(--text)',
+              color: 'var(--accent)',
               lineHeight: 1.1,
             }}
           >
@@ -101,7 +101,7 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
             fontFamily: 'var(--font-mono)',
             fontSize: svgSize < 180 ? '0.85rem' : '1rem',
             fontWeight: 500,
-            color: 'var(--accent-green)',
+            color: 'var(--accent)',
           }}
         >
           {formatSize(selectedSize)}
