@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import Layout from './components/Layout.jsx'
 import Sidebar from './components/Sidebar.jsx'
 import MainContent from './components/MainContent.jsx'
@@ -22,6 +22,7 @@ export default function App() {
   const [trashSize, setTrashSize] = useState(0)
   const [theme, setTheme] = useState('dark')
   const [updateState, setUpdateState] = useState(null) // null | 'checking' | 'uptodate' | 'available' | 'downloading' | 'ready' | 'error'
+  const isManualCheckRef = useRef(false)
   const [appVersion, setAppVersion] = useState('')
   const [availableVersion, setAvailableVersion] = useState(null)
   const [downloadProgress, setDownloadProgress] = useState(0)
@@ -43,8 +44,11 @@ export default function App() {
         setBannerDismissed(false)
       })
       window.scythe.onUpdateNotAvailable?.(() => {
-        setUpdateState('uptodate')
-        setTimeout(() => setUpdateState(null), 3000)
+        if (isManualCheckRef.current) {
+          setUpdateState('uptodate')
+          setTimeout(() => setUpdateState(null), 3000)
+        }
+        isManualCheckRef.current = false
       })
       window.scythe.onUpdateError?.(() => {
         setUpdateState('error')
@@ -181,6 +185,7 @@ export default function App() {
   }, [])
 
   const checkForUpdates = useCallback(async () => {
+    isManualCheckRef.current = true
     setUpdateState('checking')
     await window.scythe.checkForUpdates?.()
   }, [])
