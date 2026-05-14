@@ -21,7 +21,8 @@ export default function App() {
   const [deleteResult, setDeleteResult] = useState(null)
   const [trashSize, setTrashSize] = useState(0)
   const [theme, setTheme] = useState('dark')
-  const [updateState, setUpdateState] = useState(null)
+  const [updateState, setUpdateState] = useState(null) // null | 'checking' | 'uptodate' | 'available' | 'downloaded' | 'error'
+  const [appVersion, setAppVersion] = useState('')
 
   useEffect(() => {
     window.scythe.storeGet('enabledCategories').then(saved => {
@@ -35,7 +36,10 @@ export default function App() {
     if (window.scythe.onUpdateAvailable) {
       window.scythe.onUpdateAvailable(() => setUpdateState('available'))
       window.scythe.onUpdateDownloaded(() => setUpdateState('downloaded'))
+      window.scythe.onUpdateNotAvailable?.(() => setUpdateState('uptodate'))
+      window.scythe.onUpdateError?.(() => setUpdateState('error'))
     }
+    window.scythe.getVersion?.().then(v => { if (v) setAppVersion(v) })
   }, [])
 
   useEffect(() => {
@@ -158,6 +162,11 @@ export default function App() {
     setTrashSize(0)
   }, [])
 
+  const checkForUpdates = useCallback(async () => {
+    setUpdateState('checking')
+    await window.scythe.checkForUpdates?.()
+  }, [])
+
   const resetToIdle = useCallback(() => {
     setAppState('idle')
     setScanResults([])
@@ -184,6 +193,10 @@ export default function App() {
           onNewScan={appState === 'results' || appState === 'done' ? resetToIdle : undefined}
           theme={theme}
           onToggleTheme={toggleTheme}
+          updateState={updateState}
+          appVersion={appVersion}
+          onCheckForUpdates={checkForUpdates}
+          onInstallUpdate={() => window.scythe.installUpdate()}
         />
       }
       updateBanner={

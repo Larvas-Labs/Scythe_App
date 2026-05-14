@@ -20,7 +20,63 @@ function MoonIcon() {
   )
 }
 
-export default function SettingsPopup({ theme, onToggleTheme, onClose }) {
+function RefreshIcon({ spinning = false }) {
+  return (
+    <svg
+      width="13"
+      height="13"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={spinning ? { animation: 'spin 0.9s linear infinite' } : undefined}
+    >
+      <polyline points="23 4 23 10 17 10"/>
+      <polyline points="1 20 1 14 7 14"/>
+      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+    </svg>
+  )
+}
+
+function CheckIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  )
+}
+
+function DownloadIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  )
+}
+
+function AlertIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="12" y1="8" x2="12" y2="12"/>
+      <line x1="12" y1="16" x2="12.01" y2="16"/>
+    </svg>
+  )
+}
+
+export default function SettingsPopup({
+  theme,
+  onToggleTheme,
+  onClose,
+  updateState,
+  appVersion,
+  onCheckForUpdates,
+  onInstallUpdate,
+}) {
   const ref = useRef(null)
 
   useEffect(() => {
@@ -39,6 +95,33 @@ export default function SettingsPopup({ theme, onToggleTheme, onClose }) {
   }, [onClose])
 
   const isDark = theme === 'dark'
+  const isChecking = updateState === 'checking'
+
+  // Derive what the update button icon and tooltip should be
+  function getUpdateButtonProps() {
+    switch (updateState) {
+      case 'checking':   return { icon: <RefreshIcon spinning />, color: 'var(--text-secondary)', title: 'Söker...' }
+      case 'uptodate':   return { icon: <CheckIcon />,            color: 'var(--accent)',          title: 'Senaste versionen' }
+      case 'available':  return { icon: <DownloadIcon />,         color: 'var(--accent)',          title: 'Ny version tillgänglig' }
+      case 'downloaded': return { icon: <DownloadIcon />,         color: 'var(--accent)',          title: 'Redo att installera' }
+      case 'error':      return { icon: <AlertIcon />,            color: 'var(--danger)',          title: 'Kontrollera anslutning' }
+      default:           return { icon: <RefreshIcon />,          color: 'var(--text-secondary)', title: 'Sök efter uppdatering' }
+    }
+  }
+
+  function getStatusText() {
+    switch (updateState) {
+      case 'checking':   return null
+      case 'uptodate':   return { text: 'Senaste versionen', color: 'var(--accent)' }
+      case 'available':  return { text: 'Ny version laddas ned...', color: 'var(--text-secondary)' }
+      case 'downloaded': return { text: 'Klar att installeras', color: 'var(--accent)' }
+      case 'error':      return { text: 'Kontrollera anslutning', color: 'var(--danger)' }
+      default:           return null
+    }
+  }
+
+  const { icon, color, title } = getUpdateButtonProps()
+  const status = getStatusText()
 
   return (
     <div
@@ -47,7 +130,7 @@ export default function SettingsPopup({ theme, onToggleTheme, onClose }) {
         position: 'fixed',
         bottom: '56px',
         left: '8px',
-        width: '220px',
+        width: '224px',
         background: 'var(--surface)',
         border: '1px solid var(--border-strong)',
         borderRadius: '10px',
@@ -56,76 +139,132 @@ export default function SettingsPopup({ theme, onToggleTheme, onClose }) {
         zIndex: 200,
       }}
     >
-      {/* Utseende */}
-      <div style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: '10px',
-        fontWeight: 600,
-        letterSpacing: '0.1em',
-        textTransform: 'uppercase',
-        color: 'var(--text-muted)',
-        padding: '6px 8px 4px',
-      }}>
-        Utseende
-      </div>
+      {/* ── Utseende ─────────────────────────────── */}
+      <div style={sectionLabel}>Utseende</div>
 
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '6px 8px',
-        borderRadius: '6px',
-      }}>
-        <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--text)' }}>
-          Tema
-        </span>
+      <div style={row}>
+        <span style={rowText}>Tema</span>
         <button
           onClick={onToggleTheme}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '5px',
-            padding: '4px 10px',
-            borderRadius: '6px',
-            background: 'var(--bg-secondary)',
-            border: '1px solid var(--border)',
-            color: 'var(--text-secondary)',
-            fontFamily: 'var(--font-body)',
-            fontSize: '12px',
-            cursor: 'pointer',
-            transition: 'border-color 0.12s, color 0.12s',
-          }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.color = 'var(--text)' }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-secondary)' }}
+          className="theme-toggle"
+          title={isDark ? 'Byt till ljust läge' : 'Byt till mörkt läge'}
         >
           {isDark ? <SunIcon /> : <MoonIcon />}
-          {isDark ? 'Ljust' : 'Mörkt'}
         </button>
       </div>
 
-      <div style={{ height: '1px', background: 'var(--border)', margin: '4px 0' }} />
+      <div style={divider} />
 
-      {/* Uppdateringar */}
-      <div style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: '10px',
-        fontWeight: 600,
-        letterSpacing: '0.1em',
-        textTransform: 'uppercase',
-        color: 'var(--text-muted)',
-        padding: '6px 8px 4px',
-      }}>
-        Uppdateringar
+      {/* ── Uppdateringar ─────────────────────────── */}
+      <div style={sectionLabel}>Uppdateringar</div>
+
+      <div style={row}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <span style={rowText}>
+            {appVersion ? `Version ${appVersion}` : 'Version'}
+          </span>
+          {status && (
+            <span style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '11px',
+              color: status.color,
+              lineHeight: 1.3,
+            }}>
+              {status.text}
+            </span>
+          )}
+        </div>
+
+        <button
+          onClick={!isChecking && updateState !== 'downloaded' ? onCheckForUpdates : undefined}
+          title={title}
+          style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '8px',
+            border: '1px solid var(--border)',
+            background: 'var(--surface)',
+            color,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: isChecking ? 'default' : 'pointer',
+            transition: 'background 0.15s, border-color 0.15s, color 0.15s',
+            flexShrink: 0,
+          }}
+          onMouseEnter={e => {
+            if (!isChecking) {
+              e.currentTarget.style.background = 'var(--surface-hover)'
+              e.currentTarget.style.borderColor = 'var(--border-strong)'
+              e.currentTarget.style.color = updateState === 'error' ? 'var(--danger)' : (updateState ? 'var(--accent)' : 'var(--text)')
+            }
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = 'var(--surface)'
+            e.currentTarget.style.borderColor = 'var(--border)'
+            e.currentTarget.style.color = color
+          }}
+        >
+          {icon}
+        </button>
       </div>
 
-      <div style={{
-        padding: '2px 8px 8px',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '11px',
-        color: 'var(--text-muted)',
-      }}>
-        Version 1.0.2
-      </div>
+      {/* Install button when update downloaded */}
+      {updateState === 'downloaded' && (
+        <div style={{ padding: '2px 4px 4px' }}>
+          <button
+            onClick={onInstallUpdate}
+            style={{
+              width: '100%',
+              padding: '7px 10px',
+              borderRadius: '6px',
+              background: 'var(--accent)',
+              border: 'none',
+              color: '#0D0D0D',
+              fontFamily: 'var(--font-body)',
+              fontSize: '12px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'opacity 0.15s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '0.88'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+          >
+            Installera och starta om
+          </button>
+        </div>
+      )}
     </div>
   )
+}
+
+const sectionLabel = {
+  fontFamily: 'var(--font-body)',
+  fontSize: '10px',
+  fontWeight: 600,
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase',
+  color: 'var(--text-muted)',
+  padding: '6px 8px 4px',
+}
+
+const row = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  padding: '4px 4px 4px 8px',
+  borderRadius: '6px',
+  minHeight: '40px',
+}
+
+const rowText = {
+  fontFamily: 'var(--font-body)',
+  fontSize: '13px',
+  color: 'var(--text)',
+}
+
+const divider = {
+  height: '1px',
+  background: 'var(--border)',
+  margin: '4px 0',
 }

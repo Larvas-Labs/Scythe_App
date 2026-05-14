@@ -186,6 +186,12 @@ body {
   transition: stroke-dashoffset 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ─── General utilities ─────────────────────────────────── */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
 /* ─── Scan button animations ────────────────────────────── */
 @keyframes scan-rotate {
   from { transform: rotate(0deg); }

@@ -83,6 +83,10 @@ export default function Sidebar({
   onNewScan,
   theme,
   onToggleTheme,
+  updateState,
+  appVersion,
+  onCheckForUpdates,
+  onInstallUpdate,
 }) {
   const [showSettings, setShowSettings] = useState(false)
 
@@ -307,6 +311,10 @@ export default function Sidebar({
           theme={theme}
           onToggleTheme={onToggleTheme}
           onClose={() => setShowSettings(false)}
+          updateState={updateState}
+          appVersion={appVersion}
+          onCheckForUpdates={onCheckForUpdates}
+          onInstallUpdate={onInstallUpdate}
         />
       )}
     </div>
