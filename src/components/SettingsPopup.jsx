@@ -55,16 +55,6 @@ function DownloadIcon() {
   )
 }
 
-// Downloaded — restart
-function RestartIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
-      <polyline points="3 3 3 8 8 8"/>
-    </svg>
-  )
-}
-
 // Error
 function AlertIcon() {
   return (
@@ -84,7 +74,6 @@ export default function SettingsPopup({
   appVersion,
   onCheckForUpdates,
   onDownloadAndInstall,
-  onRestart,
 }) {
   const ref = useRef(null)
 
@@ -131,23 +120,9 @@ export default function SettingsPopup({
     available: {
       icon: <DownloadIcon />,
       color: 'var(--accent)',
-      title: 'Hämta och installera uppdatering',
+      title: 'Öppna nedladdningssida',
       onClick: onDownloadAndInstall,
       status: { text: 'Ny version tillgänglig', color: 'var(--accent)' },
-    },
-    downloading: {
-      icon: <RefreshIcon spinning />,
-      color: 'var(--accent)',
-      title: 'Laddar ned...',
-      onClick: null,
-      status: { text: 'Hämtar...', color: 'var(--text-secondary)' },
-    },
-    downloaded: {
-      icon: <RestartIcon />,
-      color: 'var(--accent)',
-      title: 'Starta om och installera',
-      onClick: onRestart,
-      status: { text: 'Starta om', color: 'var(--accent)' },
     },
     error: {
       icon: <AlertIcon />,

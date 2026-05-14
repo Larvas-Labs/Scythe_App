@@ -20,8 +20,9 @@ export default function App() {
   const [deleteResult, setDeleteResult] = useState(null)
   const [trashSize, setTrashSize] = useState(0)
   const [theme, setTheme] = useState('dark')
-  const [updateState, setUpdateState] = useState(null) // null | 'checking' | 'uptodate' | 'available' | 'downloaded' | 'error'
+  const [updateState, setUpdateState] = useState(null) // null | 'checking' | 'uptodate' | 'available' | 'error'
   const [appVersion, setAppVersion] = useState('')
+  const [availableVersion, setAvailableVersion] = useState(null)
 
   useEffect(() => {
     window.scythe.storeGet('enabledCategories').then(saved => {
@@ -33,8 +34,10 @@ export default function App() {
     runEstimates()
 
     if (window.scythe.onUpdateAvailable) {
-      window.scythe.onUpdateAvailable(() => setUpdateState('available'))
-      window.scythe.onUpdateDownloaded(() => setUpdateState('downloaded'))
+      window.scythe.onUpdateAvailable((info) => {
+        setAvailableVersion(info?.version || null)
+        setUpdateState('available')
+      })
       window.scythe.onUpdateNotAvailable?.(() => {
         setUpdateState('uptodate')
         setTimeout(() => setUpdateState(null), 3000)
@@ -173,9 +176,8 @@ export default function App() {
   }, [])
 
   const downloadAndInstall = useCallback(async () => {
-    setUpdateState('downloading')
-    await window.scythe.downloadUpdate?.()
-  }, [])
+    await window.scythe.openRelease?.(availableVersion)
+  }, [availableVersion])
 
   const resetToIdle = useCallback(() => {
     setAppState('idle')

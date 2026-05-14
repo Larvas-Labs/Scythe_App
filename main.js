@@ -393,25 +393,12 @@ app.whenReady().then(() => {
   }
 })
 
-ipcMain.on('update:install', () => {
-  autoUpdater?.quitAndInstall()
-})
-
-ipcMain.handle('update:download', async () => {
-  if (isDev || !autoUpdater) {
-    // Simulate download in dev mode
-    setTimeout(() => {
-      mainWindow?.webContents.send('update:downloaded', {})
-    }, 2000)
-    return { ok: true }
-  }
-  try {
-    await autoUpdater.downloadUpdate()
-    return { ok: true }
-  } catch (err) {
-    mainWindow?.webContents.send('update:error', err?.message || String(err))
-    return { error: err?.message }
-  }
+ipcMain.handle('update:open-release', async (_, version) => {
+  const url = version
+    ? `https://github.com/peterhagman/Scythe/releases/tag/v${version}`
+    : `https://github.com/peterhagman/Scythe/releases/latest`
+  await shell.openExternal(url)
+  return { ok: true }
 })
 
 ipcMain.handle('update:check', async () => {

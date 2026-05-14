@@ -35,8 +35,7 @@ contextBridge.exposeInMainWorld('scythe', {
   onUpdateNotAvailable: (cb) => ipcRenderer.on('update:notavailable', (_, info) => cb(info)),
   onUpdateError: (cb) => ipcRenderer.on('update:error', (_, msg) => cb(msg)),
   checkForUpdates: () => ipcRenderer.invoke('update:check'),
-  downloadUpdate: () => ipcRenderer.invoke('update:download'),
-  installUpdate: () => ipcRenderer.send('update:install'),
+  openRelease: (version) => ipcRenderer.invoke('update:open-release', version),
 
   // App info
   getVersion: () => ipcRenderer.invoke('app:version'),
