@@ -1,0 +1,33 @@
+# Changelog
+
+## [1.1.1] - 2026-05-15
+
+### Förbättringar
+- Komplett internationalisering – alla UI-strängar och kategoribeskrivningar översatta till EN/SV/DE/FR/ES
+- Resultatvyns sammanfattningsring animerar korrekt vid bocka ur objekt
+- Ringen har konsekvent 4% gap (samma stil som startskärmen)
+- Kategorinamn och beskrivningar visas på aktivt språk
+
+### Buggfixar
+- Hårdkodade svenska strängar borttagna från resultatvy, startsida och lagringscirkeln
+- `idle.title` saknades i sv/de/fr/es – nu korrekt översatt
+
+---
+
+## [1.1.0] - 2026-05-15
+
+### Nyheter
+- Ny resultatvy med heltäckande sammanfattningswidget (ring + statistik + framstegsbar)
+- Sammanfattningsringen visar valt utrymme i centrum och animerar vid val/aval
+- Ny scanvy med orbitala animationer kring play-knappen under scanning
+- Förbättrad idle-vy med estimatring och polerad play-knapp (shimmer, glow, press-animation)
+
+---
+
+## [1.0.0] - 2026-05-15
+
+### Initialt släpp
+- Skanna, visualisera och radera cache-filer på macOS
+- Stöd för kategorier: Cacher, Webbläsare, Utvecklarverktyg, Appar, Avancerat
+- Auto-uppdatering via GitHub Releases
+- Mörkt/ljust tema, språkväljare (EN/SV/DE/FR/ES)

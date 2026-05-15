@@ -39,7 +39,8 @@
       "provider": "github",
       "owner": "peterhagman",
       "repo": "Scythe",
-      "releaseType": "release"
+      "releaseType": "release",
+      "releaseNotes": "See CHANGELOG.md for details"
     }
   },
   "dependencies": {
