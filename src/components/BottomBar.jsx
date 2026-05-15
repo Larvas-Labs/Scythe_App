@@ -15,10 +15,10 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '12px 16px',
-          background: 'var(--surface)',
-          border: '1px solid var(--border-strong)',
+          background: 'rgba(255, 69, 58, 0.07)',
+          border: '1px solid rgba(255, 69, 58, 0.28)',
           borderRadius: '14px',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
+          boxShadow: '0 8px 32px rgba(255, 69, 58, 0.15)',
         }}
       >
         {/* Left: selection info + empty trash */}
