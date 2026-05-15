@@ -112,7 +112,7 @@ export default function Sidebar({
 
       {/* Part 1: Logo */}
       <div style={{
-        paddingTop: '28px',
+        paddingTop: '52px',
         paddingBottom: '14px',
         paddingLeft: '16px',
         paddingRight: '12px',
@@ -124,7 +124,6 @@ export default function Sidebar({
         userSelect: 'none',
         flexShrink: 0,
       }}>
-        <ScytheLogo />
         <span style={{
           fontFamily: 'var(--font-display)',
           fontWeight: 700,
@@ -144,15 +143,15 @@ export default function Sidebar({
               padding: '3px 9px',
               borderRadius: '5px',
               background: 'transparent',
-              border: '1px solid var(--border)',
-              color: 'var(--text-muted)',
+              border: '1px solid var(--accent)',
+              color: 'var(--accent)',
               fontFamily: 'var(--font-body)',
               fontSize: '11px',
               cursor: 'pointer',
-              transition: 'border-color 0.15s, color 0.15s',
+              transition: 'border-color 0.15s, color 0.15s, background 0.15s',
             }}
-            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
-            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-dim)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
           >
             {t('sidebar.newScan')}
           </button>

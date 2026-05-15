@@ -8,94 +8,107 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
   const hasTrash = trashSize > 0
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        zIndex: 20,
-        height: '64px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 20px',
-        background: 'var(--bg-secondary)',
-        borderTop: '1px solid var(--border)',
-        flexShrink: 0,
-      }}
-    >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <span
-          style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '0.875rem',
-            color: hasSelection ? 'var(--text)' : 'var(--text-muted)',
-          }}
-        >
-          {hasSelection ? (
-            <>
-              {t('bottombar.selected', { n: selectedCount })}{' '}
-              <span style={{ color: 'var(--text-muted)' }}>•</span>
-              {' '}
-              <span
-                style={{
-                  fontFamily: 'JetBrains Mono, monospace',
-                  fontWeight: 500,
-                  fontSize: '0.9rem',
-                  color: 'var(--accent)',
-                }}
-              >
-                {formatSize(selectedSize)}
-              </span>
-              {' '}{t('bottombar.freed')}
-            </>
-          ) : (
-            t('bottombar.selectFiles')
-          )}
-        </span>
-
-        {hasTrash && (
-          <button
-            onClick={onEmptyTrash}
-            style={{
-              padding: '7px 16px',
-              borderRadius: '8px',
-              background: 'transparent',
-              border: '1px solid var(--border-strong)',
-              color: 'var(--text-secondary)',
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.8rem',
-              fontWeight: 500,
-              cursor: 'pointer',
-              transition: 'border-color 0.15s, color 0.15s',
-              whiteSpace: 'nowrap',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.borderColor = 'var(--danger)'
-              e.currentTarget.style.color = 'var(--danger)'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.borderColor = 'var(--border-strong)'
-              e.currentTarget.style.color = 'var(--text-secondary)'
-            }}
-          >
-            {t('bottombar.emptyTrash', { size: formatSize(trashSize) })}
-          </button>
-        )}
-      </div>
-
-      <button
-        className="btn-danger"
-        disabled={!hasSelection}
-        onClick={onHarvest}
+    <div style={{ padding: '0 16px 16px', flexShrink: 0 }}>
+      <div
         style={{
-          padding: '10px 28px',
-          borderRadius: '10px',
-          fontSize: '0.95rem',
-          opacity: hasSelection ? 1 : 0.4,
-          cursor: hasSelection ? 'pointer' : 'not-allowed',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '12px 16px',
+          background: 'var(--surface)',
+          border: '1px solid var(--border-strong)',
+          borderRadius: '14px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
         }}
       >
-        🌾 Harvest
-      </button>
+        {/* Left: selection info + empty trash */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            <span
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '0.78rem',
+                color: hasSelection ? 'var(--text-secondary)' : 'var(--text-muted)',
+              }}
+            >
+              {hasSelection
+                ? t('bottombar.selected', { n: selectedCount })
+                : t('bottombar.selectFiles')}
+            </span>
+            {hasSelection && (
+              <span
+                style={{
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: 600,
+                  fontSize: '1.1rem',
+                  color: 'var(--accent)',
+                  lineHeight: 1,
+                }}
+              >
+                {formatSize(selectedSize)}{' '}
+                <span style={{ fontFamily: 'var(--font-body)', fontWeight: 400, fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                  {t('bottombar.freed')}
+                </span>
+              </span>
+            )}
+          </div>
+
+          {hasTrash && (
+            <button
+              onClick={onEmptyTrash}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '8px',
+                background: 'transparent',
+                border: '1px solid var(--border-strong)',
+                color: 'var(--text-secondary)',
+                fontFamily: 'var(--font-body)',
+                fontSize: '0.78rem',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'border-color 0.15s, color 0.15s',
+                whiteSpace: 'nowrap',
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.borderColor = 'var(--danger)'
+                e.currentTarget.style.color = 'var(--danger)'
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.borderColor = 'var(--border-strong)'
+                e.currentTarget.style.color = 'var(--text-secondary)'
+              }}
+            >
+              {t('bottombar.emptyTrash', { size: formatSize(trashSize) })}
+            </button>
+          )}
+        </div>
+
+        {/* Harvest button */}
+        <button
+          disabled={!hasSelection}
+          onClick={onHarvest}
+          style={{
+            padding: '10px 32px',
+            borderRadius: '10px',
+            background: hasSelection ? 'var(--danger)' : 'transparent',
+            border: hasSelection ? '1px solid var(--danger)' : '1px solid var(--border-strong)',
+            color: hasSelection ? '#fff' : 'var(--text-muted)',
+            fontFamily: 'var(--font-body)',
+            fontWeight: 700,
+            fontSize: '0.95rem',
+            letterSpacing: '0.02em',
+            cursor: hasSelection ? 'pointer' : 'not-allowed',
+            transition: 'opacity 0.15s, transform 0.1s',
+            boxShadow: hasSelection ? '0 0 24px rgba(255,69,58,0.3)' : 'none',
+          }}
+          onMouseEnter={e => { if (hasSelection) e.currentTarget.style.opacity = '0.85' }}
+          onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
+          onMouseDown={e => { if (hasSelection) e.currentTarget.style.transform = 'scale(0.97)' }}
+          onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)' }}
+        >
+          🌾 Harvest
+        </button>
+      </div>
     </div>
   )
 }
