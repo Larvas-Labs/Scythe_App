@@ -6,9 +6,9 @@ import BottomBar from './components/BottomBar.jsx'
 import DeleteModal from './components/DeleteModal.jsx'
 import UpdateBanner from './components/UpdateBanner.jsx'
 import { selectedSize } from './utils.js'
+import { LangProvider } from './i18n/index.jsx'
 
-
-export default function App() {
+function AppInner() {
   const [appState, setAppState] = useState('idle')
   const [scanResults, setScanResults] = useState([])
   const [scanProgress, setScanProgress] = useState({})
@@ -21,6 +21,7 @@ export default function App() {
   const [deleteResult, setDeleteResult] = useState(null)
   const [trashSize, setTrashSize] = useState(0)
   const [theme, setTheme] = useState('dark')
+  const [language, setLanguage] = useState('en')
   const [updateState, setUpdateState] = useState(null) // null | 'checking' | 'uptodate' | 'available' | 'downloading' | 'ready' | 'error'
   const isManualCheckRef = useRef(false)
   const [appVersion, setAppVersion] = useState('')
@@ -34,6 +35,21 @@ export default function App() {
     })
     window.scythe.storeGet('theme').then(saved => {
       if (saved) setTheme(saved)
+    })
+    window.scythe.storeGet('language').then(async saved => {
+      if (saved) {
+        setLanguage(saved)
+      } else {
+        // Auto-detect from system locale
+        const SUPPORTED = ['en', 'sv', 'de', 'fr', 'es']
+        try {
+          const locale = await window.scythe.getSystemLocale?.()
+          if (locale) {
+            const code = locale.split('-')[0].toLowerCase()
+            if (SUPPORTED.includes(code)) setLanguage(code)
+          }
+        } catch {}
+      }
     })
     runEstimates()
 
@@ -204,6 +220,11 @@ export default function App() {
     window.scythe.quitApp?.()
   }, [])
 
+  const changeLanguage = useCallback(async (code) => {
+    setLanguage(code)
+    await window.scythe.storeSet('language', code)
+  }, [])
+
   const resetToIdle = useCallback(() => {
     setAppState('idle')
     setScanResults([])
@@ -217,6 +238,7 @@ export default function App() {
   const chosenSize = selectedSize(scanResults, selectedIds)
 
   return (
+    <LangProvider initialLang={language}>
     <Layout
       sidebar={
         <Sidebar
@@ -238,6 +260,8 @@ export default function App() {
           onDownloadAndInstall={startDownload}
           onRestart={restartApp}
           onQuit={quitApp}
+          language={language}
+          onChangeLanguage={changeLanguage}
         />
       }
       updateBanner={!bannerDismissed ? (
@@ -284,5 +308,10 @@ export default function App() {
         />
       )}
     </Layout>
+    </LangProvider>
   )
+}
+
+export default function App() {
+  return <AppInner />
 }

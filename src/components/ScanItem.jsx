@@ -1,8 +1,10 @@
 import React from 'react'
 import { formatSize, cn } from '../utils.js'
 import { ITEM_ICON_MAP, IconFolder } from './Icons.jsx'
+import { useLang } from '../i18n/index.jsx'
 
 export default function ScanItem({ result, selected, onToggle, isLast }) {
+  const { t } = useLang()
   const notFound = !result.exists
   const isUnsafe = !result.safe
   const ItemIcon = ITEM_ICON_MAP[result.id] || IconFolder
@@ -91,7 +93,7 @@ export default function ScanItem({ result, selected, onToggle, isLast }) {
             marginTop: '1px',
           }}
         >
-          {notFound ? 'Hittades inte' : result.description}
+          {notFound ? t('item.notFound') : result.description}
         </div>
       </div>
 
@@ -117,7 +119,7 @@ export default function ScanItem({ result, selected, onToggle, isLast }) {
       {!notFound && (
         <button
           onClick={handleReveal}
-          title="Visa i Finder"
+          title={t('item.showInFinder')}
           style={{
             flexShrink: 0,
             background: 'none',

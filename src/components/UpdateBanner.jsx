@@ -1,4 +1,5 @@
 import React from 'react'
+import { useLang } from '../i18n/index.jsx'
 
 function CloseIcon() {
   return (
@@ -18,6 +19,8 @@ export default function UpdateBanner({
   onRestart,
   onQuit,
 }) {
+  const { t } = useLang()
+
   if (!['available', 'downloading', 'ready'].includes(updateState)) return null
 
   return (
@@ -39,7 +42,7 @@ export default function UpdateBanner({
             color: 'var(--text-secondary)',
             flex: 1,
           }}>
-            Ny version tillgänglig
+            {t('banner.newVersion')}
             {availableVersion && (
               <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)', marginLeft: '6px' }}>
                 v{availableVersion}
@@ -64,11 +67,11 @@ export default function UpdateBanner({
             onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-dim)' }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
           >
-            Hämta version
+            {t('banner.download')}
           </button>
           <button
             onClick={onDismiss}
-            title="Dölj"
+            title={t('banner.hide')}
             style={{
               width: '22px',
               height: '22px',
@@ -99,7 +102,7 @@ export default function UpdateBanner({
             color: 'var(--text-secondary)',
             marginBottom: '4px',
           }}>
-            Hämtar uppdatering...
+            {t('banner.downloading')}
             <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)', marginLeft: '6px' }}>
               {downloadProgress}%
             </span>
@@ -129,7 +132,7 @@ export default function UpdateBanner({
             color: 'var(--text-secondary)',
             flex: 1,
           }}>
-            Uppdatering installerad
+            {t('banner.updateInstalled')}
           </span>
           <button
             onClick={onRestart}
@@ -149,7 +152,7 @@ export default function UpdateBanner({
             onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-dim)' }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
           >
-            Starta om app
+            {t('banner.restartApp')}
           </button>
           <button
             onClick={onQuit}
@@ -168,7 +171,7 @@ export default function UpdateBanner({
             onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
             onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border)' }}
           >
-            Avsluta app
+            {t('banner.quitApp')}
           </button>
         </>
       )}

@@ -485,6 +485,7 @@ ipcMain.handle('update:check', async () => {
 })
 
 ipcMain.handle('app:version', () => app.getVersion())
+ipcMain.handle('app:locale', () => app.getLocale())
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()

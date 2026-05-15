@@ -3,6 +3,7 @@ import IdleView from './IdleView.jsx'
 import ScanProgress from './ScanProgress.jsx'
 import ResultsView from './ResultsView.jsx'
 import DoneView from './DoneView.jsx'
+import { useLang } from '../i18n/index.jsx'
 
 export default function MainContent({
   appState,
@@ -18,6 +19,7 @@ export default function MainContent({
   onAbortScan,
   onNewScan,
 }) {
+  const { t } = useLang()
   const scanItems = Object.values(scanProgress)
   const completedCount = scanItems.filter(i => i.status === 'done').length
   const totalCount = scanItems.length
@@ -89,7 +91,7 @@ export default function MainContent({
             color: 'var(--text)',
             marginBottom: '8px',
           }}>
-            Raderar...
+            {t('deleting.title')}
           </div>
           <p style={{
             fontFamily: 'var(--font-body)',
@@ -97,7 +99,7 @@ export default function MainContent({
             color: 'var(--text-secondary)',
             margin: 0,
           }}>
-            Vänta medan filerna raderas permanent
+            {t('deleting.subtitle')}
           </p>
         </div>
       </div>

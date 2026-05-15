@@ -1,7 +1,9 @@
 import React from 'react'
 import { formatSize } from '../utils.js'
+import { useLang } from '../i18n/index.jsx'
 
 export default function DeleteModal({ items, onConfirm, onCancel }) {
+  const { t } = useLang()
   const totalSize = items.reduce((sum, item) => sum + (item.size || 0), 0)
   const hasAdmin = items.some(i => i.requiresAdmin)
 
@@ -48,7 +50,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
               marginBottom: '6px',
             }}
           >
-            Permanent radering
+            {t('modal.title')}
           </h2>
           <p
             style={{
@@ -59,7 +61,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
               lineHeight: 1.5,
             }}
           >
-            Dessa filer kan inte återställas. De raderas permanent, inte till papperskorgen.
+            {t('modal.warning')}
           </p>
         </div>
 
@@ -138,7 +140,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
               lineHeight: 1.5,
             }}
           >
-            macOS kommer be om ditt lösenord för att radera systemfilerna.
+            {t('modal.adminNote')}
           </div>
         )}
 
@@ -165,7 +167,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
               e.currentTarget.style.color = 'var(--text-secondary)'
             }}
           >
-            Avbryt
+            {t('modal.cancel')}
           </button>
           <button
             className="btn-danger"
@@ -177,7 +179,7 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
               whiteSpace: 'nowrap',
             }}
           >
-            Radera permanent ({formatSize(totalSize)})
+            {t('modal.confirm', { size: formatSize(totalSize) })}
           </button>
         </div>
       </div>

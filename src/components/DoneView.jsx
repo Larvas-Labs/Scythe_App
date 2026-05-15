@@ -1,7 +1,9 @@
 import React from 'react'
 import { formatSize } from '../utils.js'
+import { useLang } from '../i18n/index.jsx'
 
 export default function DoneView({ deleteResult, onNewScan }) {
+  const { t } = useLang()
   if (!deleteResult) return null
 
   return (
@@ -61,7 +63,7 @@ export default function DoneView({ deleteResult, onNewScan }) {
           color: 'var(--text-secondary)',
           marginBottom: '28px',
         }}>
-          frigjort
+          {t('done.freed')}
         </div>
 
         {/* Item list */}
@@ -103,7 +105,7 @@ export default function DoneView({ deleteResult, onNewScan }) {
           onClick={onNewScan}
           style={{ padding: '11px 36px', borderRadius: '8px', fontSize: '14px' }}
         >
-          Kör ny scanning
+          {t('done.newScan')}
         </button>
       </div>
     </div>

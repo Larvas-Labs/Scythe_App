@@ -1,7 +1,9 @@
 import React from 'react'
 import { formatSize } from '../utils.js'
+import { useLang } from '../i18n/index.jsx'
 
 export default function ScanProgress({ progress, completedCount, totalCount, onAbort }) {
+  const { t } = useLang()
   const items = Object.values(progress)
   const currentItem = items.find(i => i.status === 'scanning')
   const progressPercent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0
@@ -19,7 +21,7 @@ export default function ScanProgress({ progress, completedCount, totalCount, onA
             marginBottom: '6px',
           }}
         >
-          Skannar din Mac...
+          {t('scan.title')}
         </h2>
         {currentItem && (
           <p
@@ -30,7 +32,7 @@ export default function ScanProgress({ progress, completedCount, totalCount, onA
               margin: 0,
             }}
           >
-            Skannar {currentItem.name}...
+            {t('scan.scanning', { name: currentItem.name })}
           </p>
         )}
       </div>
@@ -58,7 +60,7 @@ export default function ScanProgress({ progress, completedCount, totalCount, onA
           marginBottom: '24px',
         }}
       >
-        {completedCount} av {totalCount} kategorier klara
+        {t('scan.progress', { done: completedCount, total: totalCount })}
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -131,7 +133,7 @@ export default function ScanProgress({ progress, completedCount, totalCount, onA
           e.target.style.color = 'var(--text-secondary)'
         }}
       >
-        Avbryt
+        {t('scan.abort')}
       </button>
     </div>
   )

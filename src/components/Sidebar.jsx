@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import { CATEGORY_ICON_MAP } from './Icons.jsx'
 import { formatSize } from '../utils.js'
 import SettingsPopup from './SettingsPopup.jsx'
+import { useLang } from '../i18n/index.jsx'
 
-const CATEGORIES = [
-  { key: 'user',      label: 'Cacher',       color: 'var(--text-secondary)' },
-  { key: 'browsers',  label: 'Webbläsare',   color: 'var(--text-secondary)' },
-  { key: 'developer', label: 'Utvecklare',   color: 'var(--text-secondary)' },
-  { key: 'apps',      label: 'Appar',        color: 'var(--text-secondary)' },
-  { key: 'advanced',  label: 'Avancerat',    color: 'var(--danger)' },
+const CATEGORY_KEYS = [
+  { key: 'user',      labelKey: 'cat.user',      color: 'var(--text-secondary)' },
+  { key: 'browsers',  labelKey: 'cat.browsers',  color: 'var(--text-secondary)' },
+  { key: 'developer', labelKey: 'cat.developer', color: 'var(--text-secondary)' },
+  { key: 'apps',      labelKey: 'cat.apps',      color: 'var(--text-secondary)' },
+  { key: 'advanced',  labelKey: 'cat.advanced',  color: 'var(--danger)' },
 ]
 
 const CAT_TO_IDS = {
@@ -91,8 +92,11 @@ export default function Sidebar({
   onDownloadAndInstall,
   onRestart,
   onQuit,
+  language,
+  onChangeLanguage,
 }) {
   const [showSettings, setShowSettings] = useState(false)
+  const { t } = useLang()
 
   return (
     <div style={{
@@ -150,7 +154,7 @@ export default function Sidebar({
             onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
             onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)' }}
           >
-            Ny scan
+            {t('sidebar.newScan')}
           </button>
         )}
       </div>
@@ -177,10 +181,11 @@ export default function Sidebar({
             color: 'var(--text-muted)',
             padding: '2px 8px 8px',
           }}>
-            Skanna områden
+            {t('sidebar.scanAreas')}
           </div>
 
-          {CATEGORIES.map(({ key, label, color }) => {
+          {CATEGORY_KEYS.map(({ key, labelKey, color }) => {
+            const label = t(labelKey)
             const Icon = CATEGORY_ICON_MAP[key]
             const ids = CAT_TO_IDS[key] || []
             const isEnabled = enabledCategories[key]
@@ -275,7 +280,7 @@ export default function Sidebar({
                         color: 'var(--text-muted)',
                         whiteSpace: 'nowrap',
                       }}>
-                        ~{formatSize(estSize)} kan frigöras
+                        ~{formatSize(estSize)} {t('sidebar.canBeFreed')}
                       </span>
                     )}
                   </div>
@@ -332,7 +337,7 @@ export default function Sidebar({
         >
           <SlidersIcon />
           <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--text-secondary)' }}>
-            Inställningar
+            {t('sidebar.settings')}
           </span>
         </button>
       </div>
@@ -350,6 +355,8 @@ export default function Sidebar({
           onDownloadAndInstall={onDownloadAndInstall}
           onRestart={onRestart}
           onQuit={onQuit}
+          language={language}
+          onChangeLanguage={onChangeLanguage}
         />
       )}
     </div>
