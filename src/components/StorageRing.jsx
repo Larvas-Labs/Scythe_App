@@ -97,7 +97,7 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
               marginTop: '2px',
             }}
           >
-            {centerLabel ?? 'kan rensas'}
+            {centerLabel ?? ''}
           </div>
         </div>
       </div>

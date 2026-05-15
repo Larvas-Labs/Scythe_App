@@ -88,6 +88,51 @@ export const translations = {
     // Scan item
     'item.notFound':     'Not found',
     'item.showInFinder': 'Show in Finder',
+
+    // Results view
+    'results.found':           'Found',
+    'results.selectedToClean': 'Selected to clean',
+    'results.items':           'Items',
+    'results.percentSelected': '{n}% of found data selected',
+
+    // Idle view
+    'idle.canBeFreed': 'can be freed',
+
+    // Target names
+    'target.user-caches.name':    'App caches',
+    'target.user-logs.name':      'User logs',
+    'target.trash.name':          'Trash',
+    'target.ios-simulators.name': 'iOS Simulators',
+    'target.docker-data.name':    'Docker',
+    'target.system-caches.name':  'System caches',
+    'target.system-logs.name':    'System logs',
+    'target.temp-system.name':    'Temp system files',
+
+    // Target descriptions
+    'target.user-caches.desc':    'Caches created by installed apps',
+    'target.user-logs.desc':      'Log files from user apps',
+    'target.trash.desc':          'Files in the trash',
+    'target.chrome-cache.desc':   'Google Chrome browser cache',
+    'target.safari-cache.desc':   'Safari browser cache',
+    'target.firefox-cache.desc':  'Firefox browser cache',
+    'target.arc-cache.desc':      'Arc browser cache',
+    'target.brave-cache.desc':    'Brave browser cache',
+    'target.npm-cache.desc':      'npm package cache',
+    'target.yarn-cache.desc':     'Yarn package cache',
+    'target.pnpm-store.desc':     'pnpm package store — deletion may affect projects',
+    'target.homebrew-cache.desc': 'Homebrew download cache',
+    'target.xcode-derived.desc':  'Xcode build artifacts and index',
+    'target.xcode-archives.desc': 'Xcode archived builds — keep if distributing apps',
+    'target.ios-simulators.desc': 'iOS/iPadOS simulator data',
+    'target.slack-cache.desc':    'Slack cached resources',
+    'target.spotify-cache.desc':  'Spotify cached music',
+    'target.zoom-cache.desc':     'Zoom meeting data and cache',
+    'target.vscode-cache.desc':   'Visual Studio Code cache',
+    'target.figma-cache.desc':    'Figma cached design resources',
+    'target.docker-data.desc':    'Docker images and volumes — deletion stops containers',
+    'target.system-caches.desc':  'macOS system caches — requires administrator password',
+    'target.system-logs.desc':    'macOS system logs — requires administrator password',
+    'target.temp-system.desc':    'macOS temp files — requires administrator password',
   },
 
   sv: {
@@ -128,7 +173,7 @@ export const translations = {
     'banner.restartApp':      'Starta om app',
     'banner.quitApp':         'Avsluta app',
 
-    'idle.title':    'Ready to harvest',
+    'idle.title':    'Redo att skörda',
     'idle.subtitle': 'Välj områden i sidebaren och kör scanning',
     'idle.button':   'Kör scanning',
 
@@ -159,6 +204,47 @@ export const translations = {
 
     'item.notFound':     'Hittades inte',
     'item.showInFinder': 'Visa i Finder',
+
+    'results.found':           'Hittades',
+    'results.selectedToClean': 'Valt att rensa',
+    'results.items':           'Objekt',
+    'results.percentSelected': '{n}% av hittad data vald',
+
+    'idle.canBeFreed': 'kan frigöras',
+
+    'target.user-caches.name':    'App-cacher',
+    'target.user-logs.name':      'Användarlogs',
+    'target.trash.name':          'Papperskorg',
+    'target.ios-simulators.name': 'iOS-simulatorer',
+    'target.docker-data.name':    'Docker',
+    'target.system-caches.name':  'Systemcacher',
+    'target.system-logs.name':    'Systemloggar',
+    'target.temp-system.name':    'Temporära systemfiler',
+
+    'target.user-caches.desc':    'Cacher skapade av installerade appar',
+    'target.user-logs.desc':      'Loggfiler från användarens appar',
+    'target.trash.desc':          'Filer i papperskorgen',
+    'target.chrome-cache.desc':   'Google Chrome webbläsarcache',
+    'target.safari-cache.desc':   'Safari webbläsarcache',
+    'target.firefox-cache.desc':  'Firefox webbläsarcache',
+    'target.arc-cache.desc':      'Arc webbläsarcache',
+    'target.brave-cache.desc':    'Brave webbläsarcache',
+    'target.npm-cache.desc':      'npm paketcache',
+    'target.yarn-cache.desc':     'Yarn paketcache',
+    'target.pnpm-store.desc':     'pnpm paketstore – radering kan påverka projekt',
+    'target.homebrew-cache.desc': 'Homebrew nedladdningscache',
+    'target.xcode-derived.desc':  'Xcode byggartefakter och index',
+    'target.xcode-archives.desc': 'Xcode arkiverade builds – behåll om du distribuerar appar',
+    'target.ios-simulators.desc': 'iOS/iPadOS simulatordata',
+    'target.slack-cache.desc':    'Slack cachade resurser',
+    'target.spotify-cache.desc':  'Spotify cachad musik',
+    'target.zoom-cache.desc':     'Zoom mötesdata och cache',
+    'target.vscode-cache.desc':   'Visual Studio Code cache',
+    'target.figma-cache.desc':    'Figma cachade designresurser',
+    'target.docker-data.desc':    'Docker images och volymer – radering stoppar containers',
+    'target.system-caches.desc':  'macOS-systemcacher – kräver administratörslösenord',
+    'target.system-logs.desc':    'macOS systemloggar – kräver administratörslösenord',
+    'target.temp-system.desc':    'macOS temporära filer – kräver administratörslösenord',
   },
 
   de: {
@@ -199,7 +285,7 @@ export const translations = {
     'banner.restartApp':      'App neu starten',
     'banner.quitApp':         'App beenden',
 
-    'idle.title':    'Ready to harvest',
+    'idle.title':    'Bereit zur Ernte',
     'idle.subtitle': 'Bereiche in der Seitenleiste wählen und Scan starten',
     'idle.button':   'Scan starten',
 
@@ -230,6 +316,47 @@ export const translations = {
 
     'item.notFound':     'Nicht gefunden',
     'item.showInFinder': 'Im Finder anzeigen',
+
+    'results.found':           'Gefunden',
+    'results.selectedToClean': 'Zum Löschen gewählt',
+    'results.items':           'Einträge',
+    'results.percentSelected': '{n}% der gefundenen Daten ausgewählt',
+
+    'idle.canBeFreed': 'freizugeben',
+
+    'target.user-caches.name':    'App-Caches',
+    'target.user-logs.name':      'Benutzerlogs',
+    'target.trash.name':          'Papierkorb',
+    'target.ios-simulators.name': 'iOS-Simulatoren',
+    'target.docker-data.name':    'Docker',
+    'target.system-caches.name':  'System-Caches',
+    'target.system-logs.name':    'Systemlogs',
+    'target.temp-system.name':    'Temporäre Systemdateien',
+
+    'target.user-caches.desc':    'Von installierten Apps erstellte Caches',
+    'target.user-logs.desc':      'Log-Dateien von Benutzer-Apps',
+    'target.trash.desc':          'Dateien im Papierkorb',
+    'target.chrome-cache.desc':   'Google Chrome Browser-Cache',
+    'target.safari-cache.desc':   'Safari Browser-Cache',
+    'target.firefox-cache.desc':  'Firefox Browser-Cache',
+    'target.arc-cache.desc':      'Arc Browser-Cache',
+    'target.brave-cache.desc':    'Brave Browser-Cache',
+    'target.npm-cache.desc':      'npm Paket-Cache',
+    'target.yarn-cache.desc':     'Yarn Paket-Cache',
+    'target.pnpm-store.desc':     'pnpm Paketspeicher – Löschen kann Projekte beeinflussen',
+    'target.homebrew-cache.desc': 'Homebrew Download-Cache',
+    'target.xcode-derived.desc':  'Xcode Build-Artefakte und Index',
+    'target.xcode-archives.desc': 'Xcode archivierte Builds – behalten, wenn Apps verteilt werden',
+    'target.ios-simulators.desc': 'iOS/iPadOS Simulatordaten',
+    'target.slack-cache.desc':    'Slack gecachte Ressourcen',
+    'target.spotify-cache.desc':  'Spotify gecachte Musik',
+    'target.zoom-cache.desc':     'Zoom Besprechungsdaten und Cache',
+    'target.vscode-cache.desc':   'Visual Studio Code Cache',
+    'target.figma-cache.desc':    'Figma gecachte Design-Ressourcen',
+    'target.docker-data.desc':    'Docker Images und Volumes – Löschen stoppt Container',
+    'target.system-caches.desc':  'macOS System-Caches – erfordert Administratorpasswort',
+    'target.system-logs.desc':    'macOS Systemlogs – erfordert Administratorpasswort',
+    'target.temp-system.desc':    'macOS temporäre Dateien – erfordert Administratorpasswort',
   },
 
   fr: {
@@ -270,7 +397,7 @@ export const translations = {
     'banner.restartApp':      'Redémarrer l\'app',
     'banner.quitApp':         'Quitter l\'app',
 
-    'idle.title':    'Ready to harvest',
+    'idle.title':    'Prêt à récolter',
     'idle.subtitle': 'Choisissez les zones dans la barre latérale et lancez le scan',
     'idle.button':   'Lancer le scan',
 
@@ -301,6 +428,47 @@ export const translations = {
 
     'item.notFound':     'Introuvable',
     'item.showInFinder': 'Afficher dans le Finder',
+
+    'results.found':           'Trouvé',
+    'results.selectedToClean': 'Sélectionné à nettoyer',
+    'results.items':           'Éléments',
+    'results.percentSelected': '{n}% des données trouvées sélectionnées',
+
+    'idle.canBeFreed': 'libérables',
+
+    'target.user-caches.name':    'Caches d\'applications',
+    'target.user-logs.name':      'Journaux utilisateur',
+    'target.trash.name':          'Corbeille',
+    'target.ios-simulators.name': 'Simulateurs iOS',
+    'target.docker-data.name':    'Docker',
+    'target.system-caches.name':  'Caches système',
+    'target.system-logs.name':    'Journaux système',
+    'target.temp-system.name':    'Fichiers temporaires système',
+
+    'target.user-caches.desc':    'Caches créés par les applications installées',
+    'target.user-logs.desc':      'Fichiers journaux des applications utilisateur',
+    'target.trash.desc':          'Fichiers dans la corbeille',
+    'target.chrome-cache.desc':   'Cache du navigateur Google Chrome',
+    'target.safari-cache.desc':   'Cache du navigateur Safari',
+    'target.firefox-cache.desc':  'Cache du navigateur Firefox',
+    'target.arc-cache.desc':      'Cache du navigateur Arc',
+    'target.brave-cache.desc':    'Cache du navigateur Brave',
+    'target.npm-cache.desc':      'Cache des paquets npm',
+    'target.yarn-cache.desc':     'Cache des paquets Yarn',
+    'target.pnpm-store.desc':     'Store pnpm — la suppression peut affecter les projets',
+    'target.homebrew-cache.desc': 'Cache de téléchargement Homebrew',
+    'target.xcode-derived.desc':  'Artefacts de build et index Xcode',
+    'target.xcode-archives.desc': 'Builds archivés Xcode — à conserver si vous distribuez des apps',
+    'target.ios-simulators.desc': 'Données des simulateurs iOS/iPadOS',
+    'target.slack-cache.desc':    'Ressources mises en cache par Slack',
+    'target.spotify-cache.desc':  'Musique mise en cache par Spotify',
+    'target.zoom-cache.desc':     'Données de réunions et cache Zoom',
+    'target.vscode-cache.desc':   'Cache de Visual Studio Code',
+    'target.figma-cache.desc':    'Ressources design mises en cache par Figma',
+    'target.docker-data.desc':    'Images et volumes Docker — la suppression arrête les conteneurs',
+    'target.system-caches.desc':  'Caches système macOS — nécessite un mot de passe administrateur',
+    'target.system-logs.desc':    'Journaux système macOS — nécessite un mot de passe administrateur',
+    'target.temp-system.desc':    'Fichiers temporaires macOS — nécessite un mot de passe administrateur',
   },
 
   es: {
@@ -341,7 +509,7 @@ export const translations = {
     'banner.restartApp':      'Reiniciar app',
     'banner.quitApp':         'Salir de la app',
 
-    'idle.title':    'Ready to harvest',
+    'idle.title':    'Listo para cosechar',
     'idle.subtitle': 'Elige áreas en la barra lateral y comienza el escaneo',
     'idle.button':   'Iniciar escaneo',
 
@@ -372,5 +540,46 @@ export const translations = {
 
     'item.notFound':     'No encontrado',
     'item.showInFinder': 'Mostrar en Finder',
+
+    'results.found':           'Encontrado',
+    'results.selectedToClean': 'Seleccionado para limpiar',
+    'results.items':           'Elementos',
+    'results.percentSelected': '{n}% de los datos encontrados seleccionados',
+
+    'idle.canBeFreed': 'se pueden liberar',
+
+    'target.user-caches.name':    'Cachés de apps',
+    'target.user-logs.name':      'Registros de usuario',
+    'target.trash.name':          'Papelera',
+    'target.ios-simulators.name': 'Simuladores iOS',
+    'target.docker-data.name':    'Docker',
+    'target.system-caches.name':  'Cachés del sistema',
+    'target.system-logs.name':    'Registros del sistema',
+    'target.temp-system.name':    'Archivos temporales del sistema',
+
+    'target.user-caches.desc':    'Cachés creados por las aplicaciones instaladas',
+    'target.user-logs.desc':      'Archivos de registro de las apps del usuario',
+    'target.trash.desc':          'Archivos en la papelera',
+    'target.chrome-cache.desc':   'Caché del navegador Google Chrome',
+    'target.safari-cache.desc':   'Caché del navegador Safari',
+    'target.firefox-cache.desc':  'Caché del navegador Firefox',
+    'target.arc-cache.desc':      'Caché del navegador Arc',
+    'target.brave-cache.desc':    'Caché del navegador Brave',
+    'target.npm-cache.desc':      'Caché de paquetes npm',
+    'target.yarn-cache.desc':     'Caché de paquetes Yarn',
+    'target.pnpm-store.desc':     'Store de pnpm — eliminarlo puede afectar proyectos',
+    'target.homebrew-cache.desc': 'Caché de descarga de Homebrew',
+    'target.xcode-derived.desc':  'Artefactos de build e índice de Xcode',
+    'target.xcode-archives.desc': 'Builds archivados de Xcode — conservar si distribuyes apps',
+    'target.ios-simulators.desc': 'Datos de simuladores iOS/iPadOS',
+    'target.slack-cache.desc':    'Recursos en caché de Slack',
+    'target.spotify-cache.desc':  'Música en caché de Spotify',
+    'target.zoom-cache.desc':     'Datos de reuniones y caché de Zoom',
+    'target.vscode-cache.desc':   'Caché de Visual Studio Code',
+    'target.figma-cache.desc':    'Recursos de diseño en caché de Figma',
+    'target.docker-data.desc':    'Imágenes y volúmenes Docker — eliminar detiene los contenedores',
+    'target.system-caches.desc':  'Cachés del sistema macOS — requiere contraseña de administrador',
+    'target.system-logs.desc':    'Registros del sistema macOS — requiere contraseña de administrador',
+    'target.temp-system.desc':    'Archivos temporales macOS — requiere contraseña de administrador',
   },
 }

@@ -2,6 +2,7 @@ import React from 'react'
 import StorageRing from './StorageRing.jsx'
 import ResultList from './ResultList.jsx'
 import { formatSize } from '../utils.js'
+import { useLang } from '../i18n/index.jsx'
 
 export default function ResultsView({
   scanResults,
@@ -11,6 +12,7 @@ export default function ResultsView({
   onToggleItem,
   onToggleCategory,
 }) {
+  const { t } = useLang()
   const selectionFraction = totalFoundSize > 0 ? chosenSize / totalFoundSize : 0
   const itemCount = scanResults.filter(r => selectedIds.has(r.id)).length
   const totalCount = scanResults.filter(r => r.exists).length
@@ -40,7 +42,7 @@ export default function ResultsView({
           size={totalFoundSize}
           selectedSize={chosenSize}
           centerValue={chosenSize}
-          centerLabel="valt att rensa"
+          centerLabel={t('results.selectedToClean')}
           svgSize={130}
           showLegend={false}
         />
@@ -71,7 +73,7 @@ export default function ResultsView({
                 textTransform: 'uppercase',
                 letterSpacing: '0.08em',
               }}>
-                hittades
+                {t('results.found')}
               </div>
             </div>
 
@@ -93,7 +95,7 @@ export default function ResultsView({
                 textTransform: 'uppercase',
                 letterSpacing: '0.08em',
               }}>
-                valt att rensa
+                {t('results.selectedToClean')}
               </div>
             </div>
 
@@ -115,7 +117,7 @@ export default function ResultsView({
                 textTransform: 'uppercase',
                 letterSpacing: '0.08em',
               }}>
-                objekt
+                {t('results.items')}
               </div>
             </div>
           </div>
@@ -144,7 +146,7 @@ export default function ResultsView({
               color: 'var(--text-muted)',
               marginTop: '5px',
             }}>
-              {Math.round(selectionFraction * 100)}% av hittad data vald
+              {t('results.percentSelected', { n: Math.round(selectionFraction * 100) })}
             </div>
           </div>
         </div>
