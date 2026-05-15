@@ -1,15 +1,19 @@
 import React from 'react'
 import { formatSize } from '../utils.js'
 
-export default function StorageRing({ size = 0, selectedSize = 0, animating = false, svgSize = 200, showLegend = true }) {
+export default function StorageRing({ size = 0, selectedSize = 0, animating = false, svgSize = 200, showLegend = true, centerValue, centerLabel }) {
   const RADIUS = 80
   const STROKE = 12
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS
   const cx = 100
   const cy = 100
 
+  const GAP_FRACTION = 0.04
+  const MIN_GAP = CIRCUMFERENCE * GAP_FRACTION
   const fraction = size > 0 ? Math.min(selectedSize / size, 1) : 0
-  const dashOffset = CIRCUMFERENCE * (1 - fraction)
+  const dashOffset = Math.max(CIRCUMFERENCE * (1 - fraction), MIN_GAP)
+  const gapAngle = GAP_FRACTION * 360
+  const arcRotate = -90 + gapAngle / 2
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
@@ -53,10 +57,12 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={dashOffset}
-            className="ring-dash"
-            transform={`rotate(-90 ${cx} ${cy})`}
+            transform={`rotate(${arcRotate} ${cx} ${cy})`}
             filter="url(#ring-glow)"
-            style={{ opacity: fraction > 0 ? 1 : 0.4 }}
+            style={{
+              opacity: fraction > 0 ? 1 : 0.4,
+              transition: 'stroke-dashoffset 0.6s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease',
+            }}
           />
         </svg>
 
@@ -75,12 +81,13 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
             style={{
               fontFamily: 'var(--font-mono)',
               fontWeight: 500,
-              fontSize: size >= 1024 ** 3 ? (svgSize < 180 ? '1rem' : '1.5rem') : (svgSize < 180 ? '0.9rem' : '1.25rem'),
+              fontSize: (centerValue ?? size) >= 1024 ** 3 ? (svgSize < 180 ? '1rem' : '1.5rem') : (svgSize < 180 ? '0.9rem' : '1.25rem'),
               color: 'var(--accent)',
               lineHeight: 1.1,
+              transition: 'none',
             }}
           >
-            {formatSize(size)}
+            {formatSize(centerValue ?? size)}
           </div>
           <div
             style={{
@@ -90,33 +97,35 @@ export default function StorageRing({ size = 0, selectedSize = 0, animating = fa
               marginTop: '2px',
             }}
           >
-            kan rensas
+            {centerLabel ?? 'kan rensas'}
           </div>
         </div>
       </div>
 
-      <div style={{ textAlign: 'center' }}>
-        <div
-          style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: svgSize < 180 ? '0.85rem' : '1rem',
-            fontWeight: 500,
-            color: 'var(--accent)',
-          }}
-        >
-          {formatSize(selectedSize)}
+      {showLegend && (
+        <div style={{ textAlign: 'center' }}>
+          <div
+            style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: svgSize < 180 ? '0.85rem' : '1rem',
+              fontWeight: 500,
+              color: 'var(--accent)',
+            }}
+          >
+            {formatSize(selectedSize)}
+          </div>
+          <div
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.72rem',
+              color: 'var(--text-muted)',
+              marginTop: '2px',
+            }}
+          >
+            valt
+          </div>
         </div>
-        <div
-          style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '0.72rem',
-            color: 'var(--text-muted)',
-            marginTop: '2px',
-          }}
-        >
-          valt
-        </div>
-      </div>
+      )}
     </div>
   )
 }

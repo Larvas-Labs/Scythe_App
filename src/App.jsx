@@ -8,6 +8,18 @@ import UpdateBanner from './components/UpdateBanner.jsx'
 import { selectedSize } from './utils.js'
 import { LangProvider } from './i18n/index.jsx'
 
+const TARGET_CATEGORIES = {
+  'user-caches': 'user', 'user-logs': 'user', 'trash': 'user',
+  'chrome-cache': 'browsers', 'safari-cache': 'browsers', 'firefox-cache': 'browsers',
+  'arc-cache': 'browsers', 'brave-cache': 'browsers',
+  'npm-cache': 'developer', 'yarn-cache': 'developer', 'pnpm-store': 'developer',
+  'homebrew-cache': 'developer', 'xcode-derived': 'developer',
+  'xcode-archives': 'developer', 'ios-simulators': 'developer',
+  'slack-cache': 'apps', 'spotify-cache': 'apps', 'zoom-cache': 'apps',
+  'vscode-cache': 'apps', 'figma-cache': 'apps', 'docker-data': 'apps',
+  'system-caches': 'advanced', 'system-logs': 'advanced', 'temp-system': 'advanced',
+}
+
 function AppInner() {
   const [appState, setAppState] = useState('idle')
   const [scanResults, setScanResults] = useState([])
@@ -109,18 +121,6 @@ function AppInner() {
     setScanProgress({})
     setScanResults([])
     setSelectedIds(new Set())
-
-    const TARGET_CATEGORIES = {
-      'user-caches': 'user', 'user-logs': 'user', 'trash': 'user',
-      'chrome-cache': 'browsers', 'safari-cache': 'browsers', 'firefox-cache': 'browsers',
-      'arc-cache': 'browsers', 'brave-cache': 'browsers',
-      'npm-cache': 'developer', 'yarn-cache': 'developer', 'pnpm-store': 'developer',
-      'homebrew-cache': 'developer', 'xcode-derived': 'developer',
-      'xcode-archives': 'developer', 'ios-simulators': 'developer',
-      'slack-cache': 'apps', 'spotify-cache': 'apps', 'zoom-cache': 'apps',
-      'vscode-cache': 'apps', 'figma-cache': 'apps', 'docker-data': 'apps',
-      'system-caches': 'advanced', 'system-logs': 'advanced', 'temp-system': 'advanced',
-    }
 
     const enabledIds = Object.entries(TARGET_CATEGORIES)
       .filter(([, cat]) => enabledCategories[cat])
@@ -236,6 +236,11 @@ function AppInner() {
 
   const totalFoundSize = scanResults.reduce((sum, r) => sum + (r.size || 0), 0)
   const chosenSize = selectedSize(scanResults, selectedIds)
+  const totalEstimate = Object.entries(TARGET_CATEGORIES)
+    .filter(([, cat]) => enabledCategories[cat])
+    .reduce((sum, [id]) => sum + (estimates[id] || 0), 0)
+  const maxEstimate = Object.keys(TARGET_CATEGORIES)
+    .reduce((sum, id) => sum + (estimates[id] || 0), 0)
 
   return (
     <LangProvider initialLang={language}>
@@ -293,6 +298,8 @@ function AppInner() {
         totalFoundSize={totalFoundSize}
         chosenSize={chosenSize}
         deleteResult={deleteResult}
+        totalEstimate={totalEstimate}
+        maxEstimate={maxEstimate}
         onStartScan={startScan}
         onToggleItem={toggleItem}
         onToggleCategory={toggleCategory_results}
