@@ -1,6 +1,6 @@
 import React from 'react'
 import IdleView from './IdleView.jsx'
-import ScanProgress from './ScanProgress.jsx'
+import ScanView from './ScanView.jsx'
 import ResultsView from './ResultsView.jsx'
 import DoneView from './DoneView.jsx'
 import { useLang } from '../i18n/index.jsx'
@@ -13,6 +13,8 @@ export default function MainContent({
   totalFoundSize,
   chosenSize,
   deleteResult,
+  totalEstimate,
+  maxEstimate,
   onStartScan,
   onToggleItem,
   onToggleCategory,
@@ -25,34 +27,17 @@ export default function MainContent({
   const totalCount = scanItems.length
 
   if (appState === 'idle') {
-    return <IdleView onStartScan={onStartScan} />
+    return <IdleView onStartScan={onStartScan} totalEstimate={totalEstimate} maxEstimate={maxEstimate} />
   }
 
   if (appState === 'scanning') {
     return (
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '32px',
-      }}>
-        <div style={{
-          background: 'var(--surface)',
-          border: '1px solid var(--border)',
-          borderRadius: '12px',
-          padding: '32px',
-          width: '100%',
-          maxWidth: '520px',
-        }}>
-          <ScanProgress
-            progress={scanProgress}
-            completedCount={completedCount}
-            totalCount={totalCount}
-            onAbort={onAbortScan}
-          />
-        </div>
-      </div>
+      <ScanView
+        progress={scanProgress}
+        completedCount={completedCount}
+        totalCount={totalCount}
+        onAbort={onAbortScan}
+      />
     )
   }
 
