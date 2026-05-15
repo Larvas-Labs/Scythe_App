@@ -2,13 +2,14 @@ import React from 'react'
 import { formatSize, cn } from '../utils.js'
 import ScanItem from './ScanItem.jsx'
 import { CATEGORY_ICON_MAP } from './Icons.jsx'
+import { useLang } from '../i18n/index.jsx'
 
-const CATEGORY_LABELS = {
-  user: 'Användarcacher',
-  browsers: 'Webbläsare',
-  developer: 'Utvecklarverktyg',
-  apps: 'Appdata',
-  advanced: 'Avancerat',
+const CATEGORY_LABEL_KEYS = {
+  user: 'cat.user',
+  browsers: 'cat.browsers',
+  developer: 'cat.developer',
+  apps: 'cat.apps',
+  advanced: 'cat.advanced',
 }
 
 const CATEGORY_COLORS = {
@@ -20,6 +21,7 @@ const CATEGORY_COLORS = {
 }
 
 export default function CategorySection({ category, results, selectedIds, onToggleItem, onToggleCategory }) {
+  const { t } = useLang()
   const existing = results.filter(r => r.exists)
   const allSelected = existing.length > 0 && existing.every(r => selectedIds.has(r.id))
   const someSelected = existing.some(r => selectedIds.has(r.id))
@@ -40,10 +42,10 @@ export default function CategorySection({ category, results, selectedIds, onTogg
           }}
         >
           <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.78rem', color: 'var(--danger)', marginBottom: '2px' }}>
-            ⚠️ Avancerat — Systemfiler
+            {t('section.advanced.title')}
           </div>
           <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
-            Dessa åtgärder påverkar systemfiler och kräver administratörslösenord.
+            {t('section.advanced.desc')}
           </div>
         </div>
       )}
@@ -82,7 +84,7 @@ export default function CategorySection({ category, results, selectedIds, onTogg
           {CatIcon && <CatIcon size={14} color={CATEGORY_COLORS[category]} />}
 
           <span style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text)', flex: 1 }}>
-            {CATEGORY_LABELS[category] || category}
+            {t(CATEGORY_LABEL_KEYS[category] || category)}
           </span>
 
           {totalSize > 0 && (

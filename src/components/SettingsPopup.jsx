@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
+import { useLang } from '../i18n/index.jsx'
 
 function SunIcon() {
   return (
@@ -66,6 +67,17 @@ function AlertIcon() {
   )
 }
 
+// Globe icon for language picker trigger
+function GlobeIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10"/>
+      <line x1="2" y1="12" x2="22" y2="12"/>
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+    </svg>
+  )
+}
+
 export default function SettingsPopup({
   theme,
   onToggleTheme,
@@ -78,8 +90,12 @@ export default function SettingsPopup({
   onDownloadAndInstall,
   onRestart,
   onQuit,
+  language,
+  onChangeLanguage,
 }) {
   const ref = useRef(null)
+  const [showLangList, setShowLangList] = useState(false)
+  const { t, LANGUAGES } = useLang()
 
   useEffect(() => {
     function onMouseDown(e) {
@@ -100,12 +116,11 @@ export default function SettingsPopup({
   const isDownloading = updateState === 'downloading'
   const isReady = updateState === 'ready'
 
-  // Icon button config for null/checking/uptodate/error states
   const ICON_CONFIG = {
-    null:     { icon: <RefreshIcon />,          color: 'var(--text-secondary)', title: 'Sök efter uppdatering', onClick: onCheckForUpdates },
-    checking: { icon: <RefreshIcon spinning />, color: 'var(--text-secondary)', title: 'Söker...',               onClick: null },
-    uptodate: { icon: <CheckIcon />,            color: 'var(--accent)',          title: 'Senaste versionen',      onClick: null },
-    error:    { icon: <AlertIcon />,            color: 'var(--danger)',          title: 'Sökning misslyckades',   onClick: null },
+    null:     { icon: <RefreshIcon />,          color: 'var(--text-secondary)', titleKey: 'settings.checkConnection', onClick: onCheckForUpdates },
+    checking: { icon: <RefreshIcon spinning />, color: 'var(--text-secondary)', titleKey: 'settings.searching',       onClick: null },
+    uptodate: { icon: <CheckIcon />,            color: 'var(--accent)',          titleKey: 'settings.latestVersion',   onClick: null },
+    error:    { icon: <AlertIcon />,            color: 'var(--danger)',          titleKey: 'settings.checkConnection', onClick: null },
   }
   const cfg = ICON_CONFIG[updateState] ?? ICON_CONFIG[null]
   const showIconButton = !['available', 'downloading', 'ready'].includes(updateState)
@@ -126,15 +141,15 @@ export default function SettingsPopup({
         zIndex: 200,
       }}
     >
-      {/* ── Utseende ─────────────────────────────── */}
-      <div style={sectionLabel}>Utseende</div>
+      {/* ── Appearance ─────────────────────────────── */}
+      <div style={sectionLabel}>{t('settings.appearance')}</div>
 
       <div style={row}>
-        <span style={rowText}>Tema</span>
+        <span style={rowText}>{t('settings.theme')}</span>
         <button
           onClick={onToggleTheme}
           className="theme-toggle"
-          title={isDark ? 'Byt till ljust läge' : 'Byt till mörkt läge'}
+          title={isDark ? t('settings.toLightMode') : t('settings.toDarkMode')}
         >
           {isDark ? <SunIcon /> : <MoonIcon />}
         </button>
@@ -142,28 +157,27 @@ export default function SettingsPopup({
 
       <div style={divider} />
 
-      {/* ── Uppdateringar ─────────────────────────── */}
-      <div style={sectionLabel}>Uppdateringar</div>
+      {/* ── Updates ─────────────────────────── */}
+      <div style={sectionLabel}>{t('settings.updates')}</div>
 
-      {/* null / checking / uptodate / error: version row + icon button */}
       {showIconButton && (
         <div style={row}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <span style={rowText}>{appVersion ? `Version ${appVersion}` : 'Version'}</span>
+            <span style={rowText}>{appVersion ? `${t('settings.version')} ${appVersion}` : t('settings.version')}</span>
             {updateState === 'uptodate' && (
               <span style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--accent)', lineHeight: 1.3 }}>
-                Senaste versionen
+                {t('settings.latestVersion')}
               </span>
             )}
             {updateState === 'error' && (
               <span style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--danger)', lineHeight: 1.3 }}>
-                Kontrollera anslutning
+                {t('settings.checkConnection')}
               </span>
             )}
           </div>
           <button
             onClick={cfg.onClick || undefined}
-            title={cfg.title}
+            title={t(cfg.titleKey)}
             style={{
               width: '32px', height: '32px', borderRadius: '8px',
               border: '1px solid var(--border)', background: 'var(--surface)',
@@ -180,14 +194,13 @@ export default function SettingsPopup({
         </div>
       )}
 
-      {/* available: version + "Uppdatera" button */}
       {updateState === 'available' && (
         <div style={{ padding: '4px 4px 4px 8px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
-            <span style={rowText}>{appVersion ? `Version ${appVersion}` : 'Version'}</span>
+            <span style={rowText}>{appVersion ? `${t('settings.version')} ${appVersion}` : t('settings.version')}</span>
           </div>
           <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--accent)', marginBottom: '8px' }}>
-            Ny version tillgänglig{availableVersion ? `: v${availableVersion}` : ''}
+            {t('settings.newVersionAvailable', { version: availableVersion || '' })}
           </div>
           <button
             onClick={onDownloadAndInstall}
@@ -200,16 +213,15 @@ export default function SettingsPopup({
             onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-dim)' }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
           >
-            Uppdatera
+            {t('settings.update')}
           </button>
         </div>
       )}
 
-      {/* downloading: progress */}
       {isDownloading && (
         <div style={{ padding: '4px 8px 8px' }}>
           <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px', display: 'flex', justifyContent: 'space-between' }}>
-            <span>Hämtar uppdatering...</span>
+            <span>{t('settings.downloading')}</span>
             <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)' }}>{downloadProgress}%</span>
           </div>
           <div style={{ height: '3px', background: 'var(--border)', borderRadius: '2px', overflow: 'hidden' }}>
@@ -218,11 +230,10 @@ export default function SettingsPopup({
         </div>
       )}
 
-      {/* ready: restart or quit */}
       {isReady && (
         <div style={{ padding: '4px 4px 4px 8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
           <span style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--accent)' }}>
-            Uppdatering installerad
+            {t('settings.updateInstalled')}
           </span>
           <button
             onClick={onRestart}
@@ -235,7 +246,7 @@ export default function SettingsPopup({
             onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-dim)' }}
             onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
           >
-            Starta om app
+            {t('settings.restartApp')}
           </button>
           <button
             onClick={onQuit}
@@ -248,10 +259,96 @@ export default function SettingsPopup({
             onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
             onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border)' }}
           >
-            Avsluta app
+            {t('settings.quitApp')}
           </button>
         </div>
       )}
+
+      <div style={divider} />
+
+      {/* ── Language ─────────────────────────── */}
+      <div style={sectionLabel}>{t('settings.language')}</div>
+
+      <div style={{ position: 'relative' }}>
+        <div style={row}>
+          <span style={rowText}>{t('settings.activeLanguage')}</span>
+          <button
+            onClick={() => setShowLangList(v => !v)}
+            title={t('settings.language')}
+            style={{
+              width: '32px', height: '32px', borderRadius: '8px',
+              border: `1px solid ${showLangList ? 'var(--border-strong)' : 'var(--border)'}`,
+              background: showLangList ? 'var(--surface-hover)' : 'var(--surface)',
+              color: 'var(--text-secondary)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'background 0.15s, border-color 0.15s',
+              flexShrink: 0,
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+            onMouseLeave={e => { if (!showLangList) { e.currentTarget.style.background = 'var(--surface)'; e.currentTarget.style.borderColor = 'var(--border)' } }}
+          >
+            <GlobeIcon />
+          </button>
+        </div>
+
+        <div style={{
+          padding: '0 4px 4px',
+          fontFamily: 'var(--font-body)',
+          fontSize: '12px',
+          color: 'var(--text-secondary)',
+          marginTop: '-6px',
+          paddingLeft: '8px',
+        }}>
+          {LANGUAGES[language] || language}
+        </div>
+
+        {showLangList && (
+          <div style={{
+            position: 'absolute',
+            bottom: '100%',
+            left: 0,
+            right: 0,
+            background: 'var(--surface)',
+            border: '1px solid var(--border-strong)',
+            borderRadius: '8px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
+            overflow: 'hidden',
+            marginBottom: '4px',
+          }}>
+            {Object.entries(LANGUAGES).map(([code, name]) => (
+              <button
+                key={code}
+                onClick={() => { onChangeLanguage(code); setShowLangList(false) }}
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '8px 12px',
+                  background: language === code ? 'var(--surface-hover)' : 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: '13px',
+                  color: language === code ? 'var(--text)' : 'var(--text-secondary)',
+                  textAlign: 'left',
+                  transition: 'background 0.1s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = language === code ? 'var(--surface-hover)' : 'transparent' }}
+              >
+                <span>{name}</span>
+                {language === code && (
+                  <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                    <path d="M1 4.5L4 7.5L10 1" stroke="var(--accent)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -43,4 +43,5 @@ contextBridge.exposeInMainWorld('scythe', {
 
   // App info
   getVersion: () => ipcRenderer.invoke('app:version'),
+  getSystemLocale: () => ipcRenderer.invoke('app:locale'),
 })

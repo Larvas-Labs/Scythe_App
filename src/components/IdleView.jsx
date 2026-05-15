@@ -1,4 +1,5 @@
 import React from 'react'
+import { useLang } from '../i18n/index.jsx'
 
 function ScytheIcon({ size = 80 }) {
   return (
@@ -28,6 +29,7 @@ function ScytheIcon({ size = 80 }) {
 }
 
 export default function IdleView({ onStartScan }) {
+  const { t } = useLang()
   return (
     <div style={{
       flex: 1,
@@ -52,7 +54,7 @@ export default function IdleView({ onStartScan }) {
           color: 'var(--text)',
           margin: '0 0 10px',
         }}>
-          Ready to harvest
+          {t('idle.title')}
         </h1>
 
         <p style={{
@@ -62,7 +64,7 @@ export default function IdleView({ onStartScan }) {
           lineHeight: 1.6,
           margin: '0 0 32px',
         }}>
-          Välj kategorier i sidebaren och kör scanning
+          {t('idle.subtitle')}
         </p>
 
         <button
@@ -75,7 +77,7 @@ export default function IdleView({ onStartScan }) {
             fontWeight: 600,
           }}
         >
-          Kör scanning
+          {t('idle.button')}
         </button>
       </div>
     </div>

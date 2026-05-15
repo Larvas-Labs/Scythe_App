@@ -1,7 +1,9 @@
 import React from 'react'
 import { formatSize } from '../utils.js'
+import { useLang } from '../i18n/index.jsx'
 
 export default function BottomBar({ selectedCount, selectedSize, trashSize, onHarvest, onEmptyTrash }) {
+  const { t } = useLang()
   const hasSelection = selectedCount > 0
   const hasTrash = trashSize > 0
 
@@ -30,8 +32,7 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
         >
           {hasSelection ? (
             <>
-              <span style={{ fontWeight: 600 }}>{selectedCount}</span>
-              {' '}valda{' '}
+              {t('bottombar.selected', { n: selectedCount })}{' '}
               <span style={{ color: 'var(--text-muted)' }}>•</span>
               {' '}
               <span
@@ -44,10 +45,10 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
               >
                 {formatSize(selectedSize)}
               </span>
-              {' '}frigörs
+              {' '}{t('bottombar.freed')}
             </>
           ) : (
-            'Välj filer att rensa'
+            t('bottombar.selectFiles')
           )}
         </span>
 
@@ -76,7 +77,7 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
               e.currentTarget.style.color = 'var(--text-secondary)'
             }}
           >
-            Töm papperskorg ({formatSize(trashSize)})
+            {t('bottombar.emptyTrash', { size: formatSize(trashSize) })}
           </button>
         )}
       </div>
