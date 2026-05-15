@@ -208,7 +208,7 @@ export default function IdleView({ onStartScan, totalEstimate = 0, maxEstimate =
             color: 'var(--text-muted)', marginTop: '4px',
             textTransform: 'uppercase', letterSpacing: '0.09em',
           }}>
-            kan frigöras
+            {t('idle.canBeFreed')}
           </div>
         </div>
       </div>

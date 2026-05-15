@@ -64,7 +64,7 @@ export default function ScanItem({ result, selected, onToggle, isLast }) {
             gap: '6px',
           }}
         >
-          {result.name}
+          {result.nameKey ? t(result.nameKey) : result.name}
           {isUnsafe && <span style={{ color: 'var(--warning)', fontSize: '0.75rem' }}>⚠️</span>}
           {result.requiresAdmin && (
             <span
@@ -93,7 +93,7 @@ export default function ScanItem({ result, selected, onToggle, isLast }) {
             marginTop: '1px',
           }}
         >
-          {notFound ? t('item.notFound') : result.description}
+          {notFound ? t('item.notFound') : (result.descKey ? t(result.descKey) : result.description)}
         </div>
       </div>
 

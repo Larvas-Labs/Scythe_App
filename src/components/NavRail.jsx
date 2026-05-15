@@ -2,6 +2,7 @@ import React from 'react'
 import { CATEGORY_ICON_MAP } from './Icons.jsx'
 import StorageRing from './StorageRing.jsx'
 import { formatSize } from '../utils.js'
+import { useLang } from '../i18n/index.jsx'
 
 const CATEGORY_LABELS = {
   user:      'Användarcacher',
@@ -60,6 +61,7 @@ export default function NavRail({
   theme,
   onToggleTheme,
 }) {
+  const { t } = useLang()
   const categories = Object.keys(CATEGORY_LABELS)
 
   return (
@@ -211,7 +213,7 @@ export default function NavRail({
       >
         {(appState === 'results' || appState === 'done') && (
           <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0 4px' }}>
-            <StorageRing size={totalFoundSize} selectedSize={chosenSize} svgSize={140} />
+            <StorageRing size={totalFoundSize} selectedSize={chosenSize} svgSize={140} centerLabel={t('idle.canBeFreed')} />
           </div>
         )}
 
