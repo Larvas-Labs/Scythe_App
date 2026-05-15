@@ -30,7 +30,7 @@ export default function CategorySection({ category, results, selectedIds, onTogg
   const CatIcon = CATEGORY_ICON_MAP[category]
 
   return (
-    <div id={'cat-' + category} style={{ marginBottom: '12px' }}>
+    <div id={'cat-' + category} style={{ marginBottom: '16px' }}>
       {isAdvanced && (
         <div
           style={{

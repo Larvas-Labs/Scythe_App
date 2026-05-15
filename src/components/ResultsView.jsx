@@ -29,8 +29,8 @@ export default function ResultsView({
       <div style={{
         flexShrink: 0,
         margin: '16px 16px 0',
-        background: 'var(--bg-secondary)',
-        border: '1px solid var(--border)',
+        background: 'rgba(255, 149, 0, 0.06)',
+        border: '1px solid rgba(255, 149, 0, 0.18)',
         borderRadius: '12px',
         padding: '20px 24px',
         display: 'flex',
@@ -152,15 +152,8 @@ export default function ResultsView({
         </div>
       </div>
 
-      {/* ── Full-width result list ── */}
-      <div style={{
-        flex: 1,
-        overflowY: 'auto',
-        margin: '12px 16px 0',
-        background: 'var(--surface)',
-        border: '1px solid var(--border)',
-        borderRadius: '12px 12px 0 0',
-      }}>
+      {/* ── Result list — direkt mot bakgrunden ── */}
+      <div style={{ flex: 1, overflowY: 'auto', marginTop: '16px' }}>
         <ResultList
           results={scanResults}
           selectedIds={selectedIds}
