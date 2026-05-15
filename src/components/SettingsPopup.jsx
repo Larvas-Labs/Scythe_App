@@ -258,12 +258,12 @@ export default function SettingsPopup({
 
 const sectionLabel = {
   fontFamily: 'var(--font-body)',
-  fontSize: '10px',
+  fontSize: '9px',
   fontWeight: 600,
   letterSpacing: '0.1em',
   textTransform: 'uppercase',
   color: 'var(--text-muted)',
-  padding: '6px 8px 4px',
+  padding: '0px 8px 0px',
 }
 
 const row = {
@@ -284,5 +284,5 @@ const rowText = {
 const divider = {
   height: '1px',
   background: 'var(--border)',
-  margin: '4px 0',
+  margin: '4px 0 12px',
 }

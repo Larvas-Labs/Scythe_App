@@ -40,11 +40,11 @@ function ScytheLogo() {
   )
 }
 
-function GearIcon() {
+function SlidersIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
       <circle cx="12" cy="12" r="3"/>
-      <path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/>
     </svg>
   )
 }
@@ -170,14 +170,14 @@ export default function Sidebar({
         }}>
           <div style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '10px',
+            fontSize: '9px',
             fontWeight: 600,
             letterSpacing: '0.1em',
             textTransform: 'uppercase',
             color: 'var(--text-muted)',
             padding: '2px 8px 8px',
           }}>
-            Kategorier
+            Skanna områden
           </div>
 
           {CATEGORIES.map(({ key, label, color }) => {
@@ -186,12 +186,10 @@ export default function Sidebar({
             const isEnabled = enabledCategories[key]
             let rightNode = null
             let rowOpaque = true
+            let estSize = 0
 
             if (appState === 'idle') {
-              const est = ids.reduce((sum, id) => sum + (estimates[id] || 0), 0)
-              rightNode = est > 0
-                ? <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-muted)', flexShrink: 0 }}>~{formatSize(est)}</span>
-                : null
+              estSize = ids.reduce((sum, id) => sum + (estimates[id] || 0), 0)
               rowOpaque = isEnabled
             } else if (appState === 'scanning') {
               const statuses = ids.map(id => scanProgress[id]?.status).filter(Boolean)
@@ -228,8 +226,11 @@ export default function Sidebar({
             }
 
             return (
+              <React.Fragment key={key}>
+              {key === 'advanced' && (
+                <div style={{ height: '1px', background: 'var(--border)', margin: '8px 4px' }} />
+              )}
               <button
-                key={key}
                 onClick={() => {
                   if (appState === 'idle') onCategoryToggle(key)
                   else if (appState === 'results') onCategoryScroll(key)
@@ -240,6 +241,7 @@ export default function Sidebar({
                   alignItems: 'center',
                   gap: '8px',
                   padding: '7px 8px',
+                  marginBottom: '4px',
                   borderRadius: '6px',
                   border: 'none',
                   background: 'transparent',
@@ -251,27 +253,52 @@ export default function Sidebar({
                 onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)' }}
                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
               >
+                <Icon size={18} color={rowOpaque ? (key === 'advanced' ? 'var(--danger)' : 'var(--text)') : 'var(--text-muted)'} />
+
                 {appState === 'idle' ? (
-                  <CategoryCheckbox checked={!!isEnabled} />
+                  <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '1px' }}>
+                    <span style={{
+                      fontFamily: 'var(--font-body)',
+                      fontWeight: 500,
+                      fontSize: '13px',
+                      color: rowOpaque ? 'var(--text)' : 'var(--text-secondary)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {label}
+                    </span>
+                    {estSize > 0 && (
+                      <span style={{
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '10px',
+                        color: 'var(--text-muted)',
+                        whiteSpace: 'nowrap',
+                      }}>
+                        ~{formatSize(estSize)} kan frigöras
+                      </span>
+                    )}
+                  </div>
                 ) : (
-                  <Icon size={14} color={rowOpaque ? color : 'var(--text-muted)'} />
+                  <span style={{
+                    fontFamily: 'var(--font-body)',
+                    fontWeight: 500,
+                    fontSize: '13px',
+                    color: rowOpaque ? 'var(--text)' : 'var(--text-secondary)',
+                    flex: 1,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {label}
+                  </span>
                 )}
 
-                <span style={{
-                  fontFamily: 'var(--font-body)',
-                  fontWeight: 500,
-                  fontSize: '13px',
-                  color: rowOpaque ? 'var(--text)' : 'var(--text-secondary)',
-                  flex: 1,
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}>
-                  {label}
-                </span>
-
-                {rightNode}
+                {appState === 'idle' ? (
+                  <CategoryCheckbox checked={!!isEnabled} />
+                ) : rightNode}
               </button>
+              </React.Fragment>
             )
           })}
         </div>
@@ -303,7 +330,7 @@ export default function Sidebar({
           onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)' }}
           onMouseLeave={e => { e.currentTarget.style.background = showSettings ? 'var(--surface-hover)' : 'transparent' }}
         >
-          <GearIcon />
+          <SlidersIcon />
           <span style={{ fontFamily: 'var(--font-body)', fontSize: '13px', color: 'var(--text-secondary)' }}>
             Inställningar
           </span>

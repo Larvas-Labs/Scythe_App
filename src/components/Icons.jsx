@@ -153,10 +153,63 @@ export const ITEM_ICON_MAP = {
   'temp-system':    IconGear,
 }
 
+// ─── Category sidebar icons (16px, minimalistic) ─────────────────────────────
+
+export function IconCatUser({ size = 16, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 13c0-2.21 2.69-4 6-4s6 1.79 6 4" />
+      <circle cx="8" cy="5.5" r="2.5" />
+    </svg>
+  )
+}
+
+export function IconCatBrowsers({ size = 16, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="8" cy="8" r="6" />
+      <line x1="2" y1="8" x2="14" y2="8" />
+      <path d="M8 2c-1.5 1.5-2.5 3.6-2.5 6s1 4.5 2.5 6" />
+      <path d="M8 2c1.5 1.5 2.5 3.6 2.5 6s-1 4.5-2.5 6" />
+    </svg>
+  )
+}
+
+export function IconCatDeveloper({ size = 16, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5.5 4.5L2 8l3.5 3.5" />
+      <path d="M10.5 4.5L14 8l-3.5 3.5" />
+      <line x1="9.5" y1="3" x2="6.5" y2="13" />
+    </svg>
+  )
+}
+
+export function IconCatApps({ size = 16, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="5" height="5" rx="1.5" />
+      <rect x="9" y="2" width="5" height="5" rx="1.5" />
+      <rect x="2" y="9" width="5" height="5" rx="1.5" />
+      <rect x="9" y="9" width="5" height="5" rx="1.5" />
+    </svg>
+  )
+}
+
+export function IconCatAdvanced({ size = 16, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M8 2L1.5 13.5h13L8 2z" />
+      <line x1="8" y1="7" x2="8" y2="10" />
+      <circle cx="8" cy="12" r="0.6" fill={color} stroke="none" />
+    </svg>
+  )
+}
+
 export const CATEGORY_ICON_MAP = {
-  user:      IconUser,
-  browsers:  IconGlobe,
-  developer: IconCode,
-  apps:      IconGrid,
-  advanced:  IconGear,
+  user:      IconCatUser,
+  browsers:  IconCatBrowsers,
+  developer: IconCatDeveloper,
+  apps:      IconCatApps,
+  advanced:  IconCatAdvanced,
 }
