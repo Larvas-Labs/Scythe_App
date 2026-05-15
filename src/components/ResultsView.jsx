@@ -11,75 +11,162 @@ export default function ResultsView({
   onToggleItem,
   onToggleCategory,
 }) {
+  const selectionFraction = totalFoundSize > 0 ? chosenSize / totalFoundSize : 0
+  const itemCount = scanResults.filter(r => selectedIds.has(r.id)).length
+  const totalCount = scanResults.filter(r => r.exists).length
+
   return (
     <div style={{
       flex: 1,
       display: 'flex',
-      gap: '8px',
-      padding: '16px',
+      flexDirection: 'column',
       overflow: 'hidden',
     }}>
-      {/* StorageRing widget — sticky left panel */}
+
+      {/* ── Summary widget ── */}
       <div style={{
-        width: '200px',
         flexShrink: 0,
-        background: 'var(--surface)',
+        margin: '16px 16px 0',
+        background: 'var(--bg-secondary)',
         border: '1px solid var(--border)',
         borderRadius: '12px',
-        padding: '20px 16px',
-        alignSelf: 'flex-start',
+        padding: '20px 24px',
         display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
+        alignItems: 'center',
+        gap: '28px',
       }}>
+        {/* Ring */}
         <StorageRing
           size={totalFoundSize}
           selectedSize={chosenSize}
-          svgSize={160}
+          centerValue={chosenSize}
+          centerLabel="valt att rensa"
+          svgSize={130}
+          showLegend={false}
         />
 
-        <div style={{ height: '1px', background: 'var(--border)' }} />
+        {/* Vertical divider */}
+        <div style={{ width: '1px', alignSelf: 'stretch', background: 'var(--border)', flexShrink: 0 }} />
 
-        <div>
-          <div style={{
-            fontFamily: 'var(--font-mono)',
-            fontWeight: 600,
-            fontSize: '18px',
-            color: 'var(--accent)',
-            lineHeight: 1.1,
-          }}>
-            {formatSize(chosenSize)}
+        {/* Stats */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+          {/* Numbers row */}
+          <div style={{ display: 'flex', gap: '32px' }}>
+            <div>
+              <div style={{
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 500,
+                fontSize: '1.4rem',
+                color: 'var(--text)',
+                lineHeight: 1,
+              }}>
+                {formatSize(totalFoundSize)}
+              </div>
+              <div style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '0.62rem',
+                color: 'var(--text-muted)',
+                marginTop: '5px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+              }}>
+                hittades
+              </div>
+            </div>
+
+            <div>
+              <div style={{
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 700,
+                fontSize: '1.4rem',
+                color: 'var(--accent)',
+                lineHeight: 1,
+              }}>
+                {formatSize(chosenSize)}
+              </div>
+              <div style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '0.62rem',
+                color: 'var(--text-muted)',
+                marginTop: '5px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+              }}>
+                valt att rensa
+              </div>
+            </div>
+
+            <div>
+              <div style={{
+                fontFamily: 'var(--font-mono)',
+                fontWeight: 500,
+                fontSize: '1.4rem',
+                color: 'var(--text-secondary)',
+                lineHeight: 1,
+              }}>
+                {itemCount}<span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>/{totalCount}</span>
+              </div>
+              <div style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: '0.62rem',
+                color: 'var(--text-muted)',
+                marginTop: '5px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.08em',
+              }}>
+                objekt
+              </div>
+            </div>
           </div>
-          <div style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '11px',
-            color: 'var(--text-muted)',
-            marginTop: '3px',
-          }}>
-            valt att rensa
+
+          {/* Selection progress bar */}
+          <div>
+            <div style={{
+              width: '100%',
+              height: '4px',
+              background: 'var(--border)',
+              borderRadius: '2px',
+              overflow: 'hidden',
+            }}>
+              <div style={{
+                height: '100%',
+                width: `${selectionFraction * 100}%`,
+                background: 'var(--accent)',
+                borderRadius: '2px',
+                transition: 'width 0.4s cubic-bezier(0.16,1,0.3,1)',
+                boxShadow: '0 0 8px rgba(255,149,0,0.5)',
+              }} />
+            </div>
+            <div style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '0.6rem',
+              color: 'var(--text-muted)',
+              marginTop: '5px',
+            }}>
+              {Math.round(selectionFraction * 100)}% av hittad data vald
+            </div>
           </div>
         </div>
       </div>
 
-      {/* ResultList widget */}
+      {/* ── Full-width result list ── */}
       <div style={{
         flex: 1,
+        overflowY: 'auto',
+        margin: '12px 16px 0',
         background: 'var(--surface)',
         border: '1px solid var(--border)',
-        borderRadius: '12px',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
+        borderRadius: '12px 12px 0 0',
       }}>
-        <div style={{ flex: 1, overflowY: 'auto' }}>
-          <ResultList
-            results={scanResults}
-            selectedIds={selectedIds}
-            onToggleItem={onToggleItem}
-            onToggleCategory={onToggleCategory}
-          />
-        </div>
+        <ResultList
+          results={scanResults}
+          selectedIds={selectedIds}
+          onToggleItem={onToggleItem}
+          onToggleCategory={onToggleCategory}
+        />
       </div>
+
     </div>
   )
 }
