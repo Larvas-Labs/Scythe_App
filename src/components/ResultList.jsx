@@ -10,7 +10,7 @@ export default function ResultList({ results, selectedIds, onToggleItem, onToggl
   }, {})
 
   return (
-    <div style={{ paddingBottom: '80px' }}>
+    <div style={{ paddingBottom: '16px' }}>
       {CATEGORY_ORDER.map(category => {
         const items = grouped[category]
         if (!items || items.length === 0 || items.every(r => !r.exists)) return null
