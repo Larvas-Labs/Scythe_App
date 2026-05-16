@@ -135,8 +135,13 @@ export default function CategorySection({ category, results, selectedIds, onTogg
               padding: '10px 14px',
               borderBottom: `1px solid ${descBorderColor}`,
             }}>
+              {(isAdvanced || isOrphaned) && (
+                <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.76rem', color: descTitleColor, marginBottom: '3px' }}>
+                  {t(`section.${category}.title`)}
+                </div>
+              )}
               <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                {t(`cat.${category}.desc`)}
+                {t(isAdvanced || isOrphaned ? `section.${category}.desc` : `cat.${category}.desc`)}
               </div>
             </div>
 
