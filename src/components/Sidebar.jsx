@@ -291,29 +291,18 @@ export default function Sidebar({
                   <Icon size={18} color={rowOpaque ? (key === 'advanced' ? 'var(--danger)' : 'var(--text)') : 'var(--text-muted)'} />
 
                   {appState === 'idle' ? (
-                    <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                      <span style={{
-                        fontFamily: 'var(--font-body)',
-                        fontWeight: 500,
-                        fontSize: '13px',
-                        color: rowOpaque ? 'var(--text)' : 'var(--text-secondary)',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}>
-                        {label}
-                      </span>
-                      <span style={{
-                        fontFamily: 'var(--font-body)',
-                        fontSize: '10px',
-                        color: 'var(--text-muted)',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap',
-                      }}>
-                        {t(`cat.${key}.desc`)}
-                      </span>
-                    </div>
+                    <span style={{
+                      fontFamily: 'var(--font-body)',
+                      fontWeight: 500,
+                      fontSize: '13px',
+                      color: rowOpaque ? 'var(--text)' : 'var(--text-secondary)',
+                      flex: 1,
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {label}
+                    </span>
                   ) : (
                     <span style={{
                       fontFamily: 'var(--font-body)',
