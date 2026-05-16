@@ -1,6 +1,6 @@
 # Changelog
 
-## [1.2.0] - 2026-05-16
+## [1.1.2] - 2026-05-16
 
 ### Förbättringar
 - BottomBar omdesignad som flytande widget med röd ton – sticker ut tydligast av alla ytor
