@@ -335,6 +335,8 @@ const ORPHAN_SCAN_DIRS = [
 function getInstalledBundleIds() {
   const bundleIds = new Set()
   const appNames = new Set()
+
+  // 1. .app bundles in standard app directories
   const appDirs = [
     '/Applications',
     path.join(os.homedir(), 'Applications'),
@@ -355,6 +357,41 @@ function getInstalledBundleIds() {
       }
     } catch {}
   }
+
+  // 2. Homebrew Cellar (formulae) and Caskroom (casks) — no brew command needed
+  const brewPaths = [
+    '/opt/homebrew/Cellar',       // Apple Silicon
+    '/opt/homebrew/Caskroom',
+    '/usr/local/Cellar',          // Intel
+    '/usr/local/Caskroom',
+    path.join(os.homedir(), 'homebrew/Cellar'),   // custom prefix
+    path.join(os.homedir(), 'homebrew/Caskroom'),
+  ]
+  for (const brewPath of brewPaths) {
+    try {
+      for (const entry of fs.readdirSync(brewPath, { withFileTypes: true })) {
+        if (!entry.isDirectory()) continue
+        appNames.add(entry.name.toLowerCase())
+        bundleIds.add(entry.name)
+      }
+    } catch {}
+  }
+
+  // 3. LaunchAgents/LaunchDaemons — plist filenames reveal active software IDs
+  const launchDirs = [
+    path.join(os.homedir(), 'Library/LaunchAgents'),
+    '/Library/LaunchAgents',
+    '/Library/LaunchDaemons',
+  ]
+  for (const dir of launchDirs) {
+    try {
+      for (const file of fs.readdirSync(dir)) {
+        if (!file.endsWith('.plist')) continue
+        bundleIds.add(file.replace('.plist', ''))
+      }
+    } catch {}
+  }
+
   return { bundleIds, appNames }
 }
 
@@ -375,10 +412,17 @@ function getOrphanedFolders() {
         if (seen.has(fullPath)) continue
         seen.add(fullPath)
 
+        // Bidirectional prefix matching:
+        // - name=com.docker.helper matches id=com.docker (name starts with id)
+        // - name=com.docker matches id=com.docker.helper (id starts with name)
         const isInstalled =
           bundleIds.has(name) ||
           appNames.has(name.toLowerCase()) ||
-          [...bundleIds].some(id => name === id || name.startsWith(id + '.'))
+          [...bundleIds].some(id =>
+            name === id ||
+            name.startsWith(id + '.') ||
+            id.startsWith(name + '.')
+          )
 
         if (!isInstalled) {
           orphaned.push({ name, path: fullPath, location: dir })
