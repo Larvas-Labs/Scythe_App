@@ -15,7 +15,7 @@ export const translations = {
     'sidebar.canBeFreed': 'can be freed',
 
     // Categories
-    'cat.user':      'Caches',
+    'cat.user':      'Other',
     'cat.browsers':  'Browsers',
     'cat.developer': 'Developer',
     'cat.apps':      'Apps',
@@ -142,7 +142,7 @@ export const translations = {
     'sidebar.settings':   'Inställningar',
     'sidebar.canBeFreed': 'kan frigöras',
 
-    'cat.user':      'Cacher',
+    'cat.user':      'Övrigt',
     'cat.browsers':  'Webbläsare',
     'cat.developer': 'Utvecklare',
     'cat.apps':      'Appar',
@@ -255,7 +255,7 @@ export const translations = {
     'sidebar.settings':   'Einstellungen',
     'sidebar.canBeFreed': 'freizugeben',
 
-    'cat.user':      'Caches',
+    'cat.user':      'Sonstiges',
     'cat.browsers':  'Browser',
     'cat.developer': 'Entwickler',
     'cat.apps':      'Apps',
@@ -368,7 +368,7 @@ export const translations = {
     'sidebar.settings':   'Paramètres',
     'sidebar.canBeFreed': 'libérables',
 
-    'cat.user':      'Caches',
+    'cat.user':      'Autres',
     'cat.browsers':  'Navigateurs',
     'cat.developer': 'Développeur',
     'cat.apps':      'Applications',
@@ -481,7 +481,7 @@ export const translations = {
     'sidebar.settings':   'Configuración',
     'sidebar.canBeFreed': 'se pueden liberar',
 
-    'cat.user':      'Cachés',
+    'cat.user':      'Otros',
     'cat.browsers':  'Navegadores',
     'cat.developer': 'Desarrollador',
     'cat.apps':      'Aplicaciones',
