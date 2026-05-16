@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4] - 2026-05-16
+
+### Buggfixar
+- Papperskorgsstorlek visas nu korrekt — macOS blockerade tidigare `du` från att läsa `~/.Trash` utan Full Disk Access, storleken hämtas nu via Finder/AppleScript istället
+
+---
+
 ## [1.1.3] - 2026-05-16
 
 ### Förbättringar

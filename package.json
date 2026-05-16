@@ -1,6 +1,6 @@
 {
   "name": "scythe",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "Harvest your disk space",
   "main": "main.js",
   "scripts": {
