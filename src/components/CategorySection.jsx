@@ -109,7 +109,7 @@ export default function CategorySection({ category, results, selectedIds, onTogg
 
           {CatIcon && <CatIcon size={14} color={CATEGORY_COLORS[category]} />}
 
-          <span style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.8rem', color: isAdvanced ? 'var(--danger)' : 'var(--text)', flex: 1 }}>
+          <span style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text)', flex: 1 }}>
             {t(CATEGORY_LABEL_KEYS[category] || category)}
           </span>
 
