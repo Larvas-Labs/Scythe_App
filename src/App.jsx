@@ -17,6 +17,7 @@ const TARGET_CATEGORIES = {
   'xcode-archives': 'developer', 'ios-simulators': 'developer',
   'slack-cache': 'apps', 'spotify-cache': 'apps', 'zoom-cache': 'apps',
   'vscode-cache': 'apps', 'figma-cache': 'apps', 'docker-data': 'apps',
+  'orphaned-scan': 'orphaned',
   'system-caches': 'advanced', 'system-logs': 'advanced', 'temp-system': 'advanced',
 }
 
@@ -26,7 +27,7 @@ function AppInner() {
   const [scanProgress, setScanProgress] = useState({})
   const [selectedIds, setSelectedIds] = useState(new Set())
   const [enabledCategories, setEnabledCategories] = useState({
-    user: true, browsers: true, developer: true, apps: true, advanced: false,
+    user: true, browsers: true, developer: true, apps: true, orphaned: true, advanced: false,
   })
   const [estimates, setEstimates] = useState({})
   const [showDeleteModal, setShowDeleteModal] = useState(false)
