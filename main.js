@@ -309,10 +309,31 @@ const SCAN_TARGETS = [
   },
 ]
 
+// ─── Helper: Get trash size via Finder (bypasses TCC restriction on ~/.Trash) ─
+function getTrashSize() {
+  try {
+    const output = execSync(
+      `osascript -e 'tell application "Finder" to get (size of items of trash)'`,
+      { timeout: 10000 }
+    ).toString().trim()
+    return output
+      .split(',')
+      .map(s => parseInt(s.trim(), 10))
+      .filter(n => !isNaN(n))
+      .reduce((sum, n) => sum + n, 0)
+  } catch {
+    return 0
+  }
+}
+
 // ─── Helper: Get directory size via du ───────────────────────────────────────
 function getDirSize(targetPath) {
+  const resolved = expandPath(targetPath)
+  // ~/.Trash is protected by TCC — use Finder via AppleScript instead
+  if (resolved === path.join(os.homedir(), '.Trash')) {
+    return getTrashSize()
+  }
   try {
-    const resolved = expandPath(targetPath)
     const output = execSync(`du -sk "${resolved}" 2>/dev/null`, { timeout: 30000 }).toString()
     const kb = parseInt(output.split('\t')[0], 10)
     return isNaN(kb) ? 0 : kb * 1024
