@@ -15,10 +15,10 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '12px 16px',
-          background: 'rgba(255, 69, 58, 0.07)',
-          border: '1px solid rgba(255, 69, 58, 0.28)',
+          background: 'rgba(255, 149, 0, 0.06)',
+          border: '1px solid rgba(255, 149, 0, 0.22)',
           borderRadius: '14px',
-          boxShadow: '0 8px 32px rgba(255, 69, 58, 0.15)',
+          boxShadow: '0 8px 32px rgba(255, 149, 0, 0.10)',
         }}
       >
         {/* Left: selection info + empty trash */}
@@ -90,16 +90,16 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
           style={{
             padding: '10px 32px',
             borderRadius: '10px',
-            background: hasSelection ? 'var(--danger)' : 'transparent',
-            border: hasSelection ? '1px solid var(--danger)' : '1px solid var(--border-strong)',
-            color: hasSelection ? '#fff' : 'var(--text-muted)',
+            background: hasSelection ? 'var(--accent)' : 'transparent',
+            border: hasSelection ? '1px solid var(--accent)' : '1px solid var(--border-strong)',
+            color: hasSelection ? '#111' : 'var(--text-muted)',
             fontFamily: 'var(--font-body)',
             fontWeight: 700,
             fontSize: '0.95rem',
             letterSpacing: '0.02em',
             cursor: hasSelection ? 'pointer' : 'not-allowed',
             transition: 'opacity 0.15s, transform 0.1s',
-            boxShadow: hasSelection ? '0 0 24px rgba(255,69,58,0.3)' : 'none',
+            boxShadow: hasSelection ? '0 0 24px rgba(255,149,0,0.25)' : 'none',
           }}
           onMouseEnter={e => { if (hasSelection) e.currentTarget.style.opacity = '0.85' }}
           onMouseLeave={e => { e.currentTarget.style.opacity = '1' }}
