@@ -8,7 +8,7 @@
     "electron:dev": "node scripts/wait-and-launch.js",
     "postinstall": "node scripts/rename-electron.js",
     "build": "vite build && electron-builder",
-    "publish": "export $(grep -v '^#' .env | xargs) 2>/dev/null; hdiutil detach /Volumes/Scythe 2>/dev/null; hdiutil detach \"/Volumes/Scythe 1\" 2>/dev/null; vite build && electron-builder --publish always",
+    "publish": "export $(grep -v '^#' .env | xargs) 2>/dev/null; hdiutil detach /Volumes/Scythe 2>/dev/null || true; hdiutil detach \"/Volumes/Scythe 1\" 2>/dev/null || true; vite build && electron-builder --publish always",
     "preview": "vite preview"
   },
   "build": {
