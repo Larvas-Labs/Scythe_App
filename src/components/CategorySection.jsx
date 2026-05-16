@@ -9,6 +9,7 @@ const CATEGORY_LABEL_KEYS = {
   browsers: 'cat.browsers',
   developer: 'cat.developer',
   apps: 'cat.apps',
+  orphaned: 'cat.orphaned',
   advanced: 'cat.advanced',
 }
 
@@ -17,6 +18,7 @@ const CATEGORY_COLORS = {
   browsers:  'var(--text-secondary)',
   developer: 'var(--text-secondary)',
   apps:      'var(--text-secondary)',
+  orphaned:  'var(--text-secondary)',
   advanced:  'var(--danger)',
 }
 

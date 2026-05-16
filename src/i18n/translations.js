@@ -19,6 +19,7 @@ export const translations = {
     'cat.browsers':  'Browsers',
     'cat.developer': 'Developer',
     'cat.apps':      'Apps',
+    'cat.orphaned':  'Left behind',
     'cat.advanced':  'Advanced',
 
     // Settings popup
@@ -108,6 +109,7 @@ export const translations = {
     'target.system-caches.name':  'System caches',
     'target.system-logs.name':    'System logs',
     'target.temp-system.name':    'Temp system files',
+    'target.orphaned.name':       'Left behind data',
 
     // Target descriptions
     'target.user-caches.desc':    'Caches created by installed apps',
@@ -134,6 +136,7 @@ export const translations = {
     'target.system-caches.desc':  'macOS system caches — requires administrator password',
     'target.system-logs.desc':    'macOS system logs — requires administrator password',
     'target.temp-system.desc':    'macOS temp files — requires administrator password',
+    'target.orphaned.desc':       'Data from apps no longer installed',
   },
 
   sv: {
@@ -146,6 +149,7 @@ export const translations = {
     'cat.browsers':  'Webbläsare',
     'cat.developer': 'Utvecklare',
     'cat.apps':      'Appar',
+    'cat.orphaned':  'Kvarlämnat',
     'cat.advanced':  'Avancerat',
 
     'settings.appearance':          'Utseende',
@@ -222,6 +226,7 @@ export const translations = {
     'target.system-caches.name':  'Systemcacher',
     'target.system-logs.name':    'Systemloggar',
     'target.temp-system.name':    'Temporära systemfiler',
+    'target.orphaned.name':       'Kvarlämnad data',
 
     'target.user-caches.desc':    'Cacher skapade av installerade appar',
     'target.user-logs.desc':      'Loggfiler från användarens appar',
@@ -247,6 +252,7 @@ export const translations = {
     'target.system-caches.desc':  'macOS-systemcacher – kräver administratörslösenord',
     'target.system-logs.desc':    'macOS systemloggar – kräver administratörslösenord',
     'target.temp-system.desc':    'macOS temporära filer – kräver administratörslösenord',
+    'target.orphaned.desc':       'Data från appar som inte längre är installerade',
   },
 
   de: {
@@ -259,6 +265,7 @@ export const translations = {
     'cat.browsers':  'Browser',
     'cat.developer': 'Entwickler',
     'cat.apps':      'Apps',
+    'cat.orphaned':  'Zurückgelassen',
     'cat.advanced':  'Erweitert',
 
     'settings.appearance':          'Darstellung',
@@ -372,6 +379,7 @@ export const translations = {
     'cat.browsers':  'Navigateurs',
     'cat.developer': 'Développeur',
     'cat.apps':      'Applications',
+    'cat.orphaned':  'Laissé pour compte',
     'cat.advanced':  'Avancé',
 
     'settings.appearance':          'Apparence',
@@ -485,6 +493,7 @@ export const translations = {
     'cat.browsers':  'Navegadores',
     'cat.developer': 'Desarrollador',
     'cat.apps':      'Aplicaciones',
+    'cat.orphaned':  'Dejado atrás',
     'cat.advanced':  'Avanzado',
 
     'settings.appearance':          'Apariencia',

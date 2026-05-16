@@ -307,7 +307,88 @@ const SCAN_TARGETS = [
     requiresAdmin: true,
     icon: '🗂️',
   },
+  {
+    id: 'orphaned-scan',
+    name: 'Orphaned data',
+    nameKey: 'target.orphaned.name',
+    category: 'orphaned',
+    path: null,
+    descKey: 'target.orphaned.desc',
+    showChildren: false,
+    safe: false,
+    requiresAdmin: false,
+    icon: '👻',
+  },
 ]
+
+// ─── Helper: Orphaned data detection ─────────────────────────────────────────
+
+const ORPHAN_SCAN_DIRS = [
+  '~/Library/Application Support',
+  '~/Library/Containers',
+  '~/Library/Group Containers',
+  '~/Library/HTTPStorages',
+  '~/Library/WebKit',
+  '~/Library/Application Scripts',
+]
+
+function getInstalledBundleIds() {
+  const bundleIds = new Set()
+  const appNames = new Set()
+  const appDirs = [
+    '/Applications',
+    path.join(os.homedir(), 'Applications'),
+    '/System/Applications',
+  ]
+  for (const dir of appDirs) {
+    try {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        if (!entry.name.endsWith('.app')) continue
+        appNames.add(entry.name.replace('.app', '').toLowerCase())
+        try {
+          const bid = execSync(
+            `defaults read "${path.join(dir, entry.name, 'Contents', 'Info')}" CFBundleIdentifier 2>/dev/null`,
+            { timeout: 2000 }
+          ).toString().trim()
+          if (bid) bundleIds.add(bid)
+        } catch {}
+      }
+    } catch {}
+  }
+  return { bundleIds, appNames }
+}
+
+function getOrphanedFolders() {
+  const { bundleIds, appNames } = getInstalledBundleIds()
+  const seen = new Set()
+  const orphaned = []
+
+  for (const dir of ORPHAN_SCAN_DIRS) {
+    const resolved = expandPath(dir)
+    try {
+      for (const entry of fs.readdirSync(resolved, { withFileTypes: true })) {
+        if (!entry.isDirectory()) continue
+        const name = entry.name
+        if (name.startsWith('.')) continue
+        if (name.startsWith('com.apple.')) continue
+        const fullPath = path.join(resolved, name)
+        if (seen.has(fullPath)) continue
+        seen.add(fullPath)
+
+        const isInstalled =
+          bundleIds.has(name) ||
+          appNames.has(name.toLowerCase()) ||
+          [...bundleIds].some(id => name === id || name.startsWith(id + '.'))
+
+        if (!isInstalled) {
+          orphaned.push({ name, path: fullPath, location: dir })
+        }
+      }
+    } catch {}
+  }
+
+  return orphaned
+}
 
 // ─── Helper: Get trash size via Finder (bypasses TCC restriction on ~/.Trash) ─
 function getTrashSize() {
@@ -532,6 +613,14 @@ ipcMain.handle('estimate:all', async (event) => {
   const results = []
   for (const target of SCAN_TARGETS) {
     if (scanAborted) break
+    if (target.id === 'orphaned-scan') {
+      // Quick discovery — no size calculation to keep estimates fast
+      const folders = getOrphanedFolders()
+      const exists = folders.length > 0
+      results.push({ id: 'orphaned-scan', estimatedSize: 0, exists })
+      event.sender.send('estimate:result', { id: 'orphaned-scan', estimatedSize: 0, exists })
+      continue
+    }
     const exists = pathExists(target.path)
     const size = exists ? getDirSize(target.path) : 0
     results.push({ id: target.id, estimatedSize: size, exists })
@@ -548,6 +637,36 @@ ipcMain.handle('scan:start', async (event, targetIds) => {
 
   for (const target of targets) {
     if (scanAborted) break
+
+    // ── Special: orphaned data scan ──────────────────────────────────────────
+    if (target.id === 'orphaned-scan') {
+      event.sender.send('scan:progress', { id: 'orphaned-scan', name: target.name, status: 'scanning', size: 0 })
+      const folders = getOrphanedFolders()
+      for (const folder of folders) {
+        if (scanAborted) break
+        const size = getDirSize(folder.path)
+        const itemId = `orphaned:${folder.path}`
+        const item = {
+          id: itemId,
+          name: folder.name,
+          nameKey: null,
+          category: 'orphaned',
+          path: folder.path,
+          description: folder.location,
+          descKey: null,
+          size,
+          exists: true,
+          safe: false,
+          requiresAdmin: false,
+          showChildren: false,
+          children: [],
+        }
+        results.push(item)
+        event.sender.send('scan:progress', { id: itemId, name: folder.name, status: 'done', size })
+      }
+      event.sender.send('scan:progress', { id: 'orphaned-scan', name: target.name, status: 'done', size: 0 })
+      continue
+    }
 
     event.sender.send('scan:progress', {
       id: target.id,

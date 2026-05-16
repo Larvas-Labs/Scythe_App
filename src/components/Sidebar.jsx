@@ -8,6 +8,7 @@ const CATEGORY_KEYS = [
   { key: 'browsers',  labelKey: 'cat.browsers',  color: 'var(--text-secondary)' },
   { key: 'developer', labelKey: 'cat.developer', color: 'var(--text-secondary)' },
   { key: 'apps',      labelKey: 'cat.apps',      color: 'var(--text-secondary)' },
+  { key: 'orphaned',  labelKey: 'cat.orphaned',  color: 'var(--text-secondary)' },
   { key: 'user',      labelKey: 'cat.user',      color: 'var(--text-secondary)' },
   { key: 'advanced',  labelKey: 'cat.advanced',  color: 'var(--danger)' },
 ]
@@ -16,6 +17,7 @@ const CAT_TO_IDS = {
   browsers:  ['chrome-cache', 'safari-cache', 'firefox-cache', 'arc-cache', 'brave-cache'],
   developer: ['npm-cache', 'yarn-cache', 'pnpm-store', 'homebrew-cache', 'xcode-derived', 'xcode-archives', 'ios-simulators'],
   apps:      ['slack-cache', 'spotify-cache', 'zoom-cache', 'vscode-cache', 'figma-cache', 'docker-data'],
+  orphaned:  ['orphaned-scan'],
   user:      ['user-caches', 'user-logs', 'trash'],
   advanced:  ['system-caches', 'system-logs', 'temp-system'],
 }

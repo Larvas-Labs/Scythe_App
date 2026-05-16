@@ -207,10 +207,21 @@ export function IconCatAdvanced({ size = 16, color = 'currentColor' }) {
   )
 }
 
+export function IconCatOrphaned({ size = 16, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 11V8a5 5 0 0110 0v3l-1.5 1.5L10 13l-1.5 1.5L7 13l-1.5 1.5L4 13z" />
+      <circle cx="6" cy="8.5" r="0.8" fill={color} stroke="none" />
+      <circle cx="10" cy="8.5" r="0.8" fill={color} stroke="none" />
+    </svg>
+  )
+}
+
 export const CATEGORY_ICON_MAP = {
   user:      IconCatUser,
   browsers:  IconCatBrowsers,
   developer: IconCatDeveloper,
   apps:      IconCatApps,
+  orphaned:  IconCatOrphaned,
   advanced:  IconCatAdvanced,
 }

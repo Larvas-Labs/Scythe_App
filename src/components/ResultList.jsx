@@ -1,7 +1,7 @@
 import React from 'react'
 import CategorySection from './CategorySection.jsx'
 
-const CATEGORY_ORDER = ['browsers', 'developer', 'apps', 'user', 'advanced']
+const CATEGORY_ORDER = ['browsers', 'developer', 'apps', 'orphaned', 'user', 'advanced']
 
 export default function ResultList({ results, selectedIds, onToggleItem, onToggleCategory }) {
   const grouped = CATEGORY_ORDER.reduce((acc, cat) => {
