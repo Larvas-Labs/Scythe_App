@@ -41,7 +41,7 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
                   fontFamily: 'var(--font-mono)',
                   fontWeight: 600,
                   fontSize: '1.1rem',
-                  color: 'var(--accent)',
+                  color: 'rgb(72, 187, 110)',
                   lineHeight: 1,
                 }}
               >
