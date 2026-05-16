@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { CATEGORY_ICON_MAP } from './Icons.jsx'
 import { formatSize } from '../utils.js'
 import SettingsPopup from './SettingsPopup.jsx'
@@ -98,7 +98,16 @@ export default function Sidebar({
   onChangeLanguage,
 }) {
   const [showSettings, setShowSettings] = useState(false)
+  const [openTooltip, setOpenTooltip] = useState(null)
+  const [tooltipRect, setTooltipRect] = useState(null)
   const { t } = useLang()
+
+  useEffect(() => {
+    if (!openTooltip) return
+    const close = () => { setOpenTooltip(null); setTooltipRect(null) }
+    document.addEventListener('click', close)
+    return () => document.removeEventListener('click', close)
+  }, [openTooltip])
 
   return (
     <div style={{
@@ -262,7 +271,7 @@ export default function Sidebar({
                 <Icon size={18} color={rowOpaque ? (key === 'advanced' ? 'var(--danger)' : 'var(--text)') : 'var(--text-muted)'} />
 
                 {appState === 'idle' ? (
-                  <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '1px' }}>
+                  <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
                     <span style={{
                       fontFamily: 'var(--font-body)',
                       fontWeight: 500,
@@ -274,16 +283,16 @@ export default function Sidebar({
                     }}>
                       {label}
                     </span>
-                    {estSize > 0 && (
-                      <span style={{
-                        fontFamily: 'var(--font-mono)',
-                        fontSize: '10px',
-                        color: 'var(--text-muted)',
-                        whiteSpace: 'nowrap',
-                      }}>
-                        ~{formatSize(estSize)} {t('sidebar.canBeFreed')}
-                      </span>
-                    )}
+                    <span style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: '10px',
+                      color: 'var(--text-muted)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      {t(`cat.${key}.desc`)}
+                    </span>
                   </div>
                 ) : (
                   <span style={{
@@ -300,6 +309,42 @@ export default function Sidebar({
                   </span>
                 )}
 
+                {appState === 'idle' && (
+                  <span
+                    onClick={e => {
+                      e.stopPropagation()
+                      if (openTooltip === key) {
+                        setOpenTooltip(null)
+                        setTooltipRect(null)
+                        return
+                      }
+                      const btn = e.currentTarget.closest('button')
+                      const rect = btn.getBoundingClientRect()
+                      setTooltipRect({ top: rect.bottom + 6, left: rect.left + 8, width: rect.width - 16 })
+                      setOpenTooltip(key)
+                    }}
+                    style={{
+                      width: '14px',
+                      height: '14px',
+                      borderRadius: '50%',
+                      border: `1px solid ${openTooltip === key ? 'var(--text-secondary)' : 'var(--border-strong)'}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '8px',
+                      fontFamily: 'var(--font-body)',
+                      fontWeight: 700,
+                      color: openTooltip === key ? 'var(--text-secondary)' : 'var(--text-muted)',
+                      cursor: 'pointer',
+                      flexShrink: 0,
+                      lineHeight: 1,
+                      transition: 'border-color 0.12s, color 0.12s',
+                      userSelect: 'none',
+                    }}
+                  >
+                    !
+                  </span>
+                )}
                 {appState === 'idle' ? (
                   <CategoryCheckbox checked={!!isEnabled} />
                 ) : rightNode}
@@ -342,6 +387,34 @@ export default function Sidebar({
           </span>
         </button>
       </div>
+
+      {openTooltip && tooltipRect && (
+        <div
+          onClick={e => e.stopPropagation()}
+          style={{
+            position: 'fixed',
+            top: tooltipRect.top,
+            left: tooltipRect.left,
+            width: tooltipRect.width,
+            zIndex: 300,
+            background: 'var(--surface)',
+            border: '1px solid var(--border-strong)',
+            borderRadius: '8px',
+            padding: '9px 11px',
+            boxShadow: '0 6px 24px rgba(0,0,0,0.35)',
+          }}
+        >
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: '11px',
+            color: 'var(--text-secondary)',
+            margin: 0,
+            lineHeight: 1.55,
+          }}>
+            {t(`cat.${openTooltip}.desc`)}
+          </p>
+        </div>
+      )}
 
       {showSettings && (
         <SettingsPopup
