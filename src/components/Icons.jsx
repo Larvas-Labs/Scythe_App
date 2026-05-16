@@ -158,8 +158,9 @@ export const ITEM_ICON_MAP = {
 export function IconCatUser({ size = 16, color = 'currentColor' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M2 13c0-2.21 2.69-4 6-4s6 1.79 6 4" />
-      <circle cx="8" cy="5.5" r="2.5" />
+      <rect x="2" y="3" width="12" height="10" rx="2" />
+      <line x1="5" y1="7" x2="11" y2="7" />
+      <line x1="5" y1="10" x2="8.5" y2="10" />
     </svg>
   )
 }
