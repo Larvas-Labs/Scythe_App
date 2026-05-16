@@ -157,7 +157,7 @@ export const translations = {
     'cat.browsers':  'Webbläsare',
     'cat.developer': 'Utvecklare',
     'cat.apps':      'Appar',
-    'cat.orphaned':  'Kvarlämnat',
+    'cat.orphaned':  'Kvarglömt',
     'cat.advanced':  'Avancerat',
     'cat.browsers.desc':  'Cachad data från Chrome, Safari, Firefox, Arc och Brave',
     'cat.developer.desc': 'Byggcacher från npm, Yarn, Homebrew och Xcode',
@@ -221,7 +221,7 @@ export const translations = {
 
     'section.advanced.title': '⚠️ Avancerat — Systemfiler',
     'section.advanced.desc':  'Dessa åtgärder påverkar systemfiler och kräver administratörslösenord.',
-    'section.orphaned.title': 'Kvarlämnad data',
+    'section.orphaned.title': 'Kvarglömd data',
     'section.orphaned.desc':  'Dessa mappar tillhör appar som inte längre är installerade. Granska varje objekt innan du raderar — vissa kan fortfarande behövas.',
 
     'item.notFound':     'Hittades inte',
@@ -242,7 +242,7 @@ export const translations = {
     'target.system-caches.name':  'Systemcacher',
     'target.system-logs.name':    'Systemloggar',
     'target.temp-system.name':    'Temporära systemfiler',
-    'target.orphaned.name':       'Kvarlämnad data',
+    'target.orphaned.name':       'Kvarglömd data',
 
     'target.user-caches.desc':    'Cacher skapade av installerade appar',
     'target.user-logs.desc':      'Loggfiler från användarens appar',
