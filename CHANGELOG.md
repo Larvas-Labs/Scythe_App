@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.2.0] - 2026-05-16
+
+### Förbättringar
+- BottomBar omdesignad som flytande widget med röd ton – sticker ut tydligast av alla ytor
+- Sidebars toppsektion ger nu korrekt plats åt macOS traffic lights (52 px padding)
+- "Ny scan"-knappen i sidebaren har nu amber-färgad border och text
+- Scythe-logosymbolen i sidebaren borttagen (förbereds för ny ikon)
+- Onödig bottenmarginal i resultatlistan borttagen
+
+---
+
 ## [1.1.1] - 2026-05-15
 
 ### Förbättringar
