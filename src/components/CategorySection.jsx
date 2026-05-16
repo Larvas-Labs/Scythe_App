@@ -29,29 +29,32 @@ export default function CategorySection({ category, results, selectedIds, onTogg
   const isAdvanced = category === 'advanced'
   const CatIcon = CATEGORY_ICON_MAP[category]
 
+  const cardStyle = isAdvanced ? {
+    background: 'rgba(255, 69, 58, 0.06)',
+    border: '1px solid rgba(255, 69, 58, 0.28)',
+    boxShadow: '0 4px 24px rgba(255, 69, 58, 0.10)',
+  } : {}
+
   return (
     <div id={'cat-' + category} style={{ marginBottom: '16px' }}>
-      {isAdvanced && (
-        <div
-          style={{
-            margin: '8px 16px 8px',
-            padding: '10px 14px',
-            background: 'rgba(255, 69, 58, 0.07)',
-            border: '1px solid rgba(255, 69, 58, 0.20)',
-            borderRadius: '10px',
-          }}
-        >
-          <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.78rem', color: 'var(--danger)', marginBottom: '2px' }}>
-            {t('section.advanced.title')}
-          </div>
-          <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
-            {t('section.advanced.desc')}
-          </div>
-        </div>
-      )}
-
       {/* Section card: sticky header + items as a unified card */}
-      <div className="section-card" style={{ margin: '0 16px' }}>
+      <div className="section-card" style={{ margin: '0 16px', ...cardStyle }}>
+
+        {/* Advanced warning — inside the card, above the header */}
+        {isAdvanced && (
+          <div style={{
+            padding: '10px 14px',
+            borderBottom: '1px solid rgba(255, 69, 58, 0.20)',
+          }}>
+            <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.78rem', color: 'var(--danger)', marginBottom: '2px' }}>
+              {t('section.advanced.title')}
+            </div>
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+              {t('section.advanced.desc')}
+            </div>
+          </div>
+        )}
+
         {/* Sticky header inside card */}
         <div
           style={{
@@ -62,8 +65,8 @@ export default function CategorySection({ category, results, selectedIds, onTogg
             alignItems: 'center',
             gap: '10px',
             padding: '10px 14px',
-            background: 'var(--surface)',
-            borderBottom: '1px solid var(--border)',
+            background: isAdvanced ? 'rgba(40, 10, 8, 0.95)' : 'var(--surface)',
+            borderBottom: '1px solid ' + (isAdvanced ? 'rgba(255, 69, 58, 0.18)' : 'var(--border)'),
           }}
         >
           <div
@@ -83,12 +86,12 @@ export default function CategorySection({ category, results, selectedIds, onTogg
 
           {CatIcon && <CatIcon size={14} color={CATEGORY_COLORS[category]} />}
 
-          <span style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.8rem', color: 'var(--text)', flex: 1 }}>
+          <span style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.8rem', color: isAdvanced ? 'var(--danger)' : 'var(--text)', flex: 1 }}>
             {t(CATEGORY_LABEL_KEYS[category] || category)}
           </span>
 
           {totalSize > 0 && (
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 500, color: isAdvanced ? 'rgba(255,69,58,0.8)' : 'var(--text-secondary)' }}>
               {formatSize(totalSize)}
             </span>
           )}
