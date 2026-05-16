@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.5] - 2026-05-16
+
+### Förbättringar
+- Kategorin "Cacher" döpt om till "Övrigt" — tydligare eftersom cacher finns i alla kategorier
+- "Övrigt" placerad sist precis ovanför Avancerat
+- Ny ikon för "Övrigt"-kategorin — neutral dokumentikon istället för personikon
+
+---
+
 ## [1.1.4] - 2026-05-16
 
 ### Buggfixar
