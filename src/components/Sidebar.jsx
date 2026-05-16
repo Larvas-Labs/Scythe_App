@@ -245,110 +245,145 @@ export default function Sidebar({
               {key === 'advanced' && (
                 <div style={{ height: '1px', background: 'var(--border)', margin: '8px 4px' }} />
               )}
-              <button
-                onClick={() => {
-                  if (appState === 'idle') onCategoryToggle(key)
-                  else if (appState === 'results') onCategoryScroll(key)
-                }}
-                style={{
-                  width: '100%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '7px 8px',
-                  marginBottom: '4px',
-                  borderRadius: '6px',
-                  border: 'none',
-                  background: 'transparent',
-                  cursor: appState === 'idle' || appState === 'results' ? 'pointer' : 'default',
-                  transition: 'background 0.12s',
-                  opacity: rowOpaque ? 1 : 0.38,
-                  textAlign: 'left',
-                }}
-                onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)' }}
-                onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
-              >
-                <Icon size={18} color={rowOpaque ? (key === 'advanced' ? 'var(--danger)' : 'var(--text)') : 'var(--text-muted)'} />
+              <div style={{
+                display: 'flex',
+                alignItems: 'stretch',
+                marginBottom: '4px',
+                borderRadius: '6px',
+                opacity: rowOpaque ? 1 : 0.38,
+              }}>
 
-                {appState === 'idle' ? (
-                  <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                {/* Left zone — icon, label, info */}
+                <button
+                  onClick={() => {
+                    setOpenTooltip(null)
+                    setTooltipRect(null)
+                    if (appState === 'idle') onCategoryToggle(key)
+                    else if (appState === 'results') onCategoryScroll(key)
+                  }}
+                  style={{
+                    flex: 1,
+                    minWidth: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '7px 8px',
+                    borderRadius: appState === 'idle' ? '6px 0 0 6px' : '6px',
+                    border: 'none',
+                    background: 'transparent',
+                    cursor: appState === 'idle' || appState === 'results' ? 'pointer' : 'default',
+                    transition: 'background 0.12s',
+                    textAlign: 'left',
+                  }}
+                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)' }}
+                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+                >
+                  <Icon size={18} color={rowOpaque ? (key === 'advanced' ? 'var(--danger)' : 'var(--text)') : 'var(--text-muted)'} />
+
+                  {appState === 'idle' ? (
+                    <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <span style={{
+                        fontFamily: 'var(--font-body)',
+                        fontWeight: 500,
+                        fontSize: '13px',
+                        color: rowOpaque ? 'var(--text)' : 'var(--text-secondary)',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}>
+                        {label}
+                      </span>
+                      <span style={{
+                        fontFamily: 'var(--font-body)',
+                        fontSize: '10px',
+                        color: 'var(--text-muted)',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap',
+                      }}>
+                        {t(`cat.${key}.desc`)}
+                      </span>
+                    </div>
+                  ) : (
                     <span style={{
                       fontFamily: 'var(--font-body)',
                       fontWeight: 500,
                       fontSize: '13px',
                       color: rowOpaque ? 'var(--text)' : 'var(--text-secondary)',
+                      flex: 1,
                       overflow: 'hidden',
                       textOverflow: 'ellipsis',
                       whiteSpace: 'nowrap',
                     }}>
                       {label}
                     </span>
-                    <span style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: '10px',
-                      color: 'var(--text-muted)',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}>
-                      {t(`cat.${key}.desc`)}
-                    </span>
-                  </div>
-                ) : (
-                  <span style={{
-                    fontFamily: 'var(--font-body)',
-                    fontWeight: 500,
-                    fontSize: '13px',
-                    color: rowOpaque ? 'var(--text)' : 'var(--text-secondary)',
-                    flex: 1,
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {label}
-                  </span>
-                )}
+                  )}
 
+                  {appState === 'idle' && (
+                    <span
+                      onClick={e => {
+                        e.stopPropagation()
+                        if (openTooltip === key) {
+                          setOpenTooltip(null)
+                          setTooltipRect(null)
+                          return
+                        }
+                        const btn = e.currentTarget.closest('button')
+                        const rect = btn.getBoundingClientRect()
+                        setTooltipRect({ top: rect.bottom + 6, left: rect.left + 8, width: rect.width - 16 })
+                        setOpenTooltip(key)
+                      }}
+                      style={{
+                        width: '14px',
+                        height: '14px',
+                        borderRadius: '50%',
+                        border: `1px solid ${openTooltip === key ? 'var(--text-secondary)' : 'var(--border-strong)'}`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '8px',
+                        fontFamily: 'var(--font-body)',
+                        fontWeight: 700,
+                        color: openTooltip === key ? 'var(--text-secondary)' : 'var(--text-muted)',
+                        cursor: 'pointer',
+                        flexShrink: 0,
+                        lineHeight: 1,
+                        transition: 'border-color 0.12s, color 0.12s',
+                        userSelect: 'none',
+                      }}
+                    >
+                      !
+                    </span>
+                  )}
+
+                  {appState !== 'idle' && rightNode}
+                </button>
+
+                {/* Right zone — toggle */}
                 {appState === 'idle' && (
-                  <span
-                    onClick={e => {
-                      e.stopPropagation()
-                      if (openTooltip === key) {
-                        setOpenTooltip(null)
-                        setTooltipRect(null)
-                        return
-                      }
-                      const btn = e.currentTarget.closest('button')
-                      const rect = btn.getBoundingClientRect()
-                      setTooltipRect({ top: rect.bottom + 6, left: rect.left + 8, width: rect.width - 16 })
-                      setOpenTooltip(key)
-                    }}
+                  <button
+                    onClick={() => onCategoryToggle(key)}
                     style={{
-                      width: '14px',
-                      height: '14px',
-                      borderRadius: '50%',
-                      border: `1px solid ${openTooltip === key ? 'var(--text-secondary)' : 'var(--border-strong)'}`,
+                      flexShrink: 0,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '8px',
-                      fontFamily: 'var(--font-body)',
-                      fontWeight: 700,
-                      color: openTooltip === key ? 'var(--text-secondary)' : 'var(--text-muted)',
+                      padding: '0 11px',
+                      border: 'none',
+                      borderLeft: '1px solid var(--border)',
+                      borderRadius: '0 6px 6px 0',
+                      background: 'transparent',
                       cursor: 'pointer',
-                      flexShrink: 0,
-                      lineHeight: 1,
-                      transition: 'border-color 0.12s, color 0.12s',
-                      userSelect: 'none',
+                      transition: 'background 0.12s',
                     }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)' }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
                   >
-                    !
-                  </span>
+                    <CategoryCheckbox checked={!!isEnabled} />
+                  </button>
                 )}
-                {appState === 'idle' ? (
-                  <CategoryCheckbox checked={!!isEnabled} />
-                ) : rightNode}
-              </button>
+
+              </div>
               </React.Fragment>
             )
           })}
