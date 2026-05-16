@@ -43,6 +43,16 @@ function ScytheLogo() {
   )
 }
 
+function InfoIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="8" cy="8" r="6.5" />
+      <line x1="8" y1="7" x2="8" y2="11" />
+      <circle cx="8" cy="5" r="0.6" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
 function SlidersIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -340,33 +350,35 @@ export default function Sidebar({
                     }}
                     style={{
                       flexShrink: 0,
-                      width: '18px',
-                      height: '18px',
-                      marginLeft: '2px',
-                      borderRadius: '50%',
-                      border: `1px solid ${openTooltip === key ? 'var(--text-muted)' : 'transparent'}`,
-                      background: 'transparent',
+                      width: '24px',
+                      height: '24px',
+                      marginLeft: '3px',
+                      borderRadius: '6px',
+                      border: `1px solid ${openTooltip === key ? 'var(--border-strong)' : 'var(--border)'}`,
+                      background: openTooltip === key ? 'var(--surface-hover)' : 'var(--bg-secondary)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      fontSize: '8px',
-                      fontFamily: 'var(--font-body)',
-                      fontWeight: 700,
                       color: openTooltip === key ? 'var(--text-secondary)' : 'var(--text-muted)',
                       cursor: 'pointer',
-                      opacity: openTooltip === key ? 1 : 0.5,
-                      transition: 'opacity 0.12s, border-color 0.12s, color 0.12s',
-                      userSelect: 'none',
+                      transition: 'background 0.12s, border-color 0.12s, color 0.12s',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+                    onMouseEnter={e => {
+                      if (openTooltip !== key) {
+                        e.currentTarget.style.background = 'var(--surface-hover)'
+                        e.currentTarget.style.borderColor = 'var(--border-strong)'
+                        e.currentTarget.style.color = 'var(--text-secondary)'
+                      }
+                    }}
                     onMouseLeave={e => {
                       if (openTooltip !== key) {
-                        e.currentTarget.style.opacity = '0.5'
-                        e.currentTarget.style.borderColor = 'transparent'
+                        e.currentTarget.style.background = 'var(--bg-secondary)'
+                        e.currentTarget.style.borderColor = 'var(--border)'
+                        e.currentTarget.style.color = 'var(--text-muted)'
                       }
                     }}
                   >
-                    i
+                    <InfoIcon />
                   </button>
                 )}
 
