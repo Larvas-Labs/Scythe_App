@@ -219,7 +219,7 @@ export default function Sidebar({
                 )
               }
             } else {
-              const catResults = scanResults.filter(r => ids.includes(r.id))
+              const catResults = scanResults.filter(r => ids.includes(r.id) || r.category === key)
               const totalSize = catResults.reduce((sum, r) => sum + (r.size || 0), 0)
               rowOpaque = catResults.some(r => r.exists)
               if (totalSize > 0) {

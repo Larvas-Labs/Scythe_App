@@ -29,12 +29,16 @@ export default function CategorySection({ category, results, selectedIds, onTogg
   const someSelected = existing.some(r => selectedIds.has(r.id))
   const totalSize = results.reduce((sum, r) => sum + (r.size || 0), 0)
   const isAdvanced = category === 'advanced'
+  const isOrphaned = category === 'orphaned'
   const CatIcon = CATEGORY_ICON_MAP[category]
 
   const cardStyle = isAdvanced ? {
     background: 'rgba(255, 69, 58, 0.06)',
     border: '1px solid rgba(255, 69, 58, 0.28)',
     boxShadow: '0 4px 24px rgba(255, 69, 58, 0.10)',
+  } : isOrphaned ? {
+    background: 'rgba(255, 149, 0, 0.04)',
+    border: '1px solid rgba(255, 149, 0, 0.22)',
   } : {}
 
   return (
@@ -57,6 +61,21 @@ export default function CategorySection({ category, results, selectedIds, onTogg
           </div>
         )}
 
+        {/* Orphaned warning — inside the card, above the header */}
+        {isOrphaned && (
+          <div style={{
+            padding: '10px 14px',
+            borderBottom: '1px solid rgba(255, 149, 0, 0.18)',
+          }}>
+            <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.78rem', color: 'var(--warning)', marginBottom: '2px' }}>
+              {t('section.orphaned.title')}
+            </div>
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
+              {t('section.orphaned.desc')}
+            </div>
+          </div>
+        )}
+
         {/* Sticky header inside card */}
         <div
           style={{
@@ -67,8 +86,8 @@ export default function CategorySection({ category, results, selectedIds, onTogg
             alignItems: 'center',
             gap: '10px',
             padding: '10px 14px',
-            background: isAdvanced ? 'rgba(40, 10, 8, 0.95)' : 'var(--surface)',
-            borderBottom: '1px solid ' + (isAdvanced ? 'rgba(255, 69, 58, 0.18)' : 'var(--border)'),
+            background: isAdvanced ? 'rgba(40, 10, 8, 0.95)' : isOrphaned ? 'rgba(30, 20, 5, 0.95)' : 'var(--surface)',
+            borderBottom: '1px solid ' + (isAdvanced ? 'rgba(255, 69, 58, 0.18)' : isOrphaned ? 'rgba(255, 149, 0, 0.15)' : 'var(--border)'),
           }}
         >
           <div

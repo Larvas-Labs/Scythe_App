@@ -86,6 +86,8 @@ export const translations = {
     // Category section
     'section.advanced.title': '⚠️ Advanced — System files',
     'section.advanced.desc':  'These actions affect system files and require an administrator password.',
+    'section.orphaned.title': 'Left behind data',
+    'section.orphaned.desc':  'These folders belong to apps that are no longer installed. Review each item before deleting — some may still be needed.',
 
     // Scan item
     'item.notFound':     'Not found',
@@ -207,6 +209,8 @@ export const translations = {
 
     'section.advanced.title': '⚠️ Avancerat — Systemfiler',
     'section.advanced.desc':  'Dessa åtgärder påverkar systemfiler och kräver administratörslösenord.',
+    'section.orphaned.title': 'Kvarlämnad data',
+    'section.orphaned.desc':  'Dessa mappar tillhör appar som inte längre är installerade. Granska varje objekt innan du raderar — vissa kan fortfarande behövas.',
 
     'item.notFound':     'Hittades inte',
     'item.showInFinder': 'Visa i Finder',
@@ -323,6 +327,8 @@ export const translations = {
 
     'section.advanced.title': '⚠️ Erweitert — Systemdateien',
     'section.advanced.desc':  'Diese Aktionen betreffen Systemdateien und erfordern ein Administratorpasswort.',
+    'section.orphaned.title': 'Zurückgelassene Daten',
+    'section.orphaned.desc':  'Diese Ordner gehören zu Apps, die nicht mehr installiert sind. Prüfe jeden Eintrag vor dem Löschen — einige könnten noch benötigt werden.',
 
     'item.notFound':     'Nicht gefunden',
     'item.showInFinder': 'Im Finder anzeigen',
@@ -437,6 +443,8 @@ export const translations = {
 
     'section.advanced.title': '⚠️ Avancé — Fichiers système',
     'section.advanced.desc':  'Ces actions affectent les fichiers système et nécessitent un mot de passe administrateur.',
+    'section.orphaned.title': 'Données laissées pour compte',
+    'section.orphaned.desc':  'Ces dossiers appartiennent à des applications qui ne sont plus installées. Vérifiez chaque élément avant de supprimer — certains peuvent encore être nécessaires.',
 
     'item.notFound':     'Introuvable',
     'item.showInFinder': 'Afficher dans le Finder',
@@ -551,6 +559,8 @@ export const translations = {
 
     'section.advanced.title': '⚠️ Avanzado — Archivos del sistema',
     'section.advanced.desc':  'Estas acciones afectan archivos del sistema y requieren contraseña de administrador.',
+    'section.orphaned.title': 'Datos dejados atrás',
+    'section.orphaned.desc':  'Estas carpetas pertenecen a aplicaciones que ya no están instaladas. Revisa cada elemento antes de eliminar — algunos pueden seguir siendo necesarios.',
 
     'item.notFound':     'No encontrado',
     'item.showInFinder': 'Mostrar en Finder',
