@@ -343,27 +343,25 @@ export default function Sidebar({
                       width: '26px',
                       height: '26px',
                       borderRadius: '6px',
-                      border: `1px solid ${openTooltip === key ? 'var(--border-strong)' : 'var(--border)'}`,
-                      background: openTooltip === key ? 'var(--surface-hover)' : 'var(--bg)',
+                      border: `1px solid ${openTooltip === key ? 'var(--accent)' : 'var(--border-strong)'}`,
+                      background: openTooltip === key ? 'var(--accent-dim)' : 'var(--surface-hover)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: openTooltip === key ? 'var(--text-secondary)' : 'var(--text-muted)',
+                      color: openTooltip === key ? 'var(--accent)' : 'var(--text-secondary)',
                       cursor: 'pointer',
                       transition: 'background 0.12s, border-color 0.12s, color 0.12s',
                     }}
                     onMouseEnter={e => {
                       if (openTooltip !== key) {
-                        e.currentTarget.style.background = 'var(--surface-hover)'
-                        e.currentTarget.style.borderColor = 'var(--border-strong)'
-                        e.currentTarget.style.color = 'var(--text-secondary)'
+                        e.currentTarget.style.borderColor = 'var(--text-muted)'
+                        e.currentTarget.style.color = 'var(--text)'
                       }
                     }}
                     onMouseLeave={e => {
                       if (openTooltip !== key) {
-                        e.currentTarget.style.background = 'var(--bg)'
-                        e.currentTarget.style.borderColor = 'var(--border)'
-                        e.currentTarget.style.color = 'var(--text-muted)'
+                        e.currentTarget.style.borderColor = 'var(--border-strong)'
+                        e.currentTarget.style.color = 'var(--text-secondary)'
                       }
                     }}
                   >

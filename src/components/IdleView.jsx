@@ -194,23 +194,6 @@ export default function IdleView({ onStartScan, totalEstimate = 0, maxEstimate =
           onStartScan={onStartScan}
         />
 
-        <div>
-          <div style={{
-            fontFamily: 'var(--font-mono)', fontWeight: 500, fontSize: '1.15rem',
-            color: 'var(--accent)', lineHeight: 1.15,
-            opacity: hasEstimate ? 1 : 0.25,
-            transition: 'opacity 0.5s ease',
-          }}>
-            {hasEstimate ? formatSize(totalEstimate) : '—'}
-          </div>
-          <div style={{
-            fontFamily: 'var(--font-body)', fontSize: '0.62rem',
-            color: 'var(--text-muted)', marginTop: '4px',
-            textTransform: 'uppercase', letterSpacing: '0.09em',
-          }}>
-            {t('idle.canBeFreed')}
-          </div>
-        </div>
       </div>
     </div>
   )
