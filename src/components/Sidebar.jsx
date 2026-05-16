@@ -8,8 +8,8 @@ const CATEGORY_KEYS = [
   { key: 'browsers',  labelKey: 'cat.browsers',  color: 'var(--text-secondary)' },
   { key: 'developer', labelKey: 'cat.developer', color: 'var(--text-secondary)' },
   { key: 'apps',      labelKey: 'cat.apps',      color: 'var(--text-secondary)' },
-  { key: 'orphaned',  labelKey: 'cat.orphaned',  color: 'var(--text-secondary)' },
   { key: 'user',      labelKey: 'cat.user',      color: 'var(--text-secondary)' },
+  { key: 'orphaned',  labelKey: 'cat.orphaned',  color: 'var(--text-secondary)' },
   { key: 'advanced',  labelKey: 'cat.advanced',  color: 'var(--danger)' },
 ]
 
