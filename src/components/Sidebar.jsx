@@ -247,13 +247,12 @@ export default function Sidebar({
               )}
               <div style={{
                 display: 'flex',
-                alignItems: 'stretch',
+                alignItems: 'center',
                 marginBottom: '4px',
-                borderRadius: '6px',
                 opacity: rowOpaque ? 1 : 0.38,
               }}>
 
-                {/* Left zone — icon, label, info */}
+                {/* Main row */}
                 <button
                   onClick={() => {
                     setOpenTooltip(null)
@@ -268,7 +267,7 @@ export default function Sidebar({
                     alignItems: 'center',
                     gap: '8px',
                     padding: '7px 8px',
-                    borderRadius: appState === 'idle' ? '6px 0 0 6px' : '6px',
+                    borderRadius: '6px',
                     border: 'none',
                     background: 'transparent',
                     cursor: appState === 'idle' || appState === 'results' ? 'pointer' : 'default',
@@ -319,67 +318,55 @@ export default function Sidebar({
                     </span>
                   )}
 
-                  {appState === 'idle' && (
-                    <span
-                      onClick={e => {
-                        e.stopPropagation()
-                        if (openTooltip === key) {
-                          setOpenTooltip(null)
-                          setTooltipRect(null)
-                          return
-                        }
-                        const btn = e.currentTarget.closest('button')
-                        const rect = btn.getBoundingClientRect()
-                        setTooltipRect({ top: rect.bottom + 6, left: rect.left + 8, width: rect.width - 16 })
-                        setOpenTooltip(key)
-                      }}
-                      style={{
-                        width: '14px',
-                        height: '14px',
-                        borderRadius: '50%',
-                        border: `1px solid ${openTooltip === key ? 'var(--text-secondary)' : 'var(--border-strong)'}`,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '8px',
-                        fontFamily: 'var(--font-body)',
-                        fontWeight: 700,
-                        color: openTooltip === key ? 'var(--text-secondary)' : 'var(--text-muted)',
-                        cursor: 'pointer',
-                        flexShrink: 0,
-                        lineHeight: 1,
-                        transition: 'border-color 0.12s, color 0.12s',
-                        userSelect: 'none',
-                      }}
-                    >
-                      !
-                    </span>
-                  )}
-
-                  {appState !== 'idle' && rightNode}
+                  {appState === 'idle'
+                    ? <CategoryCheckbox checked={!!isEnabled} />
+                    : rightNode
+                  }
                 </button>
 
-                {/* Right zone — toggle */}
+                {/* Info button — outside the row, far right */}
                 {appState === 'idle' && (
                   <button
-                    onClick={() => onCategoryToggle(key)}
+                    onClick={e => {
+                      e.stopPropagation()
+                      if (openTooltip === key) {
+                        setOpenTooltip(null)
+                        setTooltipRect(null)
+                        return
+                      }
+                      const rect = e.currentTarget.getBoundingClientRect()
+                      setTooltipRect({ top: rect.bottom + 6, left: rect.left - 180, width: 196 })
+                      setOpenTooltip(key)
+                    }}
                     style={{
                       flexShrink: 0,
+                      width: '18px',
+                      height: '18px',
+                      marginLeft: '2px',
+                      borderRadius: '50%',
+                      border: `1px solid ${openTooltip === key ? 'var(--text-muted)' : 'transparent'}`,
+                      background: 'transparent',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      padding: '0 11px',
-                      border: 'none',
-                      borderLeft: '1px solid var(--border)',
-                      borderRadius: '0 6px 6px 0',
-                      background: 'transparent',
+                      fontSize: '8px',
+                      fontFamily: 'var(--font-body)',
+                      fontWeight: 700,
+                      color: openTooltip === key ? 'var(--text-secondary)' : 'var(--text-muted)',
                       cursor: 'pointer',
-                      transition: 'background 0.12s',
+                      opacity: openTooltip === key ? 1 : 0.5,
+                      transition: 'opacity 0.12s, border-color 0.12s, color 0.12s',
+                      userSelect: 'none',
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)' }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+                    onMouseEnter={e => { e.currentTarget.style.opacity = '1'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+                    onMouseLeave={e => {
+                      if (openTooltip !== key) {
+                        e.currentTarget.style.opacity = '0.5'
+                        e.currentTarget.style.borderColor = 'transparent'
+                      }
+                    }}
                   >
-                    <CategoryCheckbox checked={!!isEnabled} />
+                    i
                   </button>
                 )}
 
