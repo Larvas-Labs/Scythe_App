@@ -255,38 +255,30 @@ export default function Sidebar({
               {key === 'advanced' && (
                 <div style={{ height: '1px', background: 'var(--border)', margin: '8px 4px' }} />
               )}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                marginBottom: '4px',
-                opacity: rowOpaque ? 1 : 0.38,
-              }}>
+              <div
+                data-row
+                onClick={() => {
+                  setOpenTooltip(null)
+                  setTooltipRect(null)
+                  if (appState === 'idle') onCategoryToggle(key)
+                  else if (appState === 'results') onCategoryScroll(key)
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginBottom: '4px',
+                  borderRadius: '6px',
+                  opacity: rowOpaque ? 1 : 0.38,
+                  background: 'transparent',
+                  cursor: appState === 'idle' || appState === 'results' ? 'pointer' : 'default',
+                  transition: 'background 0.12s',
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)' }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+              >
 
-                {/* Main row */}
-                <button
-                  onClick={() => {
-                    setOpenTooltip(null)
-                    setTooltipRect(null)
-                    if (appState === 'idle') onCategoryToggle(key)
-                    else if (appState === 'results') onCategoryScroll(key)
-                  }}
-                  style={{
-                    flex: 1,
-                    minWidth: 0,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '7px 8px',
-                    borderRadius: '6px',
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: appState === 'idle' || appState === 'results' ? 'pointer' : 'default',
-                    transition: 'background 0.12s',
-                    textAlign: 'left',
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-hover)' }}
-                  onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
-                >
+                {/* Icon + label */}
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: '8px', padding: '7px 6px 7px 8px' }}>
                   <Icon size={18} color={rowOpaque ? (key === 'advanced' ? 'var(--danger)' : 'var(--text)') : 'var(--text-muted)'} />
 
                   {appState === 'idle' ? (
@@ -328,13 +320,10 @@ export default function Sidebar({
                     </span>
                   )}
 
-                  {appState === 'idle'
-                    ? <CategoryCheckbox checked={!!isEnabled} />
-                    : rightNode
-                  }
-                </button>
+                  {appState !== 'idle' && rightNode}
+                </div>
 
-                {/* Info button — outside the row, far right */}
+                {/* Info icon — inside hover area, before separator */}
                 {appState === 'idle' && (
                   <button
                     onClick={e => {
@@ -344,42 +333,42 @@ export default function Sidebar({
                         setTooltipRect(null)
                         return
                       }
-                      const rect = e.currentTarget.getBoundingClientRect()
-                      setTooltipRect({ top: rect.bottom + 6, left: rect.left - 180, width: 196 })
+                      const rect = e.currentTarget.closest('[data-row]').getBoundingClientRect()
+                      setTooltipRect({ top: rect.bottom + 6, left: rect.left + 8, width: rect.width - 16 })
                       setOpenTooltip(key)
                     }}
                     style={{
                       flexShrink: 0,
-                      width: '24px',
-                      height: '24px',
-                      marginLeft: '3px',
-                      borderRadius: '6px',
-                      border: `1px solid ${openTooltip === key ? 'var(--border-strong)' : 'var(--border)'}`,
-                      background: openTooltip === key ? 'var(--surface-hover)' : 'var(--bg-secondary)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
+                      width: '20px',
+                      height: '20px',
+                      border: 'none',
+                      background: 'transparent',
+                      borderRadius: '4px',
                       color: openTooltip === key ? 'var(--text-secondary)' : 'var(--text-muted)',
                       cursor: 'pointer',
-                      transition: 'background 0.12s, border-color 0.12s, color 0.12s',
+                      transition: 'color 0.12s',
                     }}
-                    onMouseEnter={e => {
-                      if (openTooltip !== key) {
-                        e.currentTarget.style.background = 'var(--surface-hover)'
-                        e.currentTarget.style.borderColor = 'var(--border-strong)'
-                        e.currentTarget.style.color = 'var(--text-secondary)'
-                      }
-                    }}
-                    onMouseLeave={e => {
-                      if (openTooltip !== key) {
-                        e.currentTarget.style.background = 'var(--bg-secondary)'
-                        e.currentTarget.style.borderColor = 'var(--border)'
-                        e.currentTarget.style.color = 'var(--text-muted)'
-                      }
-                    }}
+                    onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-secondary)' }}
+                    onMouseLeave={e => { if (openTooltip !== key) e.currentTarget.style.color = 'var(--text-muted)' }}
                   >
                     <InfoIcon />
                   </button>
+                )}
+
+                {/* Separator + checkbox */}
+                {appState === 'idle' && (
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    alignSelf: 'stretch',
+                    padding: '0 9px',
+                    borderLeft: '1px solid var(--border)',
+                  }}>
+                    <CategoryCheckbox checked={!!isEnabled} />
+                  </div>
                 )}
 
               </div>
