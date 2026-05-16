@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.3] - 2026-05-16
+
+### Förbättringar
+- Avancerat-sektionen är nu en sammanhängande röd widget — varning, rubrik och items i ett kort
+- BottomBar-knappen heter nu "Frigör" och är översatt till alla 5 språk (EN: Free up, DE: Freigeben, FR: Libérer, ES: Liberar)
+- Storlekstexten i BottomBar matchar nu widgetens gröna ton
+- Onödig bottenmarginal i resultatlistan borttagen
+
+---
+
 ## [1.1.2] - 2026-05-16
 
 ### Förbättringar
