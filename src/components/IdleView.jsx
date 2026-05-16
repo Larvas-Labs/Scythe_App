@@ -172,45 +172,18 @@ export default function IdleView({ onStartScan, totalEstimate = 0, maxEstimate =
         display: 'flex', flexDirection: 'column', alignItems: 'center',
         gap: '20px', textAlign: 'center',
       }}>
-        <div>
-          <h1 style={{
-            fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '24px',
-            color: 'var(--text)', margin: '0 0 8px', letterSpacing: '-0.01em',
-          }}>
-            {t('idle.title')}
-          </h1>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: '13px',
-            color: 'var(--text-secondary)', lineHeight: 1.55,
-            margin: 0, maxWidth: '260px',
-          }}>
-            {t('idle.subtitle')}
-          </p>
-        </div>
+        <h1 style={{
+          fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '24px',
+          color: 'var(--text)', margin: 0, letterSpacing: '-0.01em',
+        }}>
+          {t('idle.title')}
+        </h1>
 
         <IdleRing
           totalEstimate={totalEstimate}
           maxEstimate={maxEstimate}
           onStartScan={onStartScan}
         />
-
-        <div>
-          <div style={{
-            fontFamily: 'var(--font-mono)', fontWeight: 500, fontSize: '1.15rem',
-            color: 'var(--accent)', lineHeight: 1.15,
-            opacity: hasEstimate ? 1 : 0.25,
-            transition: 'opacity 0.5s ease',
-          }}>
-            {hasEstimate ? formatSize(totalEstimate) : '—'}
-          </div>
-          <div style={{
-            fontFamily: 'var(--font-body)', fontSize: '0.62rem',
-            color: 'var(--text-muted)', marginTop: '4px',
-            textTransform: 'uppercase', letterSpacing: '0.09em',
-          }}>
-            {t('idle.canBeFreed')}
-          </div>
-        </div>
       </div>
     </div>
   )
