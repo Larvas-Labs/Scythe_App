@@ -77,6 +77,7 @@ export default function CategorySection({ category, results, selectedIds, onTogg
 
         {/* Sticky header */}
         <div
+          onClick={() => setCollapsed(v => !v)}
           style={{
             position: 'sticky',
             top: 0,
@@ -87,12 +88,13 @@ export default function CategorySection({ category, results, selectedIds, onTogg
             padding: '10px 14px',
             background: stickyBg,
             borderBottom: collapsed ? 'none' : `1px solid ${stickyBorder}`,
-            cursor: 'default',
+            cursor: 'pointer',
+            userSelect: 'none',
           }}
         >
           <div
             className={cn('s-checkbox', allSelected && 'checked', !allSelected && someSelected && 'indeterminate')}
-            onClick={() => onToggleCategory(category)}
+            onClick={e => { e.stopPropagation(); onToggleCategory(category) }}
             style={{ cursor: 'pointer', flexShrink: 0 }}
           >
             {allSelected && (
@@ -117,28 +119,7 @@ export default function CategorySection({ category, results, selectedIds, onTogg
             </span>
           )}
 
-          {/* Accordion toggle */}
-          <button
-            onClick={() => setCollapsed(v => !v)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: '22px',
-              height: '22px',
-              border: 'none',
-              background: 'transparent',
-              borderRadius: '4px',
-              color: 'var(--text-muted)',
-              cursor: 'pointer',
-              padding: 0,
-              transition: 'color 0.12s',
-            }}
-            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text-secondary)' }}
-            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)' }}
-          >
-            <ChevronIcon collapsed={collapsed} />
-          </button>
+          <ChevronIcon collapsed={collapsed} />
         </div>
 
         {/* Collapsible content */}
@@ -154,9 +135,6 @@ export default function CategorySection({ category, results, selectedIds, onTogg
               padding: '10px 14px',
               borderBottom: `1px solid ${descBorderColor}`,
             }}>
-              <div style={{ fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '0.78rem', color: descTitleColor, marginBottom: '3px' }}>
-                {t(CATEGORY_LABEL_KEYS[category] || category)}
-              </div>
               <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.76rem', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
                 {t(`cat.${category}.desc`)}
               </div>
