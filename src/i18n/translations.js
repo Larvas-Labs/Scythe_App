@@ -69,6 +69,7 @@ export const translations = {
     'bottombar.freed':       'will be freed',
     'bottombar.selectFiles': 'Select files to clean',
     'bottombar.emptyTrash':  'Empty trash ({size})',
+    'bottombar.harvest':     'Harvest',
 
     // Done view
     'done.freed':   'freed',
@@ -189,6 +190,7 @@ export const translations = {
     'bottombar.freed':       'frigörs',
     'bottombar.selectFiles': 'Välj filer att rensa',
     'bottombar.emptyTrash':  'Töm papperskorg ({size})',
+    'bottombar.harvest':     'Skörda',
 
     'done.freed':   'frigjort',
     'done.newScan': 'Kör ny scanning',
@@ -301,6 +303,7 @@ export const translations = {
     'bottombar.freed':       'werden freigegeben',
     'bottombar.selectFiles': 'Dateien zum Bereinigen auswählen',
     'bottombar.emptyTrash':  'Papierkorb leeren ({size})',
+    'bottombar.harvest':     'Ernten',
 
     'done.freed':   'freigegeben',
     'done.newScan': 'Neuen Scan starten',
@@ -413,6 +416,7 @@ export const translations = {
     'bottombar.freed':       'seront libérés',
     'bottombar.selectFiles': 'Sélectionner des fichiers à nettoyer',
     'bottombar.emptyTrash':  'Vider la corbeille ({size})',
+    'bottombar.harvest':     'Récolter',
 
     'done.freed':   'libérés',
     'done.newScan': 'Nouveau scan',
@@ -525,6 +529,7 @@ export const translations = {
     'bottombar.freed':       'se liberarán',
     'bottombar.selectFiles': 'Selecciona archivos para limpiar',
     'bottombar.emptyTrash':  'Vaciar papelera ({size})',
+    'bottombar.harvest':     'Cosechar',
 
     'done.freed':   'liberados',
     'done.newScan': 'Nuevo escaneo',

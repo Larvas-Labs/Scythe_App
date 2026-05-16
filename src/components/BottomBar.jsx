@@ -106,7 +106,7 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
           onMouseDown={e => { if (hasSelection) e.currentTarget.style.transform = 'scale(0.97)' }}
           onMouseUp={e => { e.currentTarget.style.transform = 'scale(1)' }}
         >
-          🌾 Harvest
+          {t('bottombar.harvest')}
         </button>
       </div>
     </div>
