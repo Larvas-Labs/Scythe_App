@@ -527,6 +527,10 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  const iconPath = path.join(__dirname, 'build', 'icon.icns')
+  if (process.platform === 'darwin' && fs.existsSync(iconPath)) {
+    app.dock.setIcon(iconPath)
+  }
   createWindow()
   if (autoUpdater) {
     autoUpdater.on('update-available', (info) => {
