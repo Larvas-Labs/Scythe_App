@@ -24,21 +24,10 @@ const CAT_TO_IDS = {
 
 function ScytheLogo() {
   return (
-    <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
-      <defs>
-        <linearGradient id="sl-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#FF9500" />
-          <stop offset="100%" stopColor="#FF9500" />
-        </linearGradient>
-      </defs>
-      <path
-        d="M 6.5 3.5 C 6.5 3.5 13 4.5 13 8.5 C 13 12 6.5 12 6.5 14.5 C 6.5 17 12 17.5 12 17.5"
-        stroke="url(#sl-grad)"
-        strokeWidth="2"
-        strokeLinecap="round"
-        fill="none"
-      />
-      <line x1="13.5" y1="2" x2="7" y2="18" stroke="#888888" strokeWidth="1.5" strokeLinecap="round" opacity="0.6" />
+    <svg width="16" height="16" viewBox="0 0 100 100" fill="none">
+      <path d="M76 18C56 10 32 16 20 36C10 52 14 72 30 84C20 68 22 48 36 34C48 22 64 18 76 18Z" fill="#FF9500"/>
+      <line x1="76" y1="18" x2="68" y2="88" stroke="#FF9500" strokeWidth="5" strokeLinecap="round"/>
+      <line x1="62" y1="76" x2="74" y2="72" stroke="#FF9500" strokeWidth="3" strokeLinecap="round"/>
     </svg>
   )
 }
