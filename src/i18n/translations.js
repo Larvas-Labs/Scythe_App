@@ -76,7 +76,7 @@ export const translations = {
     'bottombar.freed':       'will be freed',
     'bottombar.selectFiles': 'Select files to clean',
     'bottombar.emptyTrash':  'Empty trash ({size})',
-    'bottombar.harvest':     'Free up',
+    'bottombar.harvest':     'Harvest',
 
     // Done view
     'done.freed':   'freed',
