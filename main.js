@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain, shell } = require('electron')
 const path = require('path')
-const { execSync, exec } = require('child_process')
+const { execSync, exec, execFile } = require('child_process')
 const fs = require('fs')
 const os = require('os')
 const Store = require('electron-store')
@@ -9,6 +9,33 @@ const store = new Store()
 const isDev = !app.isPackaged
 
 app.setName('Scythe')
+
+// ─── Security: allowed config keys ───────────────────────────────────────────
+const ALLOWED_CONFIG_KEYS = new Set(['enabledCategories', 'theme', 'language'])
+
+// ─── Security: whitelist of paths from last scan (populated on scan:complete) ─
+let lastScanPaths = new Set()
+
+// ─── Security: safe shell quoting for osascript do shell script ───────────────
+// Paths run as admin via `do shell script "rm -rf ..."`. Two-level escaping:
+//   Level 1 – /bin/sh: wrap path in single quotes; escape literal single quotes as '\''
+//   Level 2 – AppleScript string: escape backslashes and double quotes
+function buildAdminDeleteScript(filePath) {
+  const shQuoted = "'" + filePath.replace(/'/g, "'\\''") + "'"
+  const appleEscaped = shQuoted.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+  return `do shell script "rm -rf ${appleEscaped}" with administrator privileges`
+}
+
+// ─── Security: validate path is safe to operate on ───────────────────────────
+function isAllowedScanPath(p) {
+  if (typeof p !== 'string' || !p || !path.isAbsolute(p)) return false
+  // Reject null bytes
+  if (p.includes('\0')) return false
+  // Reject path traversal
+  if (p.split('/').some(seg => seg === '..')) return false
+  // Must be in whitelist from last scan
+  return lastScanPaths.has(p)
+}
 
 // ─── Auto-updater ─────────────────────────────────────────────────────────────
 let autoUpdater
@@ -525,6 +552,9 @@ function createWindow() {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
       nodeIntegration: false,
+      sandbox: true,
+      webSecurity: true,
+      allowRunningInsecureContent: false,
     },
   })
 
@@ -592,6 +622,15 @@ function downloadFile(url, dest, onProgress) {
 }
 
 ipcMain.handle('update:download-and-install', async (event, version) => {
+  // Validate version is strict semver — prevents injection via crafted version string
+  if (typeof version !== 'string' || !/^\d+\.\d+\.\d+$/.test(version)) {
+    return { error: 'Invalid version format' }
+  }
+
+  const run = (cmd, args, opts) => new Promise((resolve, reject) => {
+    execFile(cmd, args, opts, (err) => { if (err) reject(err); else resolve() })
+  })
+
   try {
     const arch = process.arch
     const filename = arch === 'arm64'
@@ -607,14 +646,15 @@ ipcMain.handle('update:download-and-install', async (event, version) => {
       event.sender.send('update:download-progress', { percent })
     })
 
-    execSync(`unzip -o "${zipPath}" -d "${tmpDir}"`, { timeout: 60000 })
+    // Use execFile (no shell) — paths are passed as array args, not interpolated strings
+    await run('unzip', ['-o', zipPath, '-d', tmpDir], { timeout: 60000 })
 
     const newAppSrc = path.join(tmpDir, 'Scythe.app')
     // process.execPath = /path/Scythe.app/Contents/MacOS/Scythe → go up 3 levels
     const appBundlePath = path.resolve(process.execPath, '../../..')
 
-    execSync(`ditto "${newAppSrc}" "${appBundlePath}"`, { timeout: 30000 })
-    execSync(`xattr -cr "${appBundlePath}"`, { timeout: 10000 })
+    await run('ditto', [newAppSrc, appBundlePath], { timeout: 30000 })
+    await run('xattr', ['-cr', appBundlePath], { timeout: 10000 })
 
     try { fs.rmSync(tmpDir, { recursive: true, force: true }) } catch {}
 
@@ -763,6 +803,9 @@ ipcMain.handle('scan:start', async (event, targetIds) => {
     })
   }
 
+  // Update path whitelist so delete:items can validate against real scan results
+  lastScanPaths = new Set(results.map(r => r.path).filter(Boolean))
+
   event.sender.send('scan:complete', results)
   return results
 })
@@ -774,17 +817,33 @@ ipcMain.on('scan:abort', () => {
 
 // ─── IPC: delete:items ────────────────────────────────────────────────────────
 ipcMain.handle('delete:items', async (event, items) => {
+  if (!Array.isArray(items)) return { error: 'Invalid input' }
+
   const results = []
   let totalFreed = 0
 
   for (const item of items) {
+    // Validate each item before touching the filesystem
+    if (!item || typeof item !== 'object' || typeof item.path !== 'string') {
+      results.push({ path: String(item?.path), success: false, error: 'Invalid item' })
+      continue
+    }
+    if (!isAllowedScanPath(item.path)) {
+      results.push({ path: item.path, success: false, error: 'Path not in scan results' })
+      continue
+    }
+
     try {
       if (item.requiresAdmin) {
-        const escaped = item.path.replace(/"/g, '\\"')
-        execSync(
-          `osascript -e 'do shell script "rm -rf \\"${escaped}\\"" with administrator privileges'`,
-          { timeout: 60000 }
-        )
+        // Use execFile (no shell) + two-level quoting to prevent injection
+        await new Promise((resolve, reject) => {
+          execFile(
+            'osascript',
+            ['-e', buildAdminDeleteScript(item.path)],
+            { timeout: 60000 },
+            (err) => { if (err) reject(err); else resolve() }
+          )
+        })
       } else {
         fs.rmSync(item.path, { recursive: true, force: true })
       }
@@ -821,8 +880,12 @@ ipcMain.handle('finder:reveal', async (_, targetPath) => {
 })
 
 // ─── IPC: store:get / store:set ───────────────────────────────────────────────
-ipcMain.handle('store:get', async (_, key) => store.get(key))
+ipcMain.handle('store:get', async (_, key) => {
+  if (!ALLOWED_CONFIG_KEYS.has(key)) return undefined
+  return store.get(key)
+})
 ipcMain.handle('store:set', async (_, key, value) => {
+  if (!ALLOWED_CONFIG_KEYS.has(key)) return false
   store.set(key, value)
   return true
 })
