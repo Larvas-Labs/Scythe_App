@@ -14,6 +14,16 @@ function WarningIcon() {
   )
 }
 
+function CloseIcon() {
+  return (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="6" x2="6" y2="18"/>
+      <line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  )
+}
+
 export default function DeleteModal({ items, onConfirm, onCancel }) {
   const { t } = useLang()
   const totalSize = items.reduce((sum, item) => sum + (item.size || 0), 0)
@@ -52,8 +62,32 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
         <div style={{
           padding: '20px 20px 16px',
           borderBottom: '1px solid var(--border)',
+          position: 'relative',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+          <button
+            onClick={onCancel}
+            style={{
+              position: 'absolute',
+              top: '16px',
+              right: '16px',
+              width: '26px',
+              height: '26px',
+              borderRadius: '6px',
+              background: 'transparent',
+              border: '1px solid var(--border-strong)',
+              color: 'var(--text-muted)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              transition: 'border-color 0.15s, color 0.15s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--text-muted)'; e.currentTarget.style.color = 'var(--text)' }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.color = 'var(--text-muted)' }}
+          >
+            <CloseIcon />
+          </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', paddingRight: '36px' }}>
             <span style={{ color: 'var(--danger)', display: 'flex' }}>
               <WarningIcon />
             </span>
@@ -167,49 +201,18 @@ export default function DeleteModal({ items, onConfirm, onCancel }) {
         )}
 
         {/* Actions */}
-        <div style={{
-          display: 'flex',
-          gap: '8px',
-          padding: '16px 20px',
-          borderTop: '1px solid var(--border)',
-        }}>
-          <button
-            onClick={onCancel}
-            style={{
-              flex: 1,
-              padding: '9px 0',
-              borderRadius: '8px',
-              background: 'transparent',
-              border: '1px solid var(--border-strong)',
-              color: 'var(--text-secondary)',
-              fontFamily: 'var(--font-body)',
-              fontSize: '0.82rem',
-              fontWeight: 500,
-              cursor: 'pointer',
-              transition: 'border-color 0.15s, color 0.15s',
-            }}
-            onMouseEnter={e => {
-              e.currentTarget.style.borderColor = 'var(--text-muted)'
-              e.currentTarget.style.color = 'var(--text)'
-            }}
-            onMouseLeave={e => {
-              e.currentTarget.style.borderColor = 'var(--border-strong)'
-              e.currentTarget.style.color = 'var(--text-secondary)'
-            }}
-          >
-            {t('modal.cancel')}
-          </button>
+        <div style={{ padding: '16px 20px', borderTop: '1px solid var(--border)' }}>
           <button
             onClick={onConfirm}
             style={{
-              flex: 2,
-              padding: '9px 0',
+              width: '100%',
+              padding: '11px 0',
               borderRadius: '8px',
               background: 'var(--danger)',
               border: '1px solid var(--danger)',
               color: '#fff',
               fontFamily: 'var(--font-body)',
-              fontSize: '0.82rem',
+              fontSize: '0.875rem',
               fontWeight: 600,
               cursor: 'pointer',
               transition: 'opacity 0.15s',

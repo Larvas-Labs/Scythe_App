@@ -87,7 +87,7 @@ export const translations = {
     'modal.warning':   'These files cannot be recovered. They will be permanently deleted, not moved to trash.',
     'modal.adminNote': 'macOS will ask for your password to delete system files.',
     'modal.cancel':    'Cancel',
-    'modal.confirm':   'Delete permanently ({size})',
+    'modal.confirm':   'Complete harvest ({size})',
 
     // Category section
     'section.advanced.title': '⚠️ Advanced — System files',
@@ -217,7 +217,7 @@ export const translations = {
     'modal.warning':   'Dessa filer kan inte återställas. De raderas permanent, inte till papperskorgen.',
     'modal.adminNote': 'macOS kommer be om ditt lösenord för att radera systemfilerna.',
     'modal.cancel':    'Avbryt',
-    'modal.confirm':   'Radera permanent ({size})',
+    'modal.confirm':   'Slutför skördning ({size})',
 
     'section.advanced.title': '⚠️ Avancerat — Systemfiler',
     'section.advanced.desc':  'Dessa åtgärder påverkar systemfiler och kräver administratörslösenord.',
