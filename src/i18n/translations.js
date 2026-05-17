@@ -208,7 +208,7 @@ export const translations = {
     'bottombar.freed':       'frigörs',
     'bottombar.selectFiles': 'Välj filer att rensa',
     'bottombar.emptyTrash':  'Töm papperskorg ({size})',
-    'bottombar.harvest':     'Frigör',
+    'bottombar.harvest':     'Skörda',
 
     'done.freed':   'frigjort',
     'done.newScan': 'Kör ny scanning',
