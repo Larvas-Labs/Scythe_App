@@ -64,19 +64,34 @@ function IdleRing({ totalEstimate, maxEstimate, onStartScan }) {
           </filter>
         </defs>
 
-        {/* No track — gap area shows main bg, not border color */}
-
-
-        {/* Slow ghost arc */}
-        <g style={{
-          transformOrigin: `${cx}px ${cy}px`,
-          animation: 'idle-orbit-arc 11s linear infinite',
-        }}>
+        {/* Ghost arcs — multiple lengths, speeds, opacities */}
+        <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: 'idle-orbit-arc 11s linear infinite' }}>
           <circle cx={cx} cy={cy} r={RADIUS} fill="none"
                   stroke="rgba(255,255,255,0.08)"
                   strokeWidth={2} strokeLinecap="round"
-                  strokeDasharray={`${CIRC * 0.2} ${CIRC * 0.8}`}
+                  strokeDasharray={`${CIRC * 0.20} ${CIRC * 0.80}`}
                   transform={`rotate(-90 ${cx} ${cy})`} />
+        </g>
+        <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: 'idle-orbit-arc 17s linear infinite reverse' }}>
+          <circle cx={cx} cy={cy} r={RADIUS} fill="none"
+                  stroke="rgba(255,255,255,0.05)"
+                  strokeWidth={1.5} strokeLinecap="round"
+                  strokeDasharray={`${CIRC * 0.10} ${CIRC * 0.90}`}
+                  transform={`rotate(40 ${cx} ${cy})`} />
+        </g>
+        <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: 'idle-orbit-arc 26s linear infinite' }}>
+          <circle cx={cx} cy={cy} r={RADIUS} fill="none"
+                  stroke="rgba(255,255,255,0.04)"
+                  strokeWidth={1} strokeLinecap="round"
+                  strokeDasharray={`${CIRC * 0.32} ${CIRC * 0.68}`}
+                  transform={`rotate(150 ${cx} ${cy})`} />
+        </g>
+        <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: 'idle-orbit-arc 8s linear infinite reverse' }}>
+          <circle cx={cx} cy={cy} r={RADIUS} fill="none"
+                  stroke="rgba(255,255,255,0.06)"
+                  strokeWidth={1.5} strokeLinecap="round"
+                  strokeDasharray={`${CIRC * 0.07} ${CIRC * 0.93}`}
+                  transform={`rotate(220 ${cx} ${cy})`} />
         </g>
       </svg>
 
