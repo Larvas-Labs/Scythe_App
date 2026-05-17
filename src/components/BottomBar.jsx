@@ -53,34 +53,6 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
             )}
           </div>
 
-          {hasTrash && (
-            <button
-              onClick={onEmptyTrash}
-              style={{
-                padding: '6px 14px',
-                borderRadius: '8px',
-                background: 'transparent',
-                border: '1px solid var(--border-strong)',
-                color: 'var(--text-secondary)',
-                fontFamily: 'var(--font-body)',
-                fontSize: '0.78rem',
-                fontWeight: 500,
-                cursor: 'pointer',
-                transition: 'border-color 0.15s, color 0.15s',
-                whiteSpace: 'nowrap',
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.borderColor = 'var(--danger)'
-                e.currentTarget.style.color = 'var(--danger)'
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.borderColor = 'var(--border-strong)'
-                e.currentTarget.style.color = 'var(--text-secondary)'
-              }}
-            >
-              {t('bottombar.emptyTrash', { size: formatSize(trashSize) })}
-            </button>
-          )}
         </div>
 
         {/* Harvest button */}
