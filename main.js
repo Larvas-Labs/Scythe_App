@@ -666,7 +666,10 @@ ipcMain.handle('estimate:all', async (event) => {
       continue
     }
     const exists = pathExists(target.path)
-    const size = exists ? getDirSize(target.path) : 0
+    // Skip getDirSize for Application Support paths — triggers repeated TCC dialogs on startup.
+    // Size is calculated during an explicit scan instead.
+    const skipSize = target.path.includes('Application Support') || target.path.includes('/Containers/')
+    const size = (exists && !skipSize) ? getDirSize(target.path) : 0
     results.push({ id: target.id, estimatedSize: size, exists })
     event.sender.send('estimate:result', { id: target.id, estimatedSize: size, exists })
   }
