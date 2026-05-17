@@ -93,6 +93,13 @@ function IdleRing({ totalEstimate, maxEstimate, onStartScan }) {
                   strokeDasharray={`${CIRC * 0.07} ${CIRC * 0.93}`}
                   transform={`rotate(220 ${cx} ${cy})`} />
         </g>
+        <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: 'idle-orbit-arc 21s linear infinite' }}>
+          <circle cx={cx} cy={cy} r={RADIUS} fill="none"
+                  stroke="rgba(255,255,255,0.045)"
+                  strokeWidth={1} strokeLinecap="round"
+                  strokeDasharray={`${CIRC * 0.15} ${CIRC * 0.85}`}
+                  transform={`rotate(310 ${cx} ${cy})`} />
+        </g>
       </svg>
 
       {/* Button */}
