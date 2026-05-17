@@ -66,19 +66,6 @@ function IdleRing({ totalEstimate, maxEstimate, onStartScan }) {
 
         {/* No track — gap area shows main bg, not border color */}
 
-        {/* Estimate fill — rounded caps, tiny gap */}
-        <circle cx={cx} cy={cy} r={RADIUS} fill="none"
-                stroke="var(--accent)"
-                strokeWidth={STROKE}
-                strokeLinecap="round"
-                strokeDasharray={CIRC}
-                strokeDashoffset={dashOffset}
-                transform={`rotate(${arcRotate} ${cx} ${cy})`}
-                filter="url(#idle-ring-glow)"
-                style={{
-                  transition: 'stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1)',
-                  opacity: hasEstimate ? 1 : 0,
-                }} />
 
         {/* Slow ghost arc */}
         <g style={{
