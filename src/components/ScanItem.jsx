@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { formatSize, cn } from '../utils.js'
 import { ITEM_ICON_MAP, IconFolder } from './Icons.jsx'
 import { useLang } from '../i18n/index.jsx'
@@ -9,10 +9,10 @@ export default function ScanItem({ result, selected, onToggle, isLast }) {
   const isUnsafe = !result.safe
   const ItemIcon = ITEM_ICON_MAP[result.id] || IconFolder
 
-  function handleReveal(e) {
+  const handleReveal = useCallback((e) => {
     e.stopPropagation()
     window.scythe.revealInFinder(result.path)
-  }
+  }, [result.path])
 
   return (
     <div

@@ -332,39 +332,45 @@ const ORPHAN_SCAN_DIRS = [
   '~/Library/Application Scripts',
 ]
 
-function getInstalledBundleIds() {
+async function getInstalledBundleIdsAsync() {
   const bundleIds = new Set()
   const appNames = new Set()
 
-  // 1. .app bundles in standard app directories
+  // 1. .app bundles in standard app directories — parallel bundle ID lookups
   const appDirs = [
     '/Applications',
     path.join(os.homedir(), 'Applications'),
     '/System/Applications',
   ]
+  const bidPromises = []
   for (const dir of appDirs) {
     try {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
         if (!entry.name.endsWith('.app')) continue
         appNames.add(entry.name.replace('.app', '').toLowerCase())
-        try {
-          const bid = execSync(
-            `defaults read "${path.join(dir, entry.name, 'Contents', 'Info')}" CFBundleIdentifier 2>/dev/null`,
-            { timeout: 2000 }
-          ).toString().trim()
-          if (bid) bundleIds.add(bid)
-        } catch {}
+        const infoPath = path.join(dir, entry.name, 'Contents', 'Info')
+        bidPromises.push(
+          new Promise((resolve) => {
+            exec(
+              `defaults read "${infoPath}" CFBundleIdentifier 2>/dev/null`,
+              { timeout: 2000 },
+              (err, stdout) => resolve(stdout?.toString().trim() || null)
+            )
+          })
+        )
       }
     } catch {}
   }
+  const bids = await Promise.all(bidPromises)
+  bids.forEach(bid => { if (bid) bundleIds.add(bid) })
 
   // 2. Homebrew Cellar (formulae) and Caskroom (casks) — no brew command needed
   const brewPaths = [
-    '/opt/homebrew/Cellar',       // Apple Silicon
+    '/opt/homebrew/Cellar',
     '/opt/homebrew/Caskroom',
-    '/usr/local/Cellar',          // Intel
+    '/usr/local/Cellar',
     '/usr/local/Caskroom',
-    path.join(os.homedir(), 'homebrew/Cellar'),   // custom prefix
+    path.join(os.homedir(), 'homebrew/Cellar'),
     path.join(os.homedir(), 'homebrew/Caskroom'),
   ]
   for (const brewPath of brewPaths) {
@@ -395,8 +401,8 @@ function getInstalledBundleIds() {
   return { bundleIds, appNames }
 }
 
-function getOrphanedFolders() {
-  const { bundleIds, appNames } = getInstalledBundleIds()
+async function getOrphanedFoldersAsync() {
+  const { bundleIds, appNames } = await getInstalledBundleIdsAsync()
   const seen = new Set()
   const orphaned = []
 
@@ -435,36 +441,38 @@ function getOrphanedFolders() {
 }
 
 // ─── Helper: Get trash size via Finder (bypasses TCC restriction on ~/.Trash) ─
-function getTrashSize() {
-  try {
-    const output = execSync(
+function getTrashSizeAsync() {
+  return new Promise((resolve) => {
+    exec(
       `osascript -e 'tell application "Finder" to get (size of items of trash)'`,
-      { timeout: 10000 }
-    ).toString().trim()
-    return output
-      .split(',')
-      .map(s => parseInt(s.trim(), 10))
-      .filter(n => !isNaN(n))
-      .reduce((sum, n) => sum + n, 0)
-  } catch {
-    return 0
-  }
+      { timeout: 10000 },
+      (err, stdout) => {
+        if (err) { resolve(0); return }
+        const total = stdout.toString().trim()
+          .split(',')
+          .map(s => parseInt(s.trim(), 10))
+          .filter(n => !isNaN(n))
+          .reduce((sum, n) => sum + n, 0)
+        resolve(total)
+      }
+    )
+  })
 }
 
 // ─── Helper: Get directory size via du ───────────────────────────────────────
-function getDirSize(targetPath) {
+function getDirSizeAsync(targetPath) {
   const resolved = expandPath(targetPath)
   // ~/.Trash is protected by TCC — use Finder via AppleScript instead
   if (resolved === path.join(os.homedir(), '.Trash')) {
-    return getTrashSize()
+    return getTrashSizeAsync()
   }
-  try {
-    const output = execSync(`du -sk "${resolved}" 2>/dev/null`, { timeout: 30000 }).toString()
-    const kb = parseInt(output.split('\t')[0], 10)
-    return isNaN(kb) ? 0 : kb * 1024
-  } catch {
-    return 0
-  }
+  return new Promise((resolve) => {
+    exec(`du -sk "${resolved}" 2>/dev/null`, { timeout: 30000 }, (err, stdout) => {
+      if (err) { resolve(0); return }
+      const kb = parseInt(stdout.split('\t')[0], 10)
+      resolve(isNaN(kb) ? 0 : kb * 1024)
+    })
+  })
 }
 
 // ─── Helper: Check if path exists ────────────────────────────────────────────
@@ -478,20 +486,22 @@ function pathExists(targetPath) {
 }
 
 // ─── Helper: Get N largest sub-items ─────────────────────────────────────────
-function getChildren(dirPath, max = 25) {
+async function getChildrenAsync(dirPath, max = 25) {
   try {
     const resolved = expandPath(dirPath)
     const entries = fs.readdirSync(resolved, { withFileTypes: true })
-    const results = []
-    for (const entry of entries) {
-      const fullPath = path.join(resolved, entry.name)
-      try {
-        const size = getDirSize(fullPath)
-        results.push({ name: entry.name, path: fullPath, size })
-      } catch {
-        // skip inaccessible
-      }
-    }
+    const sized = await Promise.all(
+      entries.map(async (entry) => {
+        const fullPath = path.join(resolved, entry.name)
+        try {
+          const size = await getDirSizeAsync(fullPath)
+          return { name: entry.name, path: fullPath, size }
+        } catch {
+          return null
+        }
+      })
+    )
+    const results = sized.filter(Boolean)
     results.sort((a, b) => b.size - a.size)
     return results.slice(0, max)
   } catch {
@@ -658,26 +668,25 @@ let scanAborted = false
 
 // ─── IPC: estimate:all ────────────────────────────────────────────────────────
 ipcMain.handle('estimate:all', async (event) => {
-  const results = []
-  for (const target of SCAN_TARGETS) {
-    if (scanAborted) break
+  const estimateOne = async (target) => {
     if (target.id === 'orphaned-scan') {
       // Quick discovery — no size calculation to keep estimates fast
-      const folders = getOrphanedFolders()
+      const folders = await getOrphanedFoldersAsync()
       const exists = folders.length > 0
-      results.push({ id: 'orphaned-scan', estimatedSize: 0, exists })
-      event.sender.send('estimate:result', { id: 'orphaned-scan', estimatedSize: 0, exists })
-      continue
+      const result = { id: 'orphaned-scan', estimatedSize: 0, exists }
+      event.sender.send('estimate:result', result)
+      return result
     }
     const exists = pathExists(target.path)
-    // Skip getDirSize for Application Support paths — triggers repeated TCC dialogs on startup.
+    // Skip getDirSizeAsync for Application Support paths — triggers repeated TCC dialogs on startup.
     // Size is calculated during an explicit scan instead.
     const skipSize = target.path.includes('Application Support') || target.path.includes('/Containers/')
-    const size = (exists && !skipSize) ? getDirSize(target.path) : 0
-    results.push({ id: target.id, estimatedSize: size, exists })
-    event.sender.send('estimate:result', { id: target.id, estimatedSize: size, exists })
+    const size = (exists && !skipSize) ? await getDirSizeAsync(target.path) : 0
+    const result = { id: target.id, estimatedSize: size, exists }
+    event.sender.send('estimate:result', result)
+    return result
   }
-  return results
+  return Promise.all(SCAN_TARGETS.map(estimateOne))
 })
 
 // ─── IPC: scan:start ──────────────────────────────────────────────────────────
@@ -692,10 +701,10 @@ ipcMain.handle('scan:start', async (event, targetIds) => {
     // ── Special: orphaned data scan ──────────────────────────────────────────
     if (target.id === 'orphaned-scan') {
       event.sender.send('scan:progress', { id: 'orphaned-scan', name: target.name, status: 'scanning', size: 0 })
-      const folders = getOrphanedFolders()
+      const folders = await getOrphanedFoldersAsync()
       for (const folder of folders) {
         if (scanAborted) break
-        const size = getDirSize(folder.path)
+        const size = await getDirSizeAsync(folder.path)
         const itemId = `orphaned:${folder.path}`
         const item = {
           id: itemId,
@@ -731,9 +740,9 @@ ipcMain.handle('scan:start', async (event, targetIds) => {
     let children = []
 
     if (exists) {
-      size = getDirSize(target.path)
+      size = await getDirSizeAsync(target.path)
       if (target.showChildren) {
-        children = getChildren(target.path)
+        children = await getChildrenAsync(target.path)
       }
     }
 

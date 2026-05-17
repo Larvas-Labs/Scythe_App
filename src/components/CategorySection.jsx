@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import { formatSize, cn } from '../utils.js'
 import ScanItem from './ScanItem.jsx'
 import { CATEGORY_ICON_MAP } from './Icons.jsx'
@@ -38,10 +38,11 @@ export default function CategorySection({ category, results, selectedIds, onTogg
   const { t } = useLang()
   const [collapsed, setCollapsed] = useState(false)
 
-  const existing = results.filter(r => r.exists)
+  const existing = useMemo(() => results.filter(r => r.exists), [results])
+  const sortedExisting = useMemo(() => existing.slice().sort((a, b) => (b.size || 0) - (a.size || 0)), [existing])
   const allSelected = existing.length > 0 && existing.every(r => selectedIds.has(r.id))
   const someSelected = existing.some(r => selectedIds.has(r.id))
-  const totalSize = results.reduce((sum, r) => sum + (r.size || 0), 0)
+  const totalSize = useMemo(() => results.reduce((sum, r) => sum + (r.size || 0), 0), [results])
   const isAdvanced = category === 'advanced'
   const isOrphaned = category === 'orphaned'
   const CatIcon = CATEGORY_ICON_MAP[category]
@@ -142,11 +143,7 @@ export default function CategorySection({ category, results, selectedIds, onTogg
 
             {/* Items */}
             <div>
-              {results
-                .filter(r => r.exists)
-                .slice()
-                .sort((a, b) => (b.size || 0) - (a.size || 0))
-                .map((result, i, arr) => (
+              {sortedExisting.map((result, i, arr) => (
                   <ScanItem
                     key={result.id}
                     result={result}

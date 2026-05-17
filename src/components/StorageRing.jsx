@@ -1,19 +1,19 @@
 import React from 'react'
 import { formatSize } from '../utils.js'
 
-export default function StorageRing({ size = 0, selectedSize = 0, svgSize = 200, showLegend = true, centerValue, centerLabel }) {
-  const RADIUS = 80
-  const STROKE = 12
-  const CIRCUMFERENCE = 2 * Math.PI * RADIUS
-  const cx = 100
-  const cy = 100
+const RADIUS = 80
+const STROKE = 12
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS
+const CX = 100
+const CY = 100
+const GAP_FRACTION = 0.04
+const MIN_GAP = CIRCUMFERENCE * GAP_FRACTION
+const GAP_ANGLE = GAP_FRACTION * 360
+const ARC_ROTATE = -90 + GAP_ANGLE / 2
 
-  const GAP_FRACTION = 0.04
-  const MIN_GAP = CIRCUMFERENCE * GAP_FRACTION
+export default function StorageRing({ size = 0, selectedSize = 0, svgSize = 200, showLegend = true, centerValue, centerLabel }) {
   const fraction = size > 0 ? Math.min(selectedSize / size, 1) : 0
   const dashOffset = Math.max(CIRCUMFERENCE * (1 - fraction), MIN_GAP)
-  const gapAngle = GAP_FRACTION * 360
-  const arcRotate = -90 + gapAngle / 2
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
@@ -39,8 +39,8 @@ export default function StorageRing({ size = 0, selectedSize = 0, svgSize = 200,
           </defs>
 
           <circle
-            cx={cx}
-            cy={cy}
+            cx={CX}
+            cy={CY}
             r={RADIUS}
             fill="none"
             stroke="var(--surface)"
@@ -48,8 +48,8 @@ export default function StorageRing({ size = 0, selectedSize = 0, svgSize = 200,
           />
 
           <circle
-            cx={cx}
-            cy={cy}
+            cx={CX}
+            cy={CY}
             r={RADIUS}
             fill="none"
             stroke="url(#ring-grad)"
@@ -57,7 +57,7 @@ export default function StorageRing({ size = 0, selectedSize = 0, svgSize = 200,
             strokeLinecap="round"
             strokeDasharray={CIRCUMFERENCE}
             strokeDashoffset={dashOffset}
-            transform={`rotate(${arcRotate} ${cx} ${cy})`}
+            transform={`rotate(${ARC_ROTATE} ${CX} ${CY})`}
             filter="url(#ring-glow)"
             style={{
               opacity: fraction > 0 ? 1 : 0.4,

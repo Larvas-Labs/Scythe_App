@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import CategorySection from './CategorySection.jsx'
 
 const CATEGORY_ORDER = ['browsers', 'developer', 'apps', 'user', 'orphaned', 'advanced']
 
 export default function ResultList({ results, selectedIds, onToggleItem, onToggleCategory }) {
-  const grouped = CATEGORY_ORDER.reduce((acc, cat) => {
+  const grouped = useMemo(() => CATEGORY_ORDER.reduce((acc, cat) => {
     acc[cat] = results.filter(r => r.category === cat)
     return acc
-  }, {})
+  }, {}), [results])
 
   return (
     <div style={{ paddingBottom: '0' }}>
