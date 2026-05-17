@@ -1,7 +1,7 @@
 import React from 'react'
 import { formatSize } from '../utils.js'
 
-export default function StorageRing({ size = 0, selectedSize = 0, animating = false, svgSize = 200, showLegend = true, centerValue, centerLabel }) {
+export default function StorageRing({ size = 0, selectedSize = 0, svgSize = 200, showLegend = true, centerValue, centerLabel }) {
   const RADIUS = 80
   const STROKE = 12
   const CIRCUMFERENCE = 2 * Math.PI * RADIUS

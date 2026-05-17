@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { useLang } from '../i18n/index.jsx'
-import { formatSize } from '../utils.js'
 
 function PlayIcon({ size = 28 }) {
   return (

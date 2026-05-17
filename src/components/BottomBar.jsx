@@ -2,10 +2,9 @@ import React from 'react'
 import { formatSize } from '../utils.js'
 import { useLang } from '../i18n/index.jsx'
 
-export default function BottomBar({ selectedCount, selectedSize, trashSize, onHarvest, onEmptyTrash }) {
+export default function BottomBar({ selectedCount, selectedSize, onHarvest }) {
   const { t } = useLang()
   const hasSelection = selectedCount > 0
-  const hasTrash = trashSize > 0
 
   return (
     <div style={{ padding: '0 16px 16px', flexShrink: 0 }}>
@@ -21,7 +20,7 @@ export default function BottomBar({ selectedCount, selectedSize, trashSize, onHa
           boxShadow: '0 8px 32px rgba(80, 200, 120, 0.10)',
         }}
       >
-        {/* Left: selection info + empty trash */}
+        {/* Left: selection info */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
             <span

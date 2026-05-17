@@ -32,7 +32,6 @@ function AppInner() {
   const [estimates, setEstimates] = useState({})
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteResult, setDeleteResult] = useState(null)
-  const [trashSize, setTrashSize] = useState(0)
   const [theme, setTheme] = useState('dark')
   const [language, setLanguage] = useState('en')
   const [updateState, setUpdateState] = useState(null) // null | 'checking' | 'uptodate' | 'available' | 'downloading' | 'ready' | 'error'
@@ -106,7 +105,6 @@ function AppInner() {
     window.scythe.removeAllListeners('estimate:result')
     window.scythe.onEstimateResult(data => {
       setEstimates(prev => ({ ...prev, [data.id]: data.estimatedSize }))
-      if (data.id === 'trash') setTrashSize(data.estimatedSize || 0)
     })
     window.scythe.estimateAll()
   }
@@ -196,11 +194,6 @@ function AppInner() {
     await window.scythe.deleteItems(items)
   }, [scanResults, selectedIds])
 
-  const emptyTrash = useCallback(async () => {
-    await window.scythe.emptyTrash()
-    setTrashSize(0)
-  }, [])
-
   const checkForUpdates = useCallback(async () => {
     isManualCheckRef.current = true
     setUpdateState('checking')
@@ -285,9 +278,7 @@ function AppInner() {
         <BottomBar
           selectedCount={selectedIds.size}
           selectedSize={chosenSize}
-          trashSize={trashSize}
           onHarvest={initiateDelete}
-          onEmptyTrash={emptyTrash}
         />
       ) : null}
     >
