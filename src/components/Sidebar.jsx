@@ -137,23 +137,24 @@ export default function Sidebar({
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '7px',
+          justifyContent: 'center',
           background: 'var(--bg-secondary)',
           border: '1px solid var(--border)',
           borderRadius: '8px',
-          padding: '5px 10px 5px 8px',
+          padding: '6px',
+          flexShrink: 0,
         }}>
           <ScytheLogo />
-          <span style={{
-            fontFamily: 'var(--font-display)',
-            fontWeight: 700,
-            fontSize: '14px',
-            letterSpacing: '0.02em',
-            color: 'var(--text)',
-          }}>
-            Scythe
-          </span>
         </div>
+        <span style={{
+          fontFamily: 'var(--font-display)',
+          fontWeight: 700,
+          fontSize: '14px',
+          letterSpacing: '0.02em',
+          color: 'var(--text)',
+        }}>
+          Scythe
+        </span>
 
         {onNewScan && (
           <button
