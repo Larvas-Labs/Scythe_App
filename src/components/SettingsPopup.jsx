@@ -145,7 +145,7 @@ export default function SettingsPopup({
       <div style={sectionLabel}>{t('settings.appearance')}</div>
 
       <div style={row}>
-        <span style={rowText}>{t('settings.theme')}</span>
+        <span style={rowText}>{isDark ? 'Dark' : 'Light'}</span>
         <button
           onClick={onToggleTheme}
           className="theme-toggle"
