@@ -134,6 +134,7 @@ export default function Sidebar({
         userSelect: 'none',
         flexShrink: 0,
       }}>
+        <ScytheLogo />
         <span style={{
           fontFamily: 'var(--font-display)',
           fontWeight: 700,
