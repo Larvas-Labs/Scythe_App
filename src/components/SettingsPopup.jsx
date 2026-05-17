@@ -271,7 +271,7 @@ export default function SettingsPopup({
 
       <div style={{ position: 'relative' }}>
         <div style={row}>
-          <span style={rowText}>{t('settings.activeLanguage')}</span>
+          <span style={rowText}>{LANGUAGES[language] || language}</span>
           <button
             onClick={() => setShowLangList(v => !v)}
             title={t('settings.language')}
@@ -290,17 +290,6 @@ export default function SettingsPopup({
           >
             <GlobeIcon />
           </button>
-        </div>
-
-        <div style={{
-          padding: '0 4px 4px',
-          fontFamily: 'var(--font-body)',
-          fontSize: '12px',
-          color: 'var(--text-secondary)',
-          marginTop: '-6px',
-          paddingLeft: '8px',
-        }}>
-          {LANGUAGES[language] || language}
         </div>
 
         {showLangList && (
