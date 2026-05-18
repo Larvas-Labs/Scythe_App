@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useId, useRef, useState } from 'react'
 import { formatSize } from '../utils.js'
 import { useLang } from '../i18n/index.jsx'
 
@@ -9,12 +9,12 @@ const CIRC      = 2 * Math.PI * RADIUS
 const cx = 110, cy = 110
 const INNER_D   = (RADIUS - STROKE / 2) * 2  // 166px
 
-function RingDone({ animate }) {
+function RingDone({ animate, glowId }) {
   return (
     <svg width={SVG_SIZE} height={SVG_SIZE} viewBox={`0 0 ${SVG_SIZE} ${SVG_SIZE}`}
          style={{ display: 'block', overflow: 'visible' }}>
       <defs>
-        <filter id="done-glow" x="-25%" y="-25%" width="150%" height="150%">
+        <filter id={glowId} x="-25%" y="-25%" width="150%" height="150%">
           <feGaussianBlur stdDeviation="4" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
@@ -33,7 +33,7 @@ function RingDone({ animate }) {
               strokeLinecap="butt"
               strokeDasharray={`${animate ? CIRC : 0} ${CIRC}`}
               transform={`rotate(-90 ${cx} ${cy})`}
-              filter="url(#done-glow)"
+              filter={`url(#${glowId})`}
               style={{
                 transition: animate
                   ? 'stroke-dasharray 0.75s cubic-bezier(0.16,1,0.3,1)'
@@ -90,6 +90,8 @@ export default function DoneView({ deleteResult, onNewScan }) {
   const { t } = useLang()
   const [animate, setAnimate] = useState(false)
   const seenRef = useRef(new Set())
+  const uid = useId()
+  const glowId = `done-glow-${uid.replace(/:/g, '')}`
 
   useEffect(() => {
     // Defer one frame so the transition fires
@@ -131,7 +133,7 @@ export default function DoneView({ deleteResult, onNewScan }) {
 
         {/* Ring with checkmark center */}
         <div style={{ position: 'relative', width: SVG_SIZE, height: SVG_SIZE }}>
-          <RingDone animate={animate} />
+          <RingDone animate={animate} glowId={glowId} />
 
           <div style={{
             position: 'absolute', inset: 0,
@@ -165,6 +167,22 @@ export default function DoneView({ deleteResult, onNewScan }) {
             {t('done.freed')}
           </div>
         </div>
+
+        {/* New scan button */}
+        <button
+          onClick={onNewScan}
+          style={{
+            fontFamily: 'var(--font-body)', fontWeight: 600, fontSize: '13px',
+            color: 'var(--text)', background: 'var(--surface)',
+            border: '1px solid var(--border-strong)',
+            borderRadius: '8px', padding: '8px 24px',
+            cursor: 'pointer', marginTop: '4px',
+          }}
+          onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-hover)'}
+          onMouseLeave={e => e.currentTarget.style.background = 'var(--surface)'}
+        >
+          {t('done.newScan')}
+        </button>
 
         {/* Item list — same style as ScanView's completed list */}
         {hasItems && (
