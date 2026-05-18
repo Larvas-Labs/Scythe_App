@@ -468,21 +468,53 @@ async function getOrphanedFoldersAsync() {
 }
 
 // ─── Helper: Get trash size via Finder (bypasses TCC restriction on ~/.Trash) ─
+// Cached with a 60s TTL so that estimate:all (startup) and scan:start (seconds
+// later) share the same result — preventing two concurrent Finder calls that
+// cause the "Papperskorg är upptagen" busy dialog when empty trash is invoked.
+const _trashSizeCache = { size: 0, time: 0 }
 function getTrashSizeAsync() {
+  if (Date.now() - _trashSizeCache.time < 60000) {
+    return Promise.resolve(_trashSizeCache.size)
+  }
   return new Promise((resolve) => {
     exec(
       `osascript -e 'tell application "Finder" to get (size of items of trash)'`,
       { timeout: 10000 },
       (err, stdout) => {
-        if (err) { resolve(0); return }
+        if (err) { resolve(_trashSizeCache.size); return }
         const total = stdout.toString().trim()
           .split(',')
           .map(s => parseInt(s.trim(), 10))
           .filter(n => !isNaN(n))
           .reduce((sum, n) => sum + n, 0)
+        _trashSizeCache.size = total
+        _trashSizeCache.time = Date.now()
         resolve(total)
       }
     )
+  })
+}
+
+// Attempt 2 (fallback): if the directory itself is TCC-protected or contains
+// protected entries, list its contents and delete each child individually,
+// silently skipping any entry that macOS refuses. This lets us reclaim space
+// from deletable app-caches even when system-owned subdirs (com.apple.*, etc.)
+// are mixed into the same parent directory.
+function deletePathBestEffort(targetPath) {
+  return new Promise(resolve => {
+    execFile('/bin/rm', ['-rf', targetPath], { timeout: 60000 }, err => {
+      if (!err) { resolve(); return }
+      // Direct deletion failed — try per-entry fallback
+      let entries
+      try { entries = fs.readdirSync(targetPath) } catch { resolve(); return }
+      let pending = entries.length
+      if (pending === 0) { resolve(); return }
+      for (const entry of entries) {
+        execFile('/bin/rm', ['-rf', path.join(targetPath, entry)], { timeout: 30000 }, () => {
+          if (--pending === 0) resolve()
+        })
+      }
+    })
   })
 }
 
@@ -829,6 +861,7 @@ ipcMain.handle('delete:items', async (event, items) => {
       continue
     }
     if (!isAllowedScanPath(item.path)) {
+      console.error('[delete:items] Rejected path (not in scan whitelist):', item.path)
       results.push({ path: item.path, success: false, error: 'Path not in scan results' })
       continue
     }
@@ -844,15 +877,31 @@ ipcMain.handle('delete:items', async (event, items) => {
             (err) => { if (err) reject(err); else resolve() }
           )
         })
+      } else if (item.path === path.join(os.homedir(), '.Trash')) {
+        await new Promise((resolve, reject) => {
+          execFile('osascript', ['-e', 'tell application "Finder" to empty trash'],
+            { timeout: 60000 }, (err) => {
+              if (err) {
+                const msg = err.message || ''
+                const isTrashBusy = /busy|in use|locked|Can't empty/i.test(msg)
+                const enriched = new Error(msg)
+                if (isTrashBusy) enriched.hint = 'trashBusy'
+                reject(enriched)
+              } else {
+                resolve()
+              }
+            })
+        })
       } else {
-        fs.rmSync(item.path, { recursive: true, force: true })
+        await deletePathBestEffort(item.path)
       }
       results.push({ path: item.path, success: true, size: item.size || 0 })
       totalFreed += item.size || 0
       event.sender.send('delete:progress', { path: item.path, success: true })
     } catch (err) {
-      results.push({ path: item.path, success: false, error: err.message })
-      event.sender.send('delete:progress', { path: item.path, success: false, error: err.message })
+      console.error('[delete:items] Failed to delete', item.path, err.message)
+      results.push({ path: item.path, success: false, error: err.message, hint: err.hint || null })
+      event.sender.send('delete:progress', { path: item.path, success: false, error: err.message, hint: err.hint || null })
     }
   }
 
@@ -864,9 +913,10 @@ ipcMain.handle('delete:items', async (event, items) => {
 // ─── IPC: trash:empty ─────────────────────────────────────────────────────────
 ipcMain.handle('trash:empty', async () => {
   try {
-    const trashPath = path.join(os.homedir(), '.Trash')
-    fs.rmSync(trashPath, { recursive: true, force: true })
-    fs.mkdirSync(trashPath, { recursive: true })
+    await new Promise((resolve, reject) => {
+      execFile('osascript', ['-e', 'tell application "Finder" to empty trash'],
+        { timeout: 60000 }, (err) => { if (err) reject(err); else resolve() })
+    })
     return { success: true }
   } catch (err) {
     return { success: false, error: err.message }

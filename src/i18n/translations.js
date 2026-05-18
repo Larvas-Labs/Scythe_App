@@ -79,8 +79,13 @@ export const translations = {
     'bottombar.harvest':     'Harvest',
 
     // Done view
-    'done.freed':   'freed',
-    'done.newScan': 'Run new scan',
+    'done.title':       'Harvest complete',
+    'done.subtitle':    '{n} items cleaned',
+    'done.subtitleNone':'Nothing was removed',
+    'done.freed':       'freed',
+    'done.skipped':     'skipped',
+    'done.trashBusy':  'Close Trash in Finder and try again',
+    'done.newScan':     'Run new scan',
 
     // Delete modal
     'modal.title':     'Permanent deletion',
@@ -97,6 +102,7 @@ export const translations = {
 
     // Scan item
     'item.notFound':     'Not found',
+    'item.empty':        'Already empty',
     'item.showInFinder': 'Show in Finder',
 
     // Results view
@@ -210,8 +216,13 @@ export const translations = {
     'bottombar.emptyTrash':  'Töm papperskorg ({size})',
     'bottombar.harvest':     'Skörda',
 
-    'done.freed':   'frigjort',
-    'done.newScan': 'Kör ny scanning',
+    'done.title':       'Skörd klar',
+    'done.subtitle':    '{n} objekt rensade',
+    'done.subtitleNone':'Inget togs bort',
+    'done.freed':       'frigjort',
+    'done.skipped':     'hoppades över',
+    'done.trashBusy':  'Stäng papperskorgen i Finder och försök igen',
+    'done.newScan':     'Kör ny scanning',
 
     'modal.title':     'Permanent radering',
     'modal.warning':   'Dessa filer kan inte återställas. De raderas permanent, inte till papperskorgen.',
@@ -225,6 +236,7 @@ export const translations = {
     'section.orphaned.desc':  'Dessa mappar tillhör appar som inte längre är installerade. Granska varje objekt innan du raderar — vissa kan fortfarande behövas.',
 
     'item.notFound':     'Hittades inte',
+    'item.empty':        'Redan tom',
     'item.showInFinder': 'Visa i Finder',
 
     'results.found':           'Hittades',
@@ -334,8 +346,13 @@ export const translations = {
     'bottombar.emptyTrash':  'Papierkorb leeren ({size})',
     'bottombar.harvest':     'Freigeben',
 
-    'done.freed':   'freigegeben',
-    'done.newScan': 'Neuen Scan starten',
+    'done.title':       'Ernte abgeschlossen',
+    'done.subtitle':    '{n} Elemente bereinigt',
+    'done.subtitleNone':'Nichts wurde entfernt',
+    'done.freed':       'freigegeben',
+    'done.skipped':     'übersprungen',
+    'done.trashBusy':  'Papierkorb in Finder schließen und erneut versuchen',
+    'done.newScan':     'Neuen Scan starten',
 
     'modal.title':     'Permanentes Löschen',
     'modal.warning':   'Diese Dateien können nicht wiederhergestellt werden. Sie werden permanent gelöscht, nicht in den Papierkorb.',
@@ -456,8 +473,13 @@ export const translations = {
     'bottombar.emptyTrash':  'Vider la corbeille ({size})',
     'bottombar.harvest':     'Libérer',
 
-    'done.freed':   'libérés',
-    'done.newScan': 'Nouveau scan',
+    'done.title':       'Récolte terminée',
+    'done.subtitle':    '{n} éléments nettoyés',
+    'done.subtitleNone':'Rien n\'a été supprimé',
+    'done.freed':       'libérés',
+    'done.skipped':     'ignorés',
+    'done.trashBusy':  'Fermez la Corbeille dans Finder et réessayez',
+    'done.newScan':     'Nouveau scan',
 
     'modal.title':     'Suppression permanente',
     'modal.warning':   'Ces fichiers ne peuvent pas être récupérés. Ils seront supprimés définitivement, pas mis à la corbeille.',
@@ -578,8 +600,13 @@ export const translations = {
     'bottombar.emptyTrash':  'Vaciar papelera ({size})',
     'bottombar.harvest':     'Liberar',
 
-    'done.freed':   'liberados',
-    'done.newScan': 'Nuevo escaneo',
+    'done.title':       'Cosecha completa',
+    'done.subtitle':    '{n} elementos limpiados',
+    'done.subtitleNone':'No se eliminó nada',
+    'done.freed':       'liberados',
+    'done.skipped':     'omitidos',
+    'done.trashBusy':  'Cierra la Papelera en Finder e inténtalo de nuevo',
+    'done.newScan':     'Nuevo escaneo',
 
     'modal.title':     'Eliminación permanente',
     'modal.warning':   'Estos archivos no se pueden recuperar. Se eliminarán permanentemente, no a la papelera.',

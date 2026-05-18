@@ -32,6 +32,7 @@ function AppInner() {
   const [estimates, setEstimates] = useState({})
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteResult, setDeleteResult] = useState(null)
+  const [deleteProgress, setDeleteProgress] = useState([]) // [{path,name,success,hint?}]
   const [theme, setTheme] = useState('dark')
   const [language, setLanguage] = useState('en')
   const [updateState, setUpdateState] = useState(null) // null | 'checking' | 'uptodate' | 'available' | 'downloading' | 'ready' | 'error'
@@ -135,7 +136,7 @@ function AppInner() {
     window.scythe.onScanComplete(results => {
       setScanResults(results)
       const autoSelected = new Set(
-        results.filter(r => r.exists && r.safe).map(r => r.id)
+        results.filter(r => r.exists && r.safe && r.size > 0).map(r => r.id)
       )
       setSelectedIds(autoSelected)
       setAppState('results')
@@ -179,19 +180,46 @@ function AppInner() {
 
   const confirmDelete = useCallback(async () => {
     setShowDeleteModal(false)
+    setDeleteProgress([])
     setAppState('deleting')
 
     const items = scanResults
       .filter(r => selectedIds.has(r.id))
       .map(r => ({ path: r.path, requiresAdmin: r.requiresAdmin, size: r.size }))
 
+    // Build path→name map so DoneView can show readable names without prop drilling
+    const nameByPath = Object.fromEntries(
+      scanResults.map(r => [r.path, r.name])
+    )
+    const augmentResults = (summary) => ({
+      ...summary,
+      results: (summary.results || []).map(r => ({
+        ...r,
+        name: nameByPath[r.path] || r.path.split('/').pop() || r.path,
+      })),
+    })
+
+    window.scythe.removeAllListeners('delete:progress')
+    window.scythe.onDeleteProgress(item => {
+      const name = nameByPath[item.path] || item.path.split('/').pop() || item.path
+      setDeleteProgress(prev => [...prev, { ...item, name }])
+    })
+
     window.scythe.removeAllListeners('delete:complete')
     window.scythe.onDeleteComplete(summary => {
-      setDeleteResult(summary)
+      window.scythe.removeAllListeners('delete:progress')
+      setDeleteResult(augmentResults(summary))
       setAppState('done')
     })
 
-    await window.scythe.deleteItems(items)
+    try {
+      await window.scythe.deleteItems(items)
+    } catch (err) {
+      console.error('[confirmDelete] deleteItems IPC failed:', err)
+      window.scythe.removeAllListeners('delete:progress')
+      setDeleteResult({ results: [], totalFreed: 0 })
+      setAppState('done')
+    }
   }, [scanResults, selectedIds])
 
   const checkForUpdates = useCallback(async () => {
@@ -290,6 +318,7 @@ function AppInner() {
         totalFoundSize={totalFoundSize}
         chosenSize={chosenSize}
         deleteResult={deleteResult}
+        deleteProgress={deleteProgress}
         totalEstimate={totalEstimate}
         maxEstimate={maxEstimate}
         onStartScan={startScan}

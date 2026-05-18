@@ -6,6 +6,7 @@ import { useLang } from '../i18n/index.jsx'
 export default function ScanItem({ result, selected, onToggle, isLast }) {
   const { t } = useLang()
   const notFound = !result.exists
+  const isEmpty = result.exists && result.size === 0
   const isUnsafe = !result.safe
   const ItemIcon = ITEM_ICON_MAP[result.id] || IconFolder
 
@@ -16,20 +17,20 @@ export default function ScanItem({ result, selected, onToggle, isLast }) {
 
   return (
     <div
-      onClick={() => !notFound && onToggle(result.id)}
+      onClick={() => !notFound && !isEmpty && onToggle(result.id)}
       style={{
         display: 'flex',
         alignItems: 'center',
         gap: '10px',
         padding: '10px 14px',
         borderBottom: isLast ? 'none' : '1px solid var(--border)',
-        cursor: notFound ? 'default' : 'pointer',
+        cursor: (notFound || isEmpty) ? 'default' : 'pointer',
         background: selected ? 'var(--surface-hover)' : 'transparent',
-        opacity: notFound ? 0.4 : 1,
+        opacity: (notFound || isEmpty) ? 0.4 : 1,
         transition: 'background 0.1s',
       }}
       onMouseEnter={e => {
-        if (!notFound && !selected) e.currentTarget.style.background = 'var(--surface-hover)'
+        if (!notFound && !isEmpty && !selected) e.currentTarget.style.background = 'var(--surface-hover)'
       }}
       onMouseLeave={e => {
         if (!selected) e.currentTarget.style.background = 'transparent'

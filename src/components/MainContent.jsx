@@ -13,6 +13,7 @@ export default function MainContent({
   totalFoundSize,
   chosenSize,
   deleteResult,
+  deleteProgress,
   totalEstimate,
   maxEstimate,
   onStartScan,
@@ -55,6 +56,8 @@ export default function MainContent({
   }
 
   if (appState === 'deleting') {
+    const doneItems = (deleteProgress || []).filter(i => i.success)
+    const currentItem = (deleteProgress || []).slice(-1)[0]
     return (
       <div style={{
         flex: 1,
@@ -66,26 +69,85 @@ export default function MainContent({
           background: 'var(--surface)',
           border: '1px solid var(--border)',
           borderRadius: '12px',
-          padding: '48px 40px',
+          padding: '40px 36px',
           textAlign: 'center',
+          width: '340px',
         }}>
+          {/* Spinner */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none"
+                 style={{ animation: 'spin 0.9s linear infinite' }}>
+              <circle cx="18" cy="18" r="14" stroke="var(--border-strong)"
+                      strokeWidth="3" fill="none" />
+              <path d="M18 4 A14 14 0 0 1 32 18" stroke="var(--accent)"
+                    strokeWidth="3" strokeLinecap="round" fill="none" />
+            </svg>
+          </div>
+
+          {/* Title */}
           <div style={{
             fontFamily: 'var(--font-display)',
             fontWeight: 700,
-            fontSize: '22px',
+            fontSize: '20px',
             color: 'var(--text)',
-            marginBottom: '8px',
+            marginBottom: '6px',
           }}>
             {t('deleting.title')}
           </div>
+
+          {/* Current item */}
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '14px',
+            fontSize: '13px',
             color: 'var(--text-secondary)',
-            margin: 0,
+            margin: '0 0 20px',
+            minHeight: '18px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
           }}>
-            {t('deleting.subtitle')}
+            {currentItem ? currentItem.name : t('deleting.subtitle')}
           </p>
+
+          {/* Completed items list */}
+          {doneItems.length > 0 && (
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px',
+              maxHeight: '120px',
+              overflowY: 'auto',
+              textAlign: 'left',
+            }}>
+              {doneItems.map(item => (
+                <div key={item.path} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  background: 'var(--bg-secondary)',
+                  animation: 'scan-item-enter 0.25s ease-out both',
+                }}>
+                  <svg width="10" height="8" viewBox="0 0 10 8" fill="none" style={{ flexShrink: 0 }}>
+                    <path d="M1 4L3.5 6.5L9 1" stroke="var(--accent)"
+                          strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  <span style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: '0.72rem',
+                    color: 'var(--text-secondary)',
+                    flex: 1,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}>
+                    {item.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     )
