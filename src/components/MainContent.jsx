@@ -19,6 +19,7 @@ export default function MainContent({
   onStartScan,
   onToggleItem,
   onToggleCategory,
+  onDeselectItems,
   onAbortScan,
   onNewScan,
 }) {
@@ -51,6 +52,7 @@ export default function MainContent({
         chosenSize={chosenSize}
         onToggleItem={onToggleItem}
         onToggleCategory={onToggleCategory}
+        onDeselectItems={onDeselectItems}
       />
     )
   }

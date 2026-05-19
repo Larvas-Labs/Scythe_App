@@ -50,6 +50,15 @@ export function IconGear({ size = 18, color = 'currentColor' }) {
   )
 }
 
+export function IconSearch({ size = 18, color = 'currentColor' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="8.5" cy="8.5" r="5" />
+      <line x1="13" y1="13" x2="17" y2="17" />
+    </svg>
+  )
+}
+
 export function IconTrash({ size = 18, color = 'currentColor' }) {
   return (
     <svg width={size} height={size} viewBox="0 0 20 20" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">

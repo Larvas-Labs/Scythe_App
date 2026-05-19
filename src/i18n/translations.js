@@ -106,10 +106,13 @@ export const translations = {
     'item.showInFinder': 'Show in Finder',
 
     // Results view
-    'results.found':           'Found',
-    'results.selectedToClean': 'Selected to clean',
-    'results.items':           'Items',
-    'results.percentSelected': '{n}% of found data selected',
+    'results.found':              'Found',
+    'results.selectedToClean':    'Selected to clean',
+    'results.items':              'Items',
+    'results.percentSelected':    '{n}% of found data selected',
+    'results.searchPlaceholder':  'Filter items...',
+    'results.searchCount':        '{n} of {total} items shown',
+    'results.searchNoResults':    'No items match',
 
     // Idle view
     'idle.canBeFreed': 'can be freed',
@@ -239,10 +242,13 @@ export const translations = {
     'item.empty':        'Redan tom',
     'item.showInFinder': 'Visa i Finder',
 
-    'results.found':           'Hittades',
-    'results.selectedToClean': 'Valt att rensa',
-    'results.items':           'Objekt',
-    'results.percentSelected': '{n}% av hittad data vald',
+    'results.found':              'Hittades',
+    'results.selectedToClean':    'Valt att rensa',
+    'results.items':              'Objekt',
+    'results.percentSelected':    '{n}% av hittad data vald',
+    'results.searchPlaceholder':  'Filtrera objekt...',
+    'results.searchCount':        '{n} av {total} objekt visas',
+    'results.searchNoResults':    'Inga objekt matchar',
 
     'idle.canBeFreed': 'kan frigöras',
 
@@ -368,10 +374,13 @@ export const translations = {
     'item.notFound':     'Nicht gefunden',
     'item.showInFinder': 'Im Finder anzeigen',
 
-    'results.found':           'Gefunden',
-    'results.selectedToClean': 'Zum Löschen gewählt',
-    'results.items':           'Einträge',
-    'results.percentSelected': '{n}% der gefundenen Daten ausgewählt',
+    'results.found':              'Gefunden',
+    'results.selectedToClean':    'Zum Löschen gewählt',
+    'results.items':              'Einträge',
+    'results.percentSelected':    '{n}% der gefundenen Daten ausgewählt',
+    'results.searchPlaceholder':  'Einträge filtern...',
+    'results.searchCount':        '{n} von {total} Einträgen angezeigt',
+    'results.searchNoResults':    'Keine Einträge gefunden',
 
     'idle.canBeFreed': 'freizugeben',
 
@@ -495,10 +504,13 @@ export const translations = {
     'item.notFound':     'Introuvable',
     'item.showInFinder': 'Afficher dans le Finder',
 
-    'results.found':           'Trouvé',
-    'results.selectedToClean': 'Sélectionné à nettoyer',
-    'results.items':           'Éléments',
-    'results.percentSelected': '{n}% des données trouvées sélectionnées',
+    'results.found':              'Trouvé',
+    'results.selectedToClean':    'Sélectionné à nettoyer',
+    'results.items':              'Éléments',
+    'results.percentSelected':    '{n}% des données trouvées sélectionnées',
+    'results.searchPlaceholder':  'Filtrer les éléments...',
+    'results.searchCount':        '{n} sur {total} éléments affichés',
+    'results.searchNoResults':    'Aucun élément ne correspond',
 
     'idle.canBeFreed': 'libérables',
 
@@ -622,10 +634,13 @@ export const translations = {
     'item.notFound':     'No encontrado',
     'item.showInFinder': 'Mostrar en Finder',
 
-    'results.found':           'Encontrado',
-    'results.selectedToClean': 'Seleccionado para limpiar',
-    'results.items':           'Elementos',
-    'results.percentSelected': '{n}% de los datos encontrados seleccionados',
+    'results.found':              'Encontrado',
+    'results.selectedToClean':    'Seleccionado para limpiar',
+    'results.items':              'Elementos',
+    'results.percentSelected':    '{n}% de los datos encontrados seleccionados',
+    'results.searchPlaceholder':  'Filtrar elementos...',
+    'results.searchCount':        '{n} de {total} elementos mostrados',
+    'results.searchNoResults':    'Ningún elemento coincide',
 
     'idle.canBeFreed': 'se pueden liberar',
 

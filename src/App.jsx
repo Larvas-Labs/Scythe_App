@@ -159,6 +159,14 @@ function AppInner() {
     })
   }, [])
 
+  const deselectItems = useCallback((ids) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      ids.forEach(id => next.delete(id))
+      return next
+    })
+  }, [])
+
   const toggleCategory_results = useCallback((category) => {
     const catItems = scanResults.filter(r => r.category === category && r.exists)
     const allSelected = catItems.every(r => selectedIds.has(r.id))
@@ -324,6 +332,7 @@ function AppInner() {
         onStartScan={startScan}
         onToggleItem={toggleItem}
         onToggleCategory={toggleCategory_results}
+        onDeselectItems={deselectItems}
         onAbortScan={abortScan}
         onNewScan={resetToIdle}
       />
