@@ -2,6 +2,8 @@
 
 Du är en senior macOS-utvecklare och UX-designer. Bygg appen **Scythe** – ett Electron-baserat Mac-verktyg för att skanna, visualisera och permanent radera cache-filer och skräpdata. Följ denna brief exakt.
 
+> **Språkregler:** Denna brief är på svenska, men all extern kommunikation ska vara på **engelska** — GitHub release-beskrivningar, commit-meddelanden, PR-texter och all annan text som publiceras utanför detta repo.
+
 ---
 
 ## 0. Design Skill – Impeccable
