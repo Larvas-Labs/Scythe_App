@@ -668,7 +668,7 @@ ipcMain.handle('update:download-and-install', async (event, version) => {
     const filename = arch === 'arm64'
       ? `Scythe-${version}-arm64-mac.zip`
       : `Scythe-${version}-mac.zip`
-    const url = `https://github.com/peterhagman/Scythe/releases/download/v${version}/${filename}`
+    const url = `https://github.com/Scythe-Labs/App/releases/download/v${version}/${filename}`
 
     const tmpDir = path.join(os.tmpdir(), `scythe-update-${Date.now()}`)
     const zipPath = path.join(tmpDir, filename)

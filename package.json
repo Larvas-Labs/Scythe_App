@@ -38,8 +38,8 @@
     ],
     "publish": {
       "provider": "github",
-      "owner": "peterhagman",
-      "repo": "Scythe",
+      "owner": "Scythe-Labs",
+      "repo": "App",
       "releaseType": "release"
     }
   },
