@@ -74,7 +74,7 @@ const sectionLabel = {
   fontWeight: 600,
   letterSpacing: '0.1em',
   textTransform: 'uppercase',
-  color: 'var(--text-muted)',
+  color: 'var(--text-secondary)',
   marginBottom: '8px',
 }
 
@@ -167,7 +167,7 @@ export default function TrackingConsentModal({ onAccept, onDecline }) {
         <p style={{
           fontFamily: 'var(--font-body)',
           fontSize: '11px',
-          color: 'var(--text-muted)',
+          color: 'var(--text-secondary)',
           textAlign: 'center',
           margin: 0,
           lineHeight: 1.5,
