@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 const { app, BrowserWindow, ipcMain, shell } = require('electron')
 const path = require('path')
 const { execSync, exec, execFile } = require('child_process')
@@ -10,8 +8,8 @@ const Store = require('electron-store')
 // ─── TRACKING ────────────────────────────────────────────────────────────────
 const { randomUUID } = require('crypto')
 
-const SUPABASE_URL = process.env.SUPABASE_URL
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY
+const SUPABASE_URL = 'https://pilqsstuhalkxyfbyari.supabase.co'
+const SUPABASE_ANON_KEY = 'sb_publishable_pk78uV4mH-C-CqtJHGmi8A_LxvW5hUR'
 const SESSION_ID = randomUUID()
 
 let pendingAppOpen = false
