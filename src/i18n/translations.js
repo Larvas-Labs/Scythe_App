@@ -51,7 +51,7 @@ export const translations = {
     'settings.analyticsDesc':     'Help improve Scythe with anonymous usage data',
 
     // Tracking consent modal
-    'consent.title':                        'Help improve Scythe',
+    'consent.title':                        'Help improve Scythe App',
     'consent.intro':                        'Scythe would like to collect anonymous usage data to help improve the app. No personal information is ever stored — only the events listed below.',
     'consent.trackedHeader':                'This is what we track',
     'consent.tracked.open':                 'App launched',
@@ -224,7 +224,7 @@ export const translations = {
     'settings.analyticsDesc':       'Hjälp till att förbättra Scythe med anonym användningsdata',
 
     // Tracking consent modal
-    'consent.title':                        'Hjälp oss förbättra Scythe',
+    'consent.title':                        'Hjälp oss förbättra Scythe App',
     'consent.intro':                        'Scythe vill samla in anonyma uppgifter för att kunna förbättra appen. Ingen personlig information lagras — endast händelserna nedan.',
     'consent.trackedHeader':                'Detta vill vi spåra',
     'consent.tracked.open':                 'Appen startas',
@@ -384,7 +384,7 @@ export const translations = {
     'settings.analyticsDesc':       'Helfen Sie, Scythe mit anonymen Nutzungsdaten zu verbessern',
 
     // Tracking consent modal
-    'consent.title':                        'Helfen Sie uns, Scythe zu verbessern',
+    'consent.title':                        'Helfen Sie uns, Scythe App zu verbessern',
     'consent.intro':                        'Scythe möchte anonyme Nutzungsdaten sammeln, um die App zu verbessern. Es werden keine persönlichen Daten gespeichert — nur die unten aufgeführten Ereignisse.',
     'consent.trackedHeader':                'Das möchten wir erfassen',
     'consent.tracked.open':                 'App gestartet',
@@ -541,7 +541,7 @@ export const translations = {
     'settings.analyticsDesc':       'Aidez à améliorer Scythe avec des données d\'utilisation anonymes',
 
     // Tracking consent modal
-    'consent.title':                        'Aidez-nous à améliorer Scythe',
+    'consent.title':                        'Aidez-nous à améliorer Scythe App',
     'consent.intro':                        'Scythe souhaite collecter des données d\'utilisation anonymes pour améliorer l\'app. Aucune information personnelle n\'est stockée — uniquement les événements listés ci-dessous.',
     'consent.trackedHeader':                'Ce que nous voulons suivre',
     'consent.tracked.open':                 'App lancée',
@@ -698,7 +698,7 @@ export const translations = {
     'settings.analyticsDesc':       'Ayuda a mejorar Scythe con datos de uso anónimos',
 
     // Tracking consent modal
-    'consent.title':                        'Ayúdanos a mejorar Scythe',
+    'consent.title':                        'Ayúdanos a mejorar Scythe App',
     'consent.intro':                        'Scythe quiere recopilar datos de uso anónimos para mejorar la app. No se almacena ninguna información personal — solo los eventos listados a continuación.',
     'consent.trackedHeader':                'Esto es lo que queremos rastrear',
     'consent.tracked.open':                 'App iniciada',
