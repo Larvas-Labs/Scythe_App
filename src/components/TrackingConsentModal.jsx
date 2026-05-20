@@ -4,8 +4,8 @@ import { useLang } from '../i18n/index.jsx'
 function CheckRow({ label, desc }) {
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px', padding: '4px 0' }}>
-      <svg width="11" height="9" viewBox="0 0 11 9" fill="none" style={{ flexShrink: 0, marginTop: '3px' }}>
-        <path d="M1 4.5L4 7.5L10 1" stroke="#30D158" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+      <svg width="9" height="7" viewBox="0 0 9 7" fill="none" style={{ flexShrink: 0, marginTop: '4px' }}>
+        <path d="M1 3.5L3.5 6L8 1" stroke="#30D158" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       <div>
         <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.4 }}>
@@ -22,8 +22,8 @@ function CheckRow({ label, desc }) {
 function CrossRow({ label, desc }) {
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px', padding: '4px 0' }}>
-      <svg width="9" height="9" viewBox="0 0 9 9" fill="none" style={{ flexShrink: 0, marginTop: '3px' }}>
-        <path d="M1 1L8 8M8 1L1 8" stroke="var(--danger)" strokeWidth="1.6" strokeLinecap="round" />
+      <svg width="8" height="8" viewBox="0 0 8 8" fill="none" style={{ flexShrink: 0, marginTop: '4px' }}>
+        <path d="M1 1L7 7M7 1L1 7" stroke="var(--danger)" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
       <div>
         <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.4 }}>
@@ -135,14 +135,11 @@ export default function TrackingConsentModal({ onAccept, onDecline }) {
           {/* Tracked */}
           <div style={{ flex: 1 }}>
             <div style={sectionLabel}>{t('consent.trackedHeader')}</div>
-            <CheckRow label={t('consent.tracked.open')}        desc={t('consent.tracked.open.desc')} />
-            <CheckRow label={t('consent.tracked.appVersion')}  desc={t('consent.tracked.appVersion.desc')} />
-            <CheckRow label={t('consent.tracked.update')}      desc={t('consent.tracked.update.desc')} />
-            <CheckRow label={t('consent.tracked.scanStarted')} desc={t('consent.tracked.scanStarted.desc')} />
-            <CheckRow label={t('consent.tracked.scanDone')}    desc={t('consent.tracked.scanDone.desc')} />
-            <CheckRow label={t('consent.tracked.delete')}      desc={t('consent.tracked.delete.desc')} />
-            <CheckRow label={t('consent.tracked.bytes')}       desc={t('consent.tracked.bytes.desc')} />
-            <CheckRow label={t('consent.tracked.os')}          desc={t('consent.tracked.os.desc')} />
+            <CheckRow label={t('consent.tracked.open')}     desc={t('consent.tracked.open.desc')} />
+            <CheckRow label={t('consent.tracked.scan')}     desc={t('consent.tracked.scan.desc')} />
+            <CheckRow label={t('consent.tracked.cleanup')}  desc={t('consent.tracked.cleanup.desc')} />
+            <CheckRow label={t('consent.tracked.versions')} desc={t('consent.tracked.versions.desc')} />
+            <CheckRow label={t('consent.tracked.update')}   desc={t('consent.tracked.update.desc')} />
           </div>
 
           {/* Vertical divider */}
@@ -152,8 +149,7 @@ export default function TrackingConsentModal({ onAccept, onDecline }) {
           <div style={{ flex: 1 }}>
             <div style={sectionLabel}>{t('consent.notTrackedHeader')}</div>
             <CrossRow label={t('consent.notTracked.personal')}  desc={t('consent.notTracked.personal.desc')} />
-            <CrossRow label={t('consent.notTracked.paths')}     desc={t('consent.notTracked.paths.desc')} />
-            <CrossRow label={t('consent.notTracked.folders')}   desc={t('consent.notTracked.folders.desc')} />
+            <CrossRow label={t('consent.notTracked.filepaths')} desc={t('consent.notTracked.filepaths.desc')} />
             <CrossRow label={t('consent.notTracked.sessionId')} desc={t('consent.notTracked.sessionId.desc')} />
           </div>
 
