@@ -8,10 +8,10 @@ function CheckRow({ label, desc }) {
         <path d="M1 3.5L3.5 6L8 1" stroke="#30D158" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
       <div>
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.4 }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.4 }}>
           {label}
         </div>
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: '1px' }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: '1px' }}>
           {desc}
         </div>
       </div>
@@ -22,14 +22,14 @@ function CheckRow({ label, desc }) {
 function CrossRow({ label, desc }) {
   return (
     <div style={{ display: 'flex', alignItems: 'flex-start', gap: '7px', padding: '4px 0' }}>
-      <svg width="8" height="8" viewBox="0 0 8 8" fill="none" style={{ flexShrink: 0, marginTop: '4px' }}>
+      <svg width="8" height="8" viewBox="0 0 8 8" fill="none" style={{ flexShrink: 0, marginTop: '5px' }}>
         <path d="M1 1L7 7M7 1L1 7" stroke="var(--danger)" strokeWidth="1.5" strokeLinecap="round" />
       </svg>
       <div>
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.4 }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: '13px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.4 }}>
           {label}
         </div>
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: '1px' }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: '1px' }}>
           {desc}
         </div>
       </div>
@@ -70,7 +70,7 @@ function GhostButton({ onClick, children }) {
 
 const sectionLabel = {
   fontFamily: 'var(--font-body)',
-  fontSize: '9px',
+  fontSize: '10px',
   fontWeight: 600,
   letterSpacing: '0.1em',
   textTransform: 'uppercase',
@@ -108,7 +108,7 @@ export default function TrackingConsentModal({ onAccept, onDecline }) {
         <div>
           <h2 style={{
             fontFamily: 'var(--font-display)',
-            fontSize: '16px',
+            fontSize: '18px',
             fontWeight: 700,
             color: 'var(--text)',
             margin: '0 0 8px',
@@ -117,7 +117,7 @@ export default function TrackingConsentModal({ onAccept, onDecline }) {
           </h2>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: '12px',
+            fontSize: '13px',
             color: 'var(--text-secondary)',
             margin: 0,
             lineHeight: 1.6,
@@ -166,7 +166,7 @@ export default function TrackingConsentModal({ onAccept, onDecline }) {
 
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: '11px',
+          fontSize: '12px',
           color: 'var(--text-secondary)',
           textAlign: 'center',
           margin: 0,
