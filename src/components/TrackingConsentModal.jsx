@@ -11,7 +11,7 @@ function CheckRow({ label, desc }) {
         <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.4 }}>
           {label}
         </div>
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.4, marginTop: '1px' }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: '1px' }}>
           {desc}
         </div>
       </div>
@@ -29,7 +29,7 @@ function CrossRow({ label, desc }) {
         <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 500, color: 'var(--text)', lineHeight: 1.4 }}>
           {label}
         </div>
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--text-muted)', lineHeight: 1.4, marginTop: '1px' }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4, marginTop: '1px' }}>
           {desc}
         </div>
       </div>
