@@ -37,24 +37,22 @@ function GhostButton({ onClick, children }) {
         flex: 1,
         fontFamily: 'var(--font-body)',
         fontSize: '13px',
-        fontWeight: 500,
-        color: 'var(--text-secondary)',
+        fontWeight: 600,
+        color: 'var(--text)',
         background: 'transparent',
-        border: '1px solid var(--border)',
+        border: '1px solid var(--border-strong)',
         borderRadius: '8px',
-        padding: '9px 0',
+        padding: '11px 0',
         cursor: 'pointer',
         transition: 'color 0.12s, border-color 0.12s, background 0.12s',
       }}
       onMouseEnter={e => {
-        e.currentTarget.style.color = 'var(--text)'
-        e.currentTarget.style.borderColor = 'var(--border-strong)'
         e.currentTarget.style.background = 'var(--surface-hover)'
+        e.currentTarget.style.borderColor = 'var(--text-muted)'
       }}
       onMouseLeave={e => {
-        e.currentTarget.style.color = 'var(--text-secondary)'
-        e.currentTarget.style.borderColor = 'var(--border)'
         e.currentTarget.style.background = 'transparent'
+        e.currentTarget.style.borderColor = 'var(--border-strong)'
       }}
     >
       {children}
@@ -151,8 +149,8 @@ export default function TrackingConsentModal({ onAccept, onDecline }) {
 
         {/* Buttons */}
         <div style={{ display: 'flex', gap: '8px' }}>
-          <GhostButton onClick={onDecline}>{t('consent.decline')}</GhostButton>
           <GhostButton onClick={onAccept}>{t('consent.accept')}</GhostButton>
+          <GhostButton onClick={onDecline}>{t('consent.decline')}</GhostButton>
         </div>
 
       </div>
