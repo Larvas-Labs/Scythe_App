@@ -14,8 +14,11 @@ const SUPABASE_URL = process.env.SUPABASE_URL
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY
 const SESSION_ID = randomUUID()
 
+let pendingAppOpen = false
+
 async function trackEvent(eventName, props = {}) {
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return
+  if (store.get('trackingConsented', null) !== true) return
   if (store.get('trackingEnabled', true) === false) return
   try {
     await fetch(`${SUPABASE_URL}/rest/v1/events`, {
@@ -633,7 +636,11 @@ function createWindow() {
   }
 
   mainWindow.webContents.once('did-finish-load', () => {
-    trackEvent('App_Open')
+    if (store.get('trackingConsented', null) === true) {
+      trackEvent('App_Open')
+    } else {
+      pendingAppOpen = true
+    }
   })
 }
 
@@ -1008,6 +1015,17 @@ ipcMain.handle('tracking:setEnabled', (_, value) => {
 })
 ipcMain.handle('tracking:getEnabled', () => {
   return store.get('trackingEnabled', true)
+})
+ipcMain.handle('tracking:getConsented', () => {
+  return store.get('trackingConsented', null)
+})
+ipcMain.handle('tracking:setConsented', (_, value) => {
+  store.set('trackingConsented', value)
+  if (value === true && pendingAppOpen) {
+    pendingAppOpen = false
+    trackEvent('App_Open')
+  }
+  return true
 })
 
 // ─── IPC: store:get / store:set ───────────────────────────────────────────────
