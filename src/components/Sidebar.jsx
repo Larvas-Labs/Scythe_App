@@ -95,6 +95,8 @@ export default function Sidebar({
   onQuit,
   language,
   onChangeLanguage,
+  trackingEnabled,
+  onToggleTracking,
 }) {
   const [showSettings, setShowSettings] = useState(false)
   const [openTooltip, setOpenTooltip] = useState(null)
@@ -453,6 +455,8 @@ export default function Sidebar({
           onQuit={onQuit}
           language={language}
           onChangeLanguage={onChangeLanguage}
+          trackingEnabled={trackingEnabled}
+          onToggleTracking={onToggleTracking}
         />
       )}
     </div>

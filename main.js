@@ -1,9 +1,44 @@
+require('dotenv').config()
+
 const { app, BrowserWindow, ipcMain, shell } = require('electron')
 const path = require('path')
 const { execSync, exec, execFile } = require('child_process')
 const fs = require('fs')
 const os = require('os')
 const Store = require('electron-store')
+
+// ─── TRACKING ────────────────────────────────────────────────────────────────
+const { randomUUID } = require('crypto')
+
+const SUPABASE_URL = process.env.SUPABASE_URL
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY
+const SESSION_ID = randomUUID()
+
+async function trackEvent(eventName, props = {}) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return
+  if (store.get('trackingEnabled', true) === false) return
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/events`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({
+        event: eventName,
+        session_id: SESSION_ID,
+        app_version: app.getVersion(),
+        os_version: `${os.platform()} ${os.release()}`,
+        ...props,
+      }),
+    })
+  } catch (err) {
+    console.warn('[tracking] failed to track event:', err.message)
+  }
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 const store = new Store()
 const isDev = !app.isPackaged
@@ -596,6 +631,10 @@ function createWindow() {
   } else {
     mainWindow.loadFile(path.join(__dirname, 'dist', 'index.html'))
   }
+
+  mainWindow.webContents.once('did-finish-load', () => {
+    trackEvent('App_Open')
+  })
 }
 
 app.whenReady().then(() => {
@@ -609,6 +648,7 @@ app.whenReady().then(() => {
       mainWindow?.webContents.send('update:available', info)
     })
     autoUpdater.on('update-downloaded', (info) => {
+      trackEvent('App_Updated', { new_version: info.version })
       mainWindow?.webContents.send('update:downloaded', info)
     })
     autoUpdater.on('update-not-available', (info) => {
@@ -766,6 +806,12 @@ ipcMain.handle('scan:start', async (event, targetIds) => {
   scanAborted = false
   const targets = SCAN_TARGETS.filter(t => targetIds.includes(t.id))
   const results = []
+  const scanStartTime = Date.now()
+
+  trackEvent('Scan_Started', {
+    categories_count: targetIds.length,
+    categories_scanned: targetIds,
+  })
 
   for (const target of targets) {
     if (scanAborted) break
@@ -838,6 +884,13 @@ ipcMain.handle('scan:start', async (event, targetIds) => {
   // Update path whitelist so delete:items can validate against real scan results
   lastScanPaths = new Set(results.map(r => r.path).filter(Boolean))
 
+  trackEvent('Scan_Completed', {
+    scan_duration_ms: Date.now() - scanStartTime,
+    items_found: results.length,
+    bytes_found: results.reduce((sum, r) => sum + r.size, 0),
+    categories_scanned: targetIds,
+  })
+
   event.sender.send('scan:complete', results)
   return results
 })
@@ -905,6 +958,22 @@ ipcMain.handle('delete:items', async (event, items) => {
     }
   }
 
+  const successCount = results.filter(r => r.success).length
+  const uniqueCategoriesDeleted = [...new Set(
+    items
+      .filter((item, i) => results[i]?.success)
+      .map(item => {
+        const target = SCAN_TARGETS.find(t => item.path.startsWith(expandPath(t.path)))
+        return target?.category ?? 'unknown'
+      })
+  )]
+
+  trackEvent('Items_Deleted', {
+    items_deleted: successCount,
+    bytes_freed: totalFreed,
+    categories_deleted: uniqueCategoriesDeleted,
+  })
+
   const summary = { results, totalFreed }
   event.sender.send('delete:complete', summary)
   return summary
@@ -927,6 +996,18 @@ ipcMain.handle('trash:empty', async () => {
 ipcMain.handle('finder:reveal', async (_, targetPath) => {
   shell.showItemInFolder(expandPath(targetPath))
   return true
+})
+
+// ─── IPC: tracking:track / tracking:setEnabled / tracking:getEnabled ─────────
+ipcMain.on('tracking:track', (_, eventName, props) => {
+  trackEvent(eventName, props)
+})
+ipcMain.handle('tracking:setEnabled', (_, value) => {
+  store.set('trackingEnabled', value)
+  return true
+})
+ipcMain.handle('tracking:getEnabled', () => {
+  return store.get('trackingEnabled', true)
 })
 
 // ─── IPC: store:get / store:set ───────────────────────────────────────────────

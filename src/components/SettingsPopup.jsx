@@ -92,6 +92,8 @@ export default function SettingsPopup({
   onQuit,
   language,
   onChangeLanguage,
+  trackingEnabled,
+  onToggleTracking,
 }) {
   const ref = useRef(null)
   const [showLangList, setShowLangList] = useState(false)
@@ -263,6 +265,39 @@ export default function SettingsPopup({
           </button>
         </div>
       )}
+
+      <div style={divider} />
+
+      {/* ── Privacy ──────────────────────────── */}
+      <div style={sectionLabel}>{t('settings.privacy')}</div>
+
+      <div style={row}>
+        <span style={rowText}>{t('settings.analytics')}</span>
+        <button
+          onClick={onToggleTracking}
+          title={t('settings.analytics')}
+          style={{
+            width: '32px', height: '32px', borderRadius: '8px',
+            border: `1px solid ${trackingEnabled ? 'var(--accent)' : 'var(--border)'}`,
+            background: trackingEnabled ? 'var(--accent-dim)' : 'var(--surface)',
+            color: trackingEnabled ? 'var(--accent)' : 'var(--text-secondary)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', flexShrink: 0,
+            transition: 'background 0.15s, border-color 0.15s, color 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = trackingEnabled ? 'var(--accent-dim)' : 'var(--surface-hover)'; e.currentTarget.style.borderColor = trackingEnabled ? 'var(--accent)' : 'var(--border-strong)' }}
+          onMouseLeave={e => { e.currentTarget.style.background = trackingEnabled ? 'var(--accent-dim)' : 'var(--surface)'; e.currentTarget.style.borderColor = trackingEnabled ? 'var(--accent)' : 'var(--border)' }}
+        >
+          <svg width="13" height="13" viewBox="0 0 12 12" fill="none">
+            <circle cx="6" cy="6" r="2" fill="currentColor" />
+            <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.3" />
+            <line x1="6" y1="0.5" x2="6" y2="1.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+            <line x1="6" y1="10.5" x2="6" y2="11.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+            <line x1="0.5" y1="6" x2="1.5" y2="6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+            <line x1="10.5" y1="6" x2="11.5" y2="6" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+          </svg>
+        </button>
+      </div>
 
       <div style={divider} />
 

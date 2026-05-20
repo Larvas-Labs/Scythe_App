@@ -46,6 +46,9 @@ export const translations = {
     'settings.quitApp':           'Quit app',
     'settings.language':          'Language',
     'settings.activeLanguage':    'Active language',
+    'settings.privacy':           'Privacy',
+    'settings.analytics':         'Tracking',
+    'settings.analyticsDesc':     'Help improve Scythe with anonymous usage data',
 
     // Update banner
     'banner.newVersion':       'New version available',
@@ -192,6 +195,9 @@ export const translations = {
     'settings.quitApp':             'Avsluta app',
     'settings.language':            'Språk',
     'settings.activeLanguage':      'Aktivt språk',
+    'settings.privacy':             'Sekretess',
+    'settings.analytics':           'Spårning',
+    'settings.analyticsDesc':       'Hjälp till att förbättra Scythe med anonym användningsdata',
 
     'banner.newVersion':      'Ny version tillgänglig',
     'banner.download':        'Hämta version',
@@ -325,6 +331,9 @@ export const translations = {
     'settings.quitApp':             'App beenden',
     'settings.language':            'Sprache',
     'settings.activeLanguage':      'Aktive Sprache',
+    'settings.privacy':             'Datenschutz',
+    'settings.analytics':           'Tracking',
+    'settings.analyticsDesc':       'Helfen Sie, Scythe mit anonymen Nutzungsdaten zu verbessern',
 
     'banner.newVersion':      'Neue Version verfügbar',
     'banner.download':        'Herunterladen',
@@ -455,6 +464,9 @@ export const translations = {
     'settings.quitApp':             'Quitter l\'app',
     'settings.language':            'Langue',
     'settings.activeLanguage':      'Langue active',
+    'settings.privacy':             'Confidentialité',
+    'settings.analytics':           'Suivi',
+    'settings.analyticsDesc':       'Aidez à améliorer Scythe avec des données d\'utilisation anonymes',
 
     'banner.newVersion':      'Nouvelle version disponible',
     'banner.download':        'Télécharger',
@@ -585,6 +597,9 @@ export const translations = {
     'settings.quitApp':             'Salir de la app',
     'settings.language':            'Idioma',
     'settings.activeLanguage':      'Idioma activo',
+    'settings.privacy':             'Privacidad',
+    'settings.analytics':           'Rastreo',
+    'settings.analyticsDesc':       'Ayuda a mejorar Scythe con datos de uso anónimos',
 
     'banner.newVersion':      'Nueva versión disponible',
     'banner.download':        'Descargar actualización',

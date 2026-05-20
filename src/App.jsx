@@ -41,8 +41,12 @@ function AppInner() {
   const [availableVersion, setAvailableVersion] = useState(null)
   const [downloadProgress, setDownloadProgress] = useState(0)
   const [bannerDismissed, setBannerDismissed] = useState(false)
+  const [trackingEnabled, setTrackingEnabled] = useState(true)
 
   useEffect(() => {
+    window.scythe.getTrackingEnabled?.().then(val => {
+      setTrackingEnabled(val !== false)
+    })
     window.scythe.storeGet('enabledCategories').then(saved => {
       if (saved) setEnabledCategories(saved)
     })
@@ -100,6 +104,14 @@ function AppInner() {
 
   const toggleTheme = useCallback(() => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
+  }, [])
+
+  const toggleTracking = useCallback(() => {
+    setTrackingEnabled(prev => {
+      const next = !prev
+      window.scythe.setTrackingEnabled?.(next)
+      return next
+    })
   }, [])
 
   function runEstimates() {
@@ -297,6 +309,8 @@ function AppInner() {
           onQuit={quitApp}
           language={language}
           onChangeLanguage={changeLanguage}
+          trackingEnabled={trackingEnabled}
+          onToggleTracking={toggleTracking}
         />
       }
       updateBanner={!bannerDismissed ? (

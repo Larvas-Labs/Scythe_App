@@ -44,4 +44,9 @@ contextBridge.exposeInMainWorld('scythe', {
   // App info
   getVersion: () => ipcRenderer.invoke('app:version'),
   getSystemLocale: () => ipcRenderer.invoke('app:locale'),
+
+  // Tracking
+  trackEvent: (eventName, props) => ipcRenderer.send('tracking:track', eventName, props),
+  getTrackingEnabled: () => ipcRenderer.invoke('tracking:getEnabled'),
+  setTrackingEnabled: (value) => ipcRenderer.invoke('tracking:setEnabled', value),
 })
