@@ -5,6 +5,7 @@ import MainContent from './components/MainContent.jsx'
 import BottomBar from './components/BottomBar.jsx'
 import DeleteModal from './components/DeleteModal.jsx'
 import UpdateBanner from './components/UpdateBanner.jsx'
+import TrackingConsentModal from './components/TrackingConsentModal.jsx'
 import { selectedSize } from './utils.js'
 import { LangProvider } from './i18n/index.jsx'
 
@@ -41,8 +42,16 @@ function AppInner() {
   const [availableVersion, setAvailableVersion] = useState(null)
   const [downloadProgress, setDownloadProgress] = useState(0)
   const [bannerDismissed, setBannerDismissed] = useState(false)
+  const [trackingEnabled, setTrackingEnabled] = useState(true)
+  const [trackingConsented, setTrackingConsented] = useState(undefined)
 
   useEffect(() => {
+    window.scythe.getTrackingConsented?.().then(val => {
+      setTrackingConsented(val)
+    })
+    window.scythe.getTrackingEnabled?.().then(val => {
+      setTrackingEnabled(val !== false)
+    })
     window.scythe.storeGet('enabledCategories').then(saved => {
       if (saved) setEnabledCategories(saved)
     })
@@ -100,6 +109,26 @@ function AppInner() {
 
   const toggleTheme = useCallback(() => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
+  }, [])
+
+  const toggleTracking = useCallback(() => {
+    setTrackingEnabled(prev => {
+      const next = !prev
+      window.scythe.setTrackingEnabled?.(next)
+      return next
+    })
+  }, [])
+
+  const handleConsentAccept = useCallback(() => {
+    window.scythe.setTrackingConsented?.(true)
+    setTrackingConsented(true)
+    setTrackingEnabled(true)
+  }, [])
+
+  const handleConsentDecline = useCallback(() => {
+    window.scythe.setTrackingConsented?.(false)
+    setTrackingConsented(false)
+    setTrackingEnabled(false)
   }, [])
 
   function runEstimates() {
@@ -297,6 +326,8 @@ function AppInner() {
           onQuit={quitApp}
           language={language}
           onChangeLanguage={changeLanguage}
+          trackingEnabled={trackingEnabled}
+          onToggleTracking={toggleTracking}
         />
       }
       updateBanner={!bannerDismissed ? (
@@ -342,6 +373,13 @@ function AppInner() {
           items={scanResults.filter(r => selectedIds.has(r.id))}
           onConfirm={confirmDelete}
           onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
+
+      {trackingConsented === null && (
+        <TrackingConsentModal
+          onAccept={handleConsentAccept}
+          onDecline={handleConsentDecline}
         />
       )}
     </Layout>
