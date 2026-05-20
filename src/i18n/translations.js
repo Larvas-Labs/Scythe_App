@@ -73,6 +73,7 @@ export const translations = {
     'consent.notTracked.sessionId.desc':    'Random ID per session — no link to you',
     'consent.accept':                       'Accept',
     'consent.decline':                      'Decline',
+    'consent.footer':                       'You can always change this under Settings → Tracking',
 
     // Update banner
     'banner.newVersion':       'New version available',
@@ -246,6 +247,7 @@ export const translations = {
     'consent.notTracked.sessionId.desc':    'Slumpmässigt ID per session — ingen koppling till dig',
     'consent.accept':                       'Godkänn',
     'consent.decline':                      'Avböj',
+    'consent.footer':                       'Du kan alltid ändra ditt val under Inställningar → Spårning',
 
     'banner.newVersion':      'Ny version tillgänglig',
     'banner.download':        'Hämta version',
@@ -406,6 +408,7 @@ export const translations = {
     'consent.notTracked.sessionId.desc':    'Zufällige ID pro Sitzung — keine Verbindung zu Ihnen',
     'consent.accept':                       'Akzeptieren',
     'consent.decline':                      'Ablehnen',
+    'consent.footer':                       'Sie können Ihre Wahl jederzeit unter Einstellungen → Tracking ändern',
 
     'banner.newVersion':      'Neue Version verfügbar',
     'banner.download':        'Herunterladen',
@@ -563,6 +566,7 @@ export const translations = {
     'consent.notTracked.sessionId.desc':    'ID aléatoire par session — aucun lien avec vous',
     'consent.accept':                       'Accepter',
     'consent.decline':                      'Décliner',
+    'consent.footer':                       'Vous pouvez toujours modifier ce choix dans Réglages → Suivi',
 
     'banner.newVersion':      'Nouvelle version disponible',
     'banner.download':        'Télécharger',
@@ -720,6 +724,7 @@ export const translations = {
     'consent.notTracked.sessionId.desc':    'ID aleatorio por sesión — sin vínculo contigo',
     'consent.accept':                       'Aceptar',
     'consent.decline':                      'Rechazar',
+    'consent.footer':                       'Siempre puedes cambiar esta elección en Ajustes → Rastreo',
 
     'banner.newVersion':      'Nueva versión disponible',
     'banner.download':        'Descargar actualización',

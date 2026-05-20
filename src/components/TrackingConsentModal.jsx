@@ -164,6 +164,17 @@ export default function TrackingConsentModal({ onAccept, onDecline }) {
           <GhostButton onClick={onDecline}>{t('consent.decline')}</GhostButton>
         </div>
 
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: '11px',
+          color: 'var(--text-muted)',
+          textAlign: 'center',
+          margin: 0,
+          lineHeight: 1.5,
+        }}>
+          {t('consent.footer')}
+        </p>
+
       </div>
     </div>
   )
