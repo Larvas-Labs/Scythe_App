@@ -51,8 +51,8 @@ export const translations = {
     'settings.analyticsDesc':     'Help improve Scythe with anonymous usage data',
 
     // Tracking consent modal
-    'consent.title':                        'Before you start',
-    'consent.intro':                        'Scythe can collect anonymous usage data to help improve the app. Here is exactly what that means:',
+    'consent.title':                        'Help improve Scythe',
+    'consent.intro':                        'Scythe would like to collect anonymous usage data to help improve the app. No personal information is ever stored — only the events listed below.',
     'consent.trackedHeader':                'What is tracked',
     'consent.tracked.open':                 'App launched',
     'consent.tracked.open.desc':            'Recorded each time the app starts',
@@ -224,8 +224,8 @@ export const translations = {
     'settings.analyticsDesc':       'Hjälp till att förbättra Scythe med anonym användningsdata',
 
     // Tracking consent modal
-    'consent.title':                        'Innan du börjar',
-    'consent.intro':                        'Scythe kan samla in anonym användningsdata för att förbättra appen. Här är exakt vad det innebär:',
+    'consent.title':                        'Hjälp oss förbättra Scythe',
+    'consent.intro':                        'Scythe vill samla in anonyma uppgifter för att kunna förbättra appen. Ingen personlig information lagras — endast händelserna nedan.',
     'consent.trackedHeader':                'Vad spåras',
     'consent.tracked.open':                 'Appen startas',
     'consent.tracked.open.desc':            'Registreras varje gång appen öppnas',
@@ -384,8 +384,8 @@ export const translations = {
     'settings.analyticsDesc':       'Helfen Sie, Scythe mit anonymen Nutzungsdaten zu verbessern',
 
     // Tracking consent modal
-    'consent.title':                        'Bevor Sie beginnen',
-    'consent.intro':                        'Scythe kann anonyme Nutzungsdaten sammeln, um die App zu verbessern. Hier ist genau, was das bedeutet:',
+    'consent.title':                        'Helfen Sie uns, Scythe zu verbessern',
+    'consent.intro':                        'Scythe möchte anonyme Nutzungsdaten sammeln, um die App zu verbessern. Es werden keine persönlichen Daten gespeichert — nur die unten aufgeführten Ereignisse.',
     'consent.trackedHeader':                'Was erfasst wird',
     'consent.tracked.open':                 'App gestartet',
     'consent.tracked.open.desc':            'Wird bei jedem Start aufgezeichnet',
@@ -541,8 +541,8 @@ export const translations = {
     'settings.analyticsDesc':       'Aidez à améliorer Scythe avec des données d\'utilisation anonymes',
 
     // Tracking consent modal
-    'consent.title':                        'Avant de commencer',
-    'consent.intro':                        'Scythe peut collecter des données d\'utilisation anonymes pour améliorer l\'app. Voici exactement ce que cela signifie\u00a0:',
+    'consent.title':                        'Aidez-nous à améliorer Scythe',
+    'consent.intro':                        'Scythe souhaite collecter des données d\'utilisation anonymes pour améliorer l\'app. Aucune information personnelle n\'est stockée — uniquement les événements listés ci-dessous.',
     'consent.trackedHeader':                'Ce qui est suivi',
     'consent.tracked.open':                 'App lancée',
     'consent.tracked.open.desc':            'Enregistré à chaque démarrage',
@@ -698,8 +698,8 @@ export const translations = {
     'settings.analyticsDesc':       'Ayuda a mejorar Scythe con datos de uso anónimos',
 
     // Tracking consent modal
-    'consent.title':                        'Antes de empezar',
-    'consent.intro':                        'Scythe puede recopilar datos de uso anónimos para mejorar la app. Aquí está exactamente lo que eso significa:',
+    'consent.title':                        'Ayúdanos a mejorar Scythe',
+    'consent.intro':                        'Scythe quiere recopilar datos de uso anónimos para mejorar la app. No se almacena ninguna información personal — solo los eventos listados a continuación.',
     'consent.trackedHeader':                'Qué se rastrea',
     'consent.tracked.open':                 'App iniciada',
     'consent.tracked.open.desc':            'Se registra cada vez que se abre la app',
