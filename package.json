@@ -54,7 +54,7 @@
     "publish": {
       "provider": "github",
       "owner": "Larvas-Labs",
-      "repo": "Scythe_App",
+      "repo": "Scythe-App",
       "releaseType": "release"
     }
   },
