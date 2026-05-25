@@ -78,7 +78,18 @@ function GlobeIcon() {
   )
 }
 
+function RollbackDownloadIcon() {
+  return (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+  )
+}
+
 function RollbackSection({ appVersion }) {
+  const { t } = useLang()
   const [versions, setVersions] = useState([])
   const [loadError, setLoadError] = useState(null)
   const [selected, setSelected] = useState('')
@@ -109,7 +120,6 @@ function RollbackSection({ appVersion }) {
   }, [])
 
   const isActive = rollbackState === 'downloading' || rollbackState === 'installing'
-  const otherVersions = versions.filter(v => !v.isCurrent)
 
   function startConfirm() {
     if (!selected) return
@@ -131,14 +141,12 @@ function RollbackSection({ appVersion }) {
     ? 'Downloading...'
     : rollbackState === 'installing'
       ? 'Installing...'
-      : rollbackState === 'ready'
-        ? 'Restarting...'
-        : null
+      : 'Restarting...'
 
   return (
     <>
       <div style={divider} />
-      <div style={sectionLabel}>Version history</div>
+      <div style={sectionLabel}>{t('settings.rollback')}</div>
 
       {loadError && (
         <div style={{ padding: '4px 8px 8px', fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--danger)' }}>
@@ -153,54 +161,55 @@ function RollbackSection({ appVersion }) {
       )}
 
       {!loadError && versions.length > 0 && !isActive && rollbackState !== 'confirming' && rollbackState !== 'ready' && (
-        <div style={{ padding: '4px 8px 8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-          <select
-            value={selected}
-            onChange={e => { setSelected(e.target.value); setRollbackError(null) }}
-            style={{
-              width: '100%',
-              fontFamily: 'var(--font-body)',
-              fontSize: '12px',
-              color: 'var(--text)',
-              background: 'var(--bg-secondary)',
-              border: '1px solid var(--border)',
-              borderRadius: '6px',
-              padding: '6px 8px',
-              cursor: 'pointer',
-              outline: 'none',
-            }}
-          >
-            <option value="">Select a version...</option>
-            {versions.map(v => (
-              <option key={v.version} value={v.version} disabled={v.isCurrent}>
-                v{v.version}{v.isCurrent ? ' (current)' : ''}
-              </option>
-            ))}
-          </select>
-          <button
-            onClick={startConfirm}
-            disabled={!selected}
-            style={{
-              width: '100%',
-              fontFamily: 'var(--font-body)',
-              fontSize: '12px',
-              fontWeight: 600,
-              color: selected ? 'var(--text-secondary)' : 'var(--text-muted)',
-              background: 'transparent',
-              border: '1px solid var(--border)',
-              borderRadius: '6px',
-              padding: '6px 0',
-              cursor: selected ? 'pointer' : 'not-allowed',
-              opacity: selected ? 1 : 0.4,
-              transition: 'color 0.12s, border-color 0.12s',
-            }}
-            onMouseEnter={e => { if (selected) { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.color = 'var(--text)' } }}
-            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = selected ? 'var(--text-secondary)' : 'var(--text-muted)' }}
-          >
-            Install
-          </button>
+        <>
+          <div style={row}>
+            <select
+              value={selected}
+              onChange={e => { setSelected(e.target.value); setRollbackError(null) }}
+              style={{
+                flex: 1,
+                fontFamily: 'var(--font-body)',
+                fontSize: '12px',
+                color: selected ? 'var(--text)' : 'var(--text-muted)',
+                background: 'var(--bg-secondary)',
+                border: '1px solid var(--border)',
+                borderRadius: '6px',
+                padding: '5px 8px',
+                cursor: 'pointer',
+                outline: 'none',
+                marginRight: '6px',
+              }}
+            >
+              <option value="">Select version...</option>
+              {versions.map(v => (
+                <option key={v.version} value={v.version} disabled={v.isCurrent}>
+                  v{v.version}{v.isCurrent ? ' (current)' : ''}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={startConfirm}
+              disabled={!selected}
+              title="Install"
+              style={{
+                width: '32px', height: '32px', borderRadius: '8px',
+                border: '1px solid var(--border)',
+                background: 'var(--surface)',
+                color: selected ? 'var(--text-secondary)' : 'var(--text-muted)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: selected ? 'pointer' : 'not-allowed',
+                opacity: selected ? 1 : 0.4,
+                flexShrink: 0,
+                transition: 'background 0.15s, border-color 0.15s, color 0.15s',
+              }}
+              onMouseEnter={e => { if (selected) { e.currentTarget.style.background = 'var(--surface-hover)'; e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.color = 'var(--text)' } }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface)'; e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = selected ? 'var(--text-secondary)' : 'var(--text-muted)' }}
+            >
+              <RollbackDownloadIcon />
+            </button>
+          </div>
           {rollbackError && (
-            <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--danger)', lineHeight: 1.4 }}>
+            <div style={{ padding: '0 8px 8px', fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--danger)', lineHeight: 1.4 }}>
               {rollbackError}
               <button
                 onClick={() => { setRollbackError(null); setSelected('') }}
@@ -210,7 +219,7 @@ function RollbackSection({ appVersion }) {
               </button>
             </div>
           )}
-        </div>
+        </>
       )}
 
       {rollbackState === 'confirming' && (

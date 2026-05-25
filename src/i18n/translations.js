@@ -49,6 +49,7 @@ export const translations = {
     'settings.privacy':           'Privacy',
     'settings.analytics':         'Tracking',
     'settings.analyticsDesc':     'Help improve Scythe with anonymous usage data',
+    'settings.rollback':          'Rollback',
 
     // Tracking consent modal
     'consent.title':                        'Help improve Scythe App',
@@ -223,6 +224,7 @@ export const translations = {
     'settings.privacy':             'Sekretess',
     'settings.analytics':           'Spårning',
     'settings.analyticsDesc':       'Hjälp till att förbättra Scythe med anonym användningsdata',
+    'settings.rollback':            'Rollback',
 
     // Tracking consent modal
     'consent.title':                        'Hjälp oss förbättra Scythe App',
@@ -384,6 +386,7 @@ export const translations = {
     'settings.privacy':             'Datenschutz',
     'settings.analytics':           'Tracking',
     'settings.analyticsDesc':       'Helfen Sie, Scythe mit anonymen Nutzungsdaten zu verbessern',
+    'settings.rollback':            'Rollback',
 
     // Tracking consent modal
     'consent.title':                        'Helfen Sie uns, Scythe App zu verbessern',
@@ -542,6 +545,7 @@ export const translations = {
     'settings.privacy':             'Confidentialité',
     'settings.analytics':           'Suivi',
     'settings.analyticsDesc':       'Aidez à améliorer Scythe avec des données d\'utilisation anonymes',
+    'settings.rollback':            'Rollback',
 
     // Tracking consent modal
     'consent.title':                        'Aidez-nous à améliorer Scythe App',
@@ -700,6 +704,7 @@ export const translations = {
     'settings.privacy':             'Privacidad',
     'settings.analytics':           'Rastreo',
     'settings.analyticsDesc':       'Ayuda a mejorar Scythe con datos de uso anónimos',
+    'settings.rollback':            'Rollback',
 
     // Tracking consent modal
     'consent.title':                        'Ayúdanos a mejorar Scythe App',
