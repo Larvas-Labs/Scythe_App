@@ -24,11 +24,7 @@ const CAT_TO_IDS = {
 
 function ScytheLogo() {
   return (
-    <svg width="16" height="16" viewBox="0 0 100 100" fill="none">
-      <path d="M76 18C56 10 32 16 20 36C10 52 14 72 30 84C20 68 22 48 36 34C48 22 64 18 76 18Z" fill="#FF9500"/>
-      <line x1="76" y1="18" x2="68" y2="88" stroke="#FF9500" strokeWidth="5" strokeLinecap="round"/>
-      <line x1="62" y1="76" x2="74" y2="72" stroke="#FF9500" strokeWidth="3" strokeLinecap="round"/>
-    </svg>
+    <img src="/icon.png" width="20" height="20" alt="Scythe" style={{ borderRadius: '4px' }} />
   )
 }
 
