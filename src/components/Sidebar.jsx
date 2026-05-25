@@ -24,7 +24,7 @@ const CAT_TO_IDS = {
 
 function ScytheLogo() {
   return (
-    <img src="/icon.png" width="20" height="20" alt="Scythe" style={{ borderRadius: '4px' }} />
+    <img src="./icon.png" width="20" height="20" alt="Scythe" style={{ borderRadius: '4px' }} />
   )
 }
 
