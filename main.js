@@ -761,6 +761,10 @@ ipcMain.handle('rollback:get-versions', async () => {
 })
 
 function handleRollbackStart(event, { version } = {}) {
+  if (isDev) {
+    event.sender.send('rollback:error', { message: 'Rollback is disabled in development mode.' })
+    return
+  }
   if (!version || typeof version !== 'string') {
     event.sender.send('rollback:error', { message: 'No version specified.' })
     return
