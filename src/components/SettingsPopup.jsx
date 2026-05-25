@@ -258,7 +258,7 @@ function RollbackSection({ appVersion }) {
         </div>
       )}
 
-      {(isActive || rollbackState === 'ready') && (
+      {isActive && (
         <div style={{ padding: '4px 8px 8px' }}>
           <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px', display: 'flex', justifyContent: 'space-between' }}>
             <span>{statusLabel}</span>
@@ -267,8 +267,42 @@ function RollbackSection({ appVersion }) {
             )}
           </div>
           <div style={{ height: '3px', background: 'var(--border)', borderRadius: '2px', overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${rollbackState === 'installing' || rollbackState === 'ready' ? 100 : percent}%`, background: 'var(--accent)', borderRadius: '2px', transition: 'width 0.2s ease' }} />
+            <div style={{ height: '100%', width: `${rollbackState === 'installing' ? 100 : percent}%`, background: 'var(--accent)', borderRadius: '2px', transition: 'width 0.2s ease' }} />
           </div>
+        </div>
+      )}
+
+      {rollbackState === 'ready' && (
+        <div style={{ padding: '4px 4px 4px 8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--accent)' }}>
+            Rollback installed
+          </span>
+          <button
+            onClick={() => window.scythe.restartApp()}
+            style={{
+              width: '100%', fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 600,
+              color: 'var(--accent)', background: 'transparent',
+              border: '1px solid var(--accent)', borderRadius: '6px',
+              padding: '6px 0', cursor: 'pointer', transition: 'background 0.12s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-dim)' }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+          >
+            Restart app
+          </button>
+          <button
+            onClick={() => window.scythe.quitApp()}
+            style={{
+              width: '100%', fontFamily: 'var(--font-body)', fontSize: '12px',
+              color: 'var(--text-secondary)', background: 'transparent',
+              border: '1px solid var(--border)', borderRadius: '6px',
+              padding: '6px 0', cursor: 'pointer', transition: 'color 0.12s, border-color 0.12s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.color = 'var(--text)'; e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+            onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border)' }}
+          >
+            Quit app
+          </button>
         </div>
       )}
     </>

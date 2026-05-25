@@ -871,9 +871,6 @@ async function rollbackTo(version, webContents) {
     try { fs.rmSync(tmpDir, { recursive: true, force: true }) } catch {}
 
     webContents.send('rollback:progress', { status: 'ready', percent: 100 })
-    await new Promise(r => setTimeout(r, 1500))
-    app.relaunch()
-    app.quit()
   } catch (err) {
     webContents.send('rollback:error', { message: err?.message || String(err) })
   }
