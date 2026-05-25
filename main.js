@@ -917,6 +917,7 @@ ipcMain.handle('estimate:all', async (event) => {
 // ─── IPC: scan:start ──────────────────────────────────────────────────────────
 ipcMain.handle('scan:start', async (event, targetIds) => {
   scanAborted = false
+  _trashSizeCache.time = 0 // always fetch fresh trash size at scan start
   const targets = SCAN_TARGETS.filter(t => targetIds.includes(t.id))
   const results = []
   const scanStartTime = Date.now()
@@ -1054,6 +1055,7 @@ ipcMain.handle('delete:items', async (event, items) => {
                 if (isTrashBusy) enriched.hint = 'trashBusy'
                 reject(enriched)
               } else {
+                _trashSizeCache.time = 0 // invalidate so next scan fetches fresh size
                 resolve()
               }
             })
