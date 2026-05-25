@@ -643,7 +643,7 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  const iconPath = path.join(__dirname, 'build', 'icon.png')
+  const iconPath = path.join(__dirname, 'dist', 'icon.png')
   if (process.platform === 'darwin' && fs.existsSync(iconPath)) {
     app.dock.setIcon(iconPath)
   }
