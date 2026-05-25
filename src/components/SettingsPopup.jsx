@@ -98,6 +98,11 @@ function RollbackSection({ appVersion }) {
   const [rollbackError, setRollbackError] = useState(null)
 
   useEffect(() => {
+    if (!window.scythe?.getAvailableVersions) {
+      setLoadError('Restart the app to enable rollback.')
+      return
+    }
+
     window.scythe.getAvailableVersions().then(res => {
       if (res.error) { setLoadError(res.error); return }
       setVersions(res.versions || [])
