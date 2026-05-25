@@ -713,7 +713,7 @@ ipcMain.handle('update:download-and-install', async (event, version) => {
     const filename = arch === 'arm64'
       ? `Scythe-${version}-arm64-mac.zip`
       : `Scythe-${version}-mac.zip`
-    const url = `https://github.com/Scythe-Labs/App/releases/download/v${version}/${filename}`
+    const url = `https://github.com/Larvas-Lavs/Scythe-App/releases/download/v${version}/${filename}`
 
     const tmpDir = path.join(os.tmpdir(), `scythe-update-${Date.now()}`)
     const zipPath = path.join(tmpDir, filename)
@@ -752,6 +752,23 @@ ipcMain.handle('update:quit', () => {
   app.quit()
 })
 
+ipcMain.handle('rollback:get-versions', async () => {
+  try {
+    return { versions: await fetchAvailableVersions(10) }
+  } catch (err) {
+    return { error: err?.message || String(err) }
+  }
+})
+
+function handleRollbackStart(event, { version } = {}) {
+  if (!version || typeof version !== 'string') {
+    event.sender.send('rollback:error', { message: 'No version specified.' })
+    return
+  }
+  rollbackTo(version, event.sender)
+}
+ipcMain.on('rollback:start', handleRollbackStart)
+
 ipcMain.handle('update:check', async () => {
   // Dev mode: autoUpdater silently skips when app is not packaged — simulate response
   if (isDev || !autoUpdater) {
@@ -771,6 +788,96 @@ ipcMain.handle('update:check', async () => {
 
 ipcMain.handle('app:version', () => app.getVersion())
 ipcMain.handle('app:locale', () => app.getLocale())
+
+// ─── Rollback ─────────────────────────────────────────────────────────────────
+
+/**
+ * @typedef {{ version: string, publishedAt: string, isCurrent: boolean }} ReleaseInfo
+ */
+
+/**
+ * Fetches available releases from GitHub Releases API.
+ * @param {number} [limit=10]
+ * @returns {Promise<ReleaseInfo[]>}
+ */
+async function fetchAvailableVersions(limit = 10) {
+  const currentVersion = app.getVersion()
+  const url = `https://api.github.com/repos/Larvas-Lavs/Scythe-App/releases?per_page=${limit}`
+  const res = await fetch(url, { headers: { 'User-Agent': 'Scythe-App' } })
+
+  if (res.status === 403 || res.status === 429) {
+    throw new Error('GitHub API rate limit exceeded. Try again later.')
+  }
+  if (!res.ok) {
+    throw new Error(`GitHub API error: ${res.status}`)
+  }
+
+  const releases = await res.json()
+  if (!Array.isArray(releases) || releases.length === 0) return []
+
+  return releases
+    .filter(r => !r.draft && !r.prerelease && r.tag_name)
+    .map(r => ({
+      version: r.tag_name.replace(/^v/, ''),
+      publishedAt: r.published_at,
+      isCurrent: r.tag_name.replace(/^v/, '') === currentVersion,
+    }))
+}
+
+/**
+ * Downloads and installs a specific version of the app, streaming progress to renderer.
+ * @param {string} version
+ * @param {Electron.WebContents} webContents
+ * @returns {Promise<void>}
+ */
+async function rollbackTo(version, webContents) {
+  const semver = require('semver')
+  if (!semver.valid(version)) {
+    webContents.send('rollback:error', { message: 'Invalid version format.' })
+    return
+  }
+
+  const run = (cmd, args, opts) => new Promise((resolve, reject) => {
+    execFile(cmd, args, opts, (err) => { if (err) reject(err); else resolve() })
+  })
+
+  try {
+    const arch = process.arch
+    const filename = arch === 'arm64'
+      ? `Scythe-${version}-arm64-mac.zip`
+      : `Scythe-${version}-mac.zip`
+    const url = `https://github.com/Larvas-Lavs/Scythe-App/releases/download/v${version}/${filename}`
+
+    const tmpDir = path.join(os.tmpdir(), `scythe-rollback-${Date.now()}`)
+    const zipPath = path.join(tmpDir, filename)
+    fs.mkdirSync(tmpDir, { recursive: true })
+
+    webContents.send('rollback:progress', { status: 'downloading', percent: 0 })
+
+    await downloadFile(url, zipPath, (percent) => {
+      webContents.send('rollback:progress', { status: 'downloading', percent })
+    })
+
+    webContents.send('rollback:progress', { status: 'installing', percent: 100 })
+
+    await run('unzip', ['-o', zipPath, '-d', tmpDir], { timeout: 60000 })
+
+    const newAppSrc = path.join(tmpDir, 'Scythe.app')
+    const appBundlePath = path.resolve(process.execPath, '../../..')
+
+    await run('ditto', [newAppSrc, appBundlePath], { timeout: 30000 })
+    await run('xattr', ['-cr', appBundlePath], { timeout: 10000 })
+
+    try { fs.rmSync(tmpDir, { recursive: true, force: true }) } catch {}
+
+    webContents.send('rollback:progress', { status: 'ready', percent: 100 })
+    await new Promise(r => setTimeout(r, 1500))
+    app.relaunch()
+    app.quit()
+  } catch (err) {
+    webContents.send('rollback:error', { message: err?.message || String(err) })
+  }
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()

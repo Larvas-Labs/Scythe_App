@@ -41,6 +41,12 @@ contextBridge.exposeInMainWorld('scythe', {
   onDownloadProgress: (cb) => ipcRenderer.on('update:download-progress', (_, data) => cb(data)),
   onUpdateReady: (cb) => ipcRenderer.on('update:ready', () => cb()),
 
+  // Rollback
+  getAvailableVersions: () => ipcRenderer.invoke('rollback:get-versions'),
+  startRollback: (version) => ipcRenderer.send('rollback:start', { version }),
+  onRollbackProgress: (cb) => ipcRenderer.on('rollback:progress', (_, data) => cb(data)),
+  onRollbackError: (cb) => ipcRenderer.on('rollback:error', (_, data) => cb(data)),
+
   // App info
   getVersion: () => ipcRenderer.invoke('app:version'),
   getSystemLocale: () => ipcRenderer.invoke('app:locale'),

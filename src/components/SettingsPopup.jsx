@@ -78,6 +78,194 @@ function GlobeIcon() {
   )
 }
 
+function RollbackSection({ appVersion }) {
+  const [versions, setVersions] = useState([])
+  const [loadError, setLoadError] = useState(null)
+  const [selected, setSelected] = useState('')
+  const [rollbackState, setRollbackState] = useState(null) // null | 'confirming' | 'downloading' | 'installing' | 'ready'
+  const [percent, setPercent] = useState(0)
+  const [rollbackError, setRollbackError] = useState(null)
+
+  useEffect(() => {
+    window.scythe.getAvailableVersions().then(res => {
+      if (res.error) { setLoadError(res.error); return }
+      setVersions(res.versions || [])
+    }).catch(err => setLoadError(err?.message || String(err)))
+
+    window.scythe.onRollbackProgress(({ status, percent: p }) => {
+      setRollbackError(null)
+      setPercent(p ?? 0)
+      setRollbackState(status)
+    })
+    window.scythe.onRollbackError(({ message }) => {
+      setRollbackError(message)
+      setRollbackState(null)
+    })
+
+    return () => {
+      window.scythe.removeAllListeners('rollback:progress')
+      window.scythe.removeAllListeners('rollback:error')
+    }
+  }, [])
+
+  const isActive = rollbackState === 'downloading' || rollbackState === 'installing'
+  const otherVersions = versions.filter(v => !v.isCurrent)
+
+  function startConfirm() {
+    if (!selected) return
+    setRollbackState('confirming')
+  }
+
+  function confirmRollback() {
+    setRollbackError(null)
+    setPercent(0)
+    setRollbackState('downloading')
+    window.scythe.startRollback(selected)
+  }
+
+  function cancelConfirm() {
+    setRollbackState(null)
+  }
+
+  const statusLabel = rollbackState === 'downloading'
+    ? 'Downloading...'
+    : rollbackState === 'installing'
+      ? 'Installing...'
+      : rollbackState === 'ready'
+        ? 'Restarting...'
+        : null
+
+  return (
+    <>
+      <div style={divider} />
+      <div style={sectionLabel}>Version history</div>
+
+      {loadError && (
+        <div style={{ padding: '4px 8px 8px', fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--danger)' }}>
+          {loadError}
+        </div>
+      )}
+
+      {!loadError && versions.length === 0 && (
+        <div style={{ padding: '4px 8px 8px', fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--text-muted)' }}>
+          Loading versions...
+        </div>
+      )}
+
+      {!loadError && versions.length > 0 && !isActive && rollbackState !== 'confirming' && rollbackState !== 'ready' && (
+        <div style={{ padding: '4px 8px 8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <select
+            value={selected}
+            onChange={e => { setSelected(e.target.value); setRollbackError(null) }}
+            style={{
+              width: '100%',
+              fontFamily: 'var(--font-body)',
+              fontSize: '12px',
+              color: 'var(--text)',
+              background: 'var(--bg-secondary)',
+              border: '1px solid var(--border)',
+              borderRadius: '6px',
+              padding: '6px 8px',
+              cursor: 'pointer',
+              outline: 'none',
+            }}
+          >
+            <option value="">Select a version...</option>
+            {versions.map(v => (
+              <option key={v.version} value={v.version} disabled={v.isCurrent}>
+                v{v.version}{v.isCurrent ? ' (current)' : ''}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={startConfirm}
+            disabled={!selected}
+            style={{
+              width: '100%',
+              fontFamily: 'var(--font-body)',
+              fontSize: '12px',
+              fontWeight: 600,
+              color: selected ? 'var(--text-secondary)' : 'var(--text-muted)',
+              background: 'transparent',
+              border: '1px solid var(--border)',
+              borderRadius: '6px',
+              padding: '6px 0',
+              cursor: selected ? 'pointer' : 'not-allowed',
+              opacity: selected ? 1 : 0.4,
+              transition: 'color 0.12s, border-color 0.12s',
+            }}
+            onMouseEnter={e => { if (selected) { e.currentTarget.style.borderColor = 'var(--border-strong)'; e.currentTarget.style.color = 'var(--text)' } }}
+            onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = selected ? 'var(--text-secondary)' : 'var(--text-muted)' }}
+          >
+            Install
+          </button>
+          {rollbackError && (
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--danger)', lineHeight: 1.4 }}>
+              {rollbackError}
+              <button
+                onClick={() => { setRollbackError(null); setSelected('') }}
+                style={{ display: 'block', marginTop: '4px', background: 'none', border: 'none', color: 'var(--text-secondary)', fontFamily: 'var(--font-body)', fontSize: '11px', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
+              >
+                Retry
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+
+      {rollbackState === 'confirming' && (
+        <div style={{ padding: '4px 8px 8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          <div style={{ fontFamily: 'var(--font-body)', fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
+            The app will restart and install v{selected}. Continue?
+          </div>
+          <div style={{ display: 'flex', gap: '6px' }}>
+            <button
+              onClick={cancelConfirm}
+              style={{
+                flex: 1, fontFamily: 'var(--font-body)', fontSize: '12px',
+                color: 'var(--text-secondary)', background: 'transparent',
+                border: '1px solid var(--border)', borderRadius: '6px',
+                padding: '6px 0', cursor: 'pointer',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-strong)' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)' }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={confirmRollback}
+              style={{
+                flex: 1, fontFamily: 'var(--font-body)', fontSize: '12px', fontWeight: 600,
+                color: 'var(--accent)', background: 'transparent',
+                border: '1px solid var(--accent)', borderRadius: '6px',
+                padding: '6px 0', cursor: 'pointer', transition: 'background 0.12s',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--accent-dim)' }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'transparent' }}
+            >
+              Install
+            </button>
+          </div>
+        </div>
+      )}
+
+      {(isActive || rollbackState === 'ready') && (
+        <div style={{ padding: '4px 8px 8px' }}>
+          <div style={{ fontFamily: 'var(--font-body)', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '6px', display: 'flex', justifyContent: 'space-between' }}>
+            <span>{statusLabel}</span>
+            {rollbackState === 'downloading' && (
+              <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent)' }}>{percent}%</span>
+            )}
+          </div>
+          <div style={{ height: '3px', background: 'var(--border)', borderRadius: '2px', overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${rollbackState === 'installing' || rollbackState === 'ready' ? 100 : percent}%`, background: 'var(--accent)', borderRadius: '2px', transition: 'width 0.2s ease' }} />
+          </div>
+        </div>
+      )}
+    </>
+  )
+}
+
 export default function SettingsPopup({
   theme,
   onToggleTheme,
@@ -265,6 +453,8 @@ export default function SettingsPopup({
           </button>
         </div>
       )}
+
+      <RollbackSection appVersion={appVersion} />
 
       <div style={divider} />
 
