@@ -5,6 +5,7 @@ import MainContent from './components/MainContent.jsx'
 import BottomBar from './components/BottomBar.jsx'
 import DeleteModal from './components/DeleteModal.jsx'
 import UpdateBanner from './components/UpdateBanner.jsx'
+import NotificationBanner from './components/NotificationBanner.jsx'
 import TrackingConsentModal from './components/TrackingConsentModal.jsx'
 import { selectedSize } from './utils.js'
 import { LangProvider } from './i18n/index.jsx'
@@ -44,6 +45,7 @@ function AppInner() {
   const [bannerDismissed, setBannerDismissed] = useState(false)
   const [trackingEnabled, setTrackingEnabled] = useState(true)
   const [trackingConsented, setTrackingConsented] = useState(undefined)
+  const [notifications, setNotifications] = useState([])
 
   useEffect(() => {
     window.scythe.getTrackingConsented?.().then(val => {
@@ -100,6 +102,14 @@ function AppInner() {
       })
     }
     window.scythe.getVersion?.().then(v => { if (v) setAppVersion(v) })
+
+    if (window.scythe.onNotificationsUpdate) {
+      window.scythe.onNotificationsUpdate(setNotifications)
+    }
+
+    return () => {
+      window.scythe.removeAllListeners?.('notifications:update')
+    }
   }, [])
 
   useEffect(() => {
@@ -330,17 +340,36 @@ function AppInner() {
           onToggleTracking={toggleTracking}
         />
       }
-      updateBanner={!bannerDismissed ? (
-        <UpdateBanner
-          updateState={updateState}
-          availableVersion={availableVersion}
-          downloadProgress={downloadProgress}
-          onDownload={startDownload}
-          onDismiss={() => setBannerDismissed(true)}
-          onRestart={restartApp}
-          onQuit={quitApp}
-        />
-      ) : null}
+      updateBanner={
+        <>
+          <NotificationBanner
+            notifications={notifications}
+            onDismiss={(id) => {
+              window.scythe.dismissNotification?.(id)
+              setNotifications(prev => prev.filter(n => n.id !== id))
+            }}
+            onCta={(item) => {
+              if (item.cta.action === 'update') window.scythe.checkForUpdates?.()
+              if (item.cta.action === 'url') window.scythe.openNotificationUrl?.(item.cta.url)
+              if (item.cta.action === 'dismiss') {
+                window.scythe.dismissNotification?.(item.id)
+                setNotifications(prev => prev.filter(n => n.id !== item.id))
+              }
+            }}
+          />
+          {!bannerDismissed && (
+            <UpdateBanner
+              updateState={updateState}
+              availableVersion={availableVersion}
+              downloadProgress={downloadProgress}
+              onDownload={startDownload}
+              onDismiss={() => setBannerDismissed(true)}
+              onRestart={restartApp}
+              onQuit={quitApp}
+            />
+          )}
+        </>
+      }
       bottomBar={appState === 'results' ? (
         <BottomBar
           selectedCount={selectedIds.size}

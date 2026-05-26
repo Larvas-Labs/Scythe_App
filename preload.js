@@ -47,6 +47,12 @@ contextBridge.exposeInMainWorld('scythe', {
   onRollbackProgress: (cb) => ipcRenderer.on('rollback:progress', (_, data) => cb(data)),
   onRollbackError: (cb) => ipcRenderer.on('rollback:error', (_, data) => cb(data)),
 
+  // Notifications
+  onNotificationsUpdate: (cb) => ipcRenderer.on('notifications:update', (_, data) => cb(data)),
+  dismissNotification: (id) => ipcRenderer.send('notifications:dismiss', { id }),
+  openNotificationUrl: (url) => ipcRenderer.send('notifications:open-url', { url }),
+  testFetchNotifications: () => ipcRenderer.invoke('notifications:test-fetch'),
+
   // App info
   getVersion: () => ipcRenderer.invoke('app:version'),
   getSystemLocale: () => ipcRenderer.invoke('app:locale'),

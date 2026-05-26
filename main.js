@@ -648,6 +648,8 @@ app.whenReady().then(() => {
     app.dock.setIcon(iconPath)
   }
   createWindow()
+  startNotificationsPolling()
+
   if (autoUpdater) {
     autoUpdater.on('update-available', (info) => {
       mainWindow?.webContents.send('update:available', info)
@@ -879,6 +881,82 @@ async function rollbackTo(version, webContents) {
     webContents.send('rollback:error', { message: err?.message || String(err) })
   }
 }
+
+// ─── Notifications ───────────────────────────────────────────────────────────
+
+const NOTIFICATIONS_URL = 'https://raw.githubusercontent.com/Larvas-Lavs/Scythe-App/main/notifications.json'
+
+function filterNotifications(notifications) {
+  const semver = require('semver')
+  const currentVersion = app.getVersion()
+  const dismissed = store.get('dismissedNotifications', [])
+  const now = new Date()
+
+  return notifications
+    .filter(n => {
+      if (!n || !n.id || !n.message) return false
+      if (dismissed.includes(n.id)) return false
+      if (n.expiresAt && new Date(n.expiresAt) < now) return false
+      if (n.minVersion && !semver.gte(currentVersion, n.minVersion)) return false
+      if (n.maxVersion && !semver.lte(currentVersion, n.maxVersion)) return false
+      return true
+    })
+    .sort((a, b) => {
+      const priority = { critical: 0, warning: 1, info: 2 }
+      return (priority[a.type] ?? 2) - (priority[b.type] ?? 2)
+    })
+}
+
+async function fetchNotifications() {
+  try {
+    const res = await fetch(NOTIFICATIONS_URL, { signal: AbortSignal.timeout(8000) })
+    if (!res.ok) return []
+    const json = await res.json()
+    return filterNotifications(json.notifications || [])
+  } catch (err) {
+    console.warn('[notifications] fetch failed:', err.message)
+    return []
+  }
+}
+
+let notificationsInterval = null
+
+function startNotificationsPolling() {
+  if (isDev) return
+
+  const sendUpdate = async () => {
+    const notifications = await fetchNotifications()
+    mainWindow?.webContents.send('notifications:update', notifications)
+  }
+
+  // Initial fetch after 5s to avoid blocking startup
+  setTimeout(sendUpdate, 5000)
+
+  // Poll every 4 hours
+  notificationsInterval = setInterval(sendUpdate, 4 * 60 * 60 * 1000)
+}
+
+// Dev/test helper — triggers an immediate fetch regardless of isDev
+ipcMain.handle('notifications:test-fetch', async () => {
+  const notifications = await fetchNotifications()
+  mainWindow?.webContents.send('notifications:update', notifications)
+  return notifications
+})
+
+ipcMain.on('notifications:dismiss', (_, { id } = {}) => {
+  if (typeof id !== 'string' || !id) return
+  const current = store.get('dismissedNotifications', [])
+  if (!current.includes(id)) {
+    store.set('dismissedNotifications', [...current, id])
+  }
+})
+
+ipcMain.on('notifications:open-url', (_, { url } = {}) => {
+  if (typeof url !== 'string' || !url.startsWith('https://')) return
+  shell.openExternal(url)
+})
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit()

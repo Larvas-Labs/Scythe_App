@@ -1,0 +1,14 @@
+{
+  "notifications": [
+    {
+      "id": "notif-test-001",
+      "type": "info",
+      "message": "Testing testing, 1 2, 1 2",
+      "cta": {
+        "label": "Dismiss",
+        "action": "dismiss"
+      },
+      "publishedAt": "2026-05-26T00:00:00Z"
+    }
+  ]
+}
