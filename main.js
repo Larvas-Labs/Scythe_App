@@ -6,7 +6,7 @@ const os = require('os')
 const Store = require('electron-store')
 
 // ─── TRACKING ────────────────────────────────────────────────────────────────
-const { randomUUID } = require('crypto')
+const { randomUUID, createHash } = require('crypto')
 
 const SUPABASE_URL = 'https://pilqsstuhalkxyfbyari.supabase.co'
 const SUPABASE_ANON_KEY = 'sb_publishable_pk78uV4mH-C-CqtJHGmi8A_LxvW5hUR'
@@ -653,6 +653,36 @@ function createWindow() {
     },
   })
 
+  // ── Security: deny new windows; open only https links externally ────────────
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (/^https:\/\//i.test(url)) shell.openExternal(url)
+    return { action: 'deny' }
+  })
+  // Block in-app navigation away from the app's own origin
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    const allowed = isDev ? url.startsWith('http://localhost') : url.startsWith('file://')
+    if (!allowed) {
+      event.preventDefault()
+      if (/^https:\/\//i.test(url)) shell.openExternal(url)
+    }
+  })
+
+  // ── Security: Content-Security-Policy (production only — dev needs Vite HMR) ─
+  if (!isDev) {
+    mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': [
+            "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; " +
+            "font-src 'self'; img-src 'self' data:; connect-src 'self'; " +
+            "object-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+          ],
+        },
+      })
+    })
+  }
+
   if (isDev) {
     const port = process.env.VITE_PORT || '5173'
     mainWindow.loadURL(`http://localhost:${port}`)
@@ -702,12 +732,19 @@ function downloadFile(url, dest, onProgress) {
   return new Promise((resolve, reject) => {
     const follow = (currentUrl, hops = 0) => {
       if (hops > 10) { reject(new Error('Too many redirects')); return }
-      const parsed = new URL(currentUrl)
-      const client = parsed.protocol === 'https:' ? require('https') : require('http')
-      client.get(currentUrl, (res) => {
+      let parsed
+      try { parsed = new URL(currentUrl) } catch { reject(new Error('Invalid download URL')); return }
+      // Enforce HTTPS — refuse plaintext to block MITM downgrade on redirect
+      if (parsed.protocol !== 'https:') {
+        reject(new Error('Refusing non-HTTPS download URL'))
+        return
+      }
+      require('https').get(currentUrl, (res) => {
         if ([301, 302, 303, 307, 308].includes(res.statusCode)) {
           res.resume()
-          follow(res.headers.location, hops + 1)
+          if (!res.headers.location) { reject(new Error('Redirect without location')); return }
+          // Resolve relative locations against the current URL, then re-validate protocol
+          follow(new URL(res.headers.location, currentUrl).toString(), hops + 1)
           return
         }
         if (res.statusCode !== 200) { reject(new Error(`HTTP ${res.statusCode}`)); return }
@@ -725,6 +762,43 @@ function downloadFile(url, dest, onProgress) {
     }
     follow(url)
   })
+}
+
+// ─── Helper: Integrity verification via electron-builder's latest-mac.yml ─────
+// The app is not Developer-ID notarized, so Gatekeeper can't vouch for updates.
+// Instead verify the SHA-512 published alongside the release before installing.
+async function fetchExpectedChecksum(version, filename) {
+  const url = `https://github.com/Larvas-Lavs/Scythe-App/releases/download/v${version}/latest-mac.yml`
+  const res = await fetch(url, { headers: { 'User-Agent': 'Scythe-App' } })
+  if (!res.ok) throw new Error(`Could not fetch checksum manifest (HTTP ${res.status})`)
+  const text = await res.text()
+  const escaped = filename.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const m = text.match(new RegExp(`url:\\s*${escaped}\\s*\\n\\s*sha512:\\s*(\\S+)\\s*\\n\\s*size:\\s*(\\d+)`))
+  if (!m) throw new Error('Checksum for this build not found in manifest')
+  return { sha512: m[1], size: parseInt(m[2], 10) }
+}
+
+function sha512Base64OfFile(filePath) {
+  return new Promise((resolve, reject) => {
+    const hash = createHash('sha512')
+    const stream = fs.createReadStream(filePath)
+    stream.on('data', d => hash.update(d))
+    stream.on('end', () => resolve(hash.digest('base64')))
+    stream.on('error', reject)
+  })
+}
+
+// Throws (fail-closed) if the downloaded archive doesn't match the published hash.
+async function verifyDownloadedArchive(zipPath, version, filename) {
+  const expected = await fetchExpectedChecksum(version, filename)
+  const actualSize = fs.statSync(zipPath).size
+  if (expected.size && actualSize !== expected.size) {
+    throw new Error(`Size mismatch — expected ${expected.size}, got ${actualSize}`)
+  }
+  const actualHash = await sha512Base64OfFile(zipPath)
+  if (actualHash !== expected.sha512) {
+    throw new Error('Checksum verification failed — download may be corrupt or tampered with')
+  }
 }
 
 ipcMain.handle('update:download-and-install', async (event, version) => {
@@ -751,6 +825,9 @@ ipcMain.handle('update:download-and-install', async (event, version) => {
     await downloadFile(url, zipPath, (percent) => {
       event.sender.send('update:download-progress', { percent })
     })
+
+    // Verify integrity before touching the running app bundle (fail-closed)
+    await verifyDownloadedArchive(zipPath, version, filename)
 
     // Use execFile (no shell) — paths are passed as array args, not interpolated strings
     await run('unzip', ['-o', zipPath, '-d', tmpDir], { timeout: 60000 })
@@ -890,6 +967,9 @@ async function rollbackTo(version, webContents) {
     await downloadFile(url, zipPath, (percent) => {
       webContents.send('rollback:progress', { status: 'downloading', percent })
     })
+
+    // Verify integrity before touching the running app bundle (fail-closed)
+    await verifyDownloadedArchive(zipPath, version, filename)
 
     webContents.send('rollback:progress', { status: 'installing', percent: 100 })
 
