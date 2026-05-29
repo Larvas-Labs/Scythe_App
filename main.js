@@ -395,6 +395,22 @@ const ORPHAN_SCAN_DIRS = [
   '~/Library/Application Scripts',
 ]
 
+// Folders that hold live, shared, vendor data and are routinely named after the
+// vendor (not a matchable bundle-ID). These must NEVER be flagged as orphaned —
+// deleting them destroys real user data (profiles, mail, signed-in accounts).
+const ORPHAN_IGNORE_NAMES = new Set([
+  'google',          // Chrome / Drive / Earth profiles live here
+  'microsoft',       // Edge / Teams / Office / OneDrive
+  'com.microsoft.office', 'office',
+  'mozilla', 'firefox',
+  'apple', 'crashreporter', 'mobilesync', 'syncservices', 'addressbook',
+  'icloud', 'iterm', 'adobe', 'sublime text', 'jetbrains',
+])
+
+// Apple Team-ID prefix on Group Containers, e.g. "UBF8T346G9.Office".
+// These can never match a bundle-ID, so strip the prefix before matching.
+const TEAM_ID_PREFIX = /^[A-Z0-9]{10}\./
+
 async function getInstalledBundleIdsAsync() {
   const bundleIds = new Set()
   const appNames = new Set()
@@ -414,8 +430,10 @@ async function getInstalledBundleIdsAsync() {
         const infoPath = path.join(dir, entry.name, 'Contents', 'Info')
         bidPromises.push(
           new Promise((resolve) => {
-            exec(
-              `defaults read "${infoPath}" CFBundleIdentifier 2>/dev/null`,
+            // execFile (no shell) — infoPath derives from on-disk app names
+            execFile(
+              'defaults',
+              ['read', infoPath, 'CFBundleIdentifier'],
               { timeout: 2000 },
               (err, stdout) => resolve(stdout?.toString().trim() || null)
             )
@@ -477,21 +495,29 @@ async function getOrphanedFoldersAsync() {
         const name = entry.name
         if (name.startsWith('.')) continue
         if (name.startsWith('com.apple.')) continue
+        if (ORPHAN_IGNORE_NAMES.has(name.toLowerCase())) continue
         const fullPath = path.join(resolved, name)
         if (seen.has(fullPath)) continue
         seen.add(fullPath)
 
+        // Strip an Apple Team-ID prefix (Group Containers) so the meaningful
+        // suffix can still match an installed app, e.g. "UBF8T346G9.Office".
+        const stripped = name.replace(TEAM_ID_PREFIX, '')
+        const candidates = stripped === name ? [name] : [name, stripped]
+
         // Bidirectional prefix matching:
         // - name=com.docker.helper matches id=com.docker (name starts with id)
         // - name=com.docker matches id=com.docker.helper (id starts with name)
-        const isInstalled =
-          bundleIds.has(name) ||
-          appNames.has(name.toLowerCase()) ||
+        const matches = (n) =>
+          bundleIds.has(n) ||
+          appNames.has(n.toLowerCase()) ||
+          ORPHAN_IGNORE_NAMES.has(n.toLowerCase()) ||
           [...bundleIds].some(id =>
-            name === id ||
-            name.startsWith(id + '.') ||
-            id.startsWith(name + '.')
+            n === id ||
+            n.startsWith(id + '.') ||
+            id.startsWith(n + '.')
           )
+        const isInstalled = candidates.some(matches)
 
         if (!isInstalled) {
           orphaned.push({ name, path: fullPath, location: dir })
@@ -562,9 +588,10 @@ function getDirSizeAsync(targetPath) {
     return getTrashSizeAsync()
   }
   return new Promise((resolve) => {
-    exec(`du -sk "${resolved}" 2>/dev/null`, { timeout: 30000 }, (err, stdout) => {
-      if (err) { resolve(0); return }
-      const kb = parseInt(stdout.split('\t')[0], 10)
+    // execFile (no shell) — resolved may contain folder names with shell metacharacters
+    execFile('du', ['-sk', resolved], { timeout: 30000 }, (err, stdout) => {
+      if (err && !stdout) { resolve(0); return }
+      const kb = parseInt(String(stdout).split('\t')[0], 10)
       resolve(isNaN(kb) ? 0 : kb * 1024)
     })
   })
@@ -1187,7 +1214,12 @@ ipcMain.handle('trash:empty', async () => {
 
 // ─── IPC: finder:reveal ───────────────────────────────────────────────────────
 ipcMain.handle('finder:reveal', async (_, targetPath) => {
-  shell.showItemInFolder(expandPath(targetPath))
+  const resolved = expandPath(typeof targetPath === 'string' ? targetPath : '')
+  if (!isAllowedScanPath(resolved)) {
+    console.error('[finder:reveal] Rejected path (not in scan whitelist):', targetPath)
+    return false
+  }
+  shell.showItemInFolder(resolved)
   return true
 })
 
