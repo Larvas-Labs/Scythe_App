@@ -3,11 +3,7 @@
     {
       "id": "security-update-141",
       "type": "warning",
-      "message": "Security update available — Scythe 1.4.1 hardens automatic updates. Please update now.",
-      "cta": {
-        "label": "Update now",
-        "action": "update"
-      },
+      "message": "Security update available — Scythe 1.4.1 hardens automatic updates. Open the update banner to install.",
       "minVersion": "1.4.0",
       "maxVersion": "1.4.0",
       "publishedAt": "2026-05-29T00:00:00Z",
