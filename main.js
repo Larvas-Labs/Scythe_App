@@ -494,16 +494,21 @@ async function getOrphanedFoldersAsync() {
         if (!entry.isDirectory()) continue
         const name = entry.name
         if (name.startsWith('.')) continue
-        if (name.startsWith('com.apple.')) continue
+        // Never flag Apple system data — matches "com.apple.*" and the
+        // Group Container form "group.com.apple.*"
+        if (/(^|\.)com\.apple($|\.)/.test(name)) continue
         if (ORPHAN_IGNORE_NAMES.has(name.toLowerCase())) continue
         const fullPath = path.join(resolved, name)
         if (seen.has(fullPath)) continue
         seen.add(fullPath)
 
-        // Strip an Apple Team-ID prefix (Group Containers) so the meaningful
-        // suffix can still match an installed app, e.g. "UBF8T346G9.Office".
-        const stripped = name.replace(TEAM_ID_PREFIX, '')
-        const candidates = stripped === name ? [name] : [name, stripped]
+        // Build match candidates by stripping Group Container prefixes so the
+        // meaningful bundle suffix can still match an installed app:
+        //   "UBF8T346G9.Office"           → "Office"     (Apple Team-ID prefix)
+        //   "group.com.facebook.Messenger"→ "com.facebook.Messenger" ("group." prefix)
+        const candidates = new Set([name])
+        candidates.add(name.replace(TEAM_ID_PREFIX, ''))
+        candidates.add(name.replace(/^group\./, ''))
 
         // Bidirectional prefix matching:
         // - name=com.docker.helper matches id=com.docker (name starts with id)
@@ -517,7 +522,7 @@ async function getOrphanedFoldersAsync() {
             n.startsWith(id + '.') ||
             id.startsWith(n + '.')
           )
-        const isInstalled = candidates.some(matches)
+        const isInstalled = [...candidates].some(matches)
 
         if (!isInstalled) {
           orphaned.push({ name, path: fullPath, location: dir })
