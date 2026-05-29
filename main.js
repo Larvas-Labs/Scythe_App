@@ -915,7 +915,13 @@ ipcMain.handle('app:locale', () => app.getLocale())
  * @param {number} [limit=10]
  * @returns {Promise<ReleaseInfo[]>}
  */
+// First release with the hardened update path (HTTPS-only + SHA-512 verified).
+// Rolling back below this would drop the user onto MITM-able update logic, so
+// it is the floor for both the rollback list and the rollback action itself.
+const MIN_SAFE_VERSION = '1.4.0'
+
 async function fetchAvailableVersions(limit = 10) {
+  const semver = require('semver')
   const currentVersion = app.getVersion()
   const url = `https://api.github.com/repos/Larvas-Lavs/Scythe-App/releases?per_page=${limit}`
   const res = await fetch(url, { headers: { 'User-Agent': 'Scythe-App' } })
@@ -931,7 +937,11 @@ async function fetchAvailableVersions(limit = 10) {
   if (!Array.isArray(releases) || releases.length === 0) return []
 
   return releases
-    .filter(r => !r.draft && !r.prerelease && r.tag_name)
+    .filter(r => {
+      if (r.draft || r.prerelease || !r.tag_name) return false
+      const v = r.tag_name.replace(/^v/, '')
+      return semver.valid(v) && semver.gte(v, MIN_SAFE_VERSION)
+    })
     .map(r => ({
       version: r.tag_name.replace(/^v/, ''),
       publishedAt: r.published_at,
@@ -949,6 +959,12 @@ async function rollbackTo(version, webContents) {
   const semver = require('semver')
   if (!semver.valid(version)) {
     webContents.send('rollback:error', { message: 'Invalid version format.' })
+    return
+  }
+  // Refuse downgrades below the first hardened release (defense in depth —
+  // the list already hides these, but the IPC argument is not trusted)
+  if (semver.lt(version, MIN_SAFE_VERSION)) {
+    webContents.send('rollback:error', { message: `For security, rollback below ${MIN_SAFE_VERSION} is not allowed.` })
     return
   }
 
