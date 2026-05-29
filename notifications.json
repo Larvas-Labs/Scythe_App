@@ -1,17 +1,17 @@
 {
   "notifications": [
     {
-      "id": "notif-test-001",
-      "type": "info",
-      "message": "Testing testing, 1 2, 1 2",
+      "id": "security-update-141",
+      "type": "warning",
+      "message": "Security update available — Scythe 1.4.1 hardens automatic updates. Please update now.",
       "cta": {
-        "label": "Dismiss",
-        "action": "dismiss"
+        "label": "Update now",
+        "action": "update"
       },
-      "minVersion": "1.0.0",
-      "maxVersion": "1.3.1",
-      "publishedAt": "2026-05-26T00:00:00Z",
-      "expiresAt": "2026-11-26T00:00:00Z"
+      "minVersion": "1.4.0",
+      "maxVersion": "1.4.0",
+      "publishedAt": "2026-05-29T00:00:00Z",
+      "expiresAt": "2026-12-31T00:00:00Z"
     }
   ]
 }
